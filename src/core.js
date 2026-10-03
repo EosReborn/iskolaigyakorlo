@@ -19,7 +19,7 @@ const Q = (main, sub) => `<div class="big${main.replace(/<[^>]*>/g, '').length >
 const slot = t => `<span class="slot">${t === undefined ? '?' : t}</span>`;
 
 /* Kérdéstípusok: num = számbillentyűzet, choice = választógombok */
-const NUM = (q, ans, o = {}) => ({ kind: 'num', q, ans: Number(ans), ...o });
+const NUM = (q, ans, o = {}) => ({ kind: 'num', q, ans: Math.round(Number(ans) * 1e6) / 1e6, ...o });
 const CH = (q, correct, wrongs, o = {}) => {
   const norm = x => (typeof x === 'object' ? x : { v: String(x), h: esc(String(x)) });
   const c = norm(correct);
@@ -38,6 +38,18 @@ const digitShuffle = n => {
   for (let k = 0; k < 20; k++) { const s = shuffle(d); if (s[0] !== '0') return Number(s.join('')); }
   return n;
 };
+
+/* Tizedes és negatív számok szövegesen (magyar tizedesvessző, ezres tagolás) */
+const trim = n => Math.round(n * 1e6) / 1e6;
+const numTxt = n => { n = trim(n); const [i, f] = String(Math.abs(n)).split('.'); return (n < 0 ? '−' : '') + i.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') + (f ? ',' + f : ''); };
+const fixd = (n, k) => (n < 0 ? '−' : '') + Math.abs(n).toFixed(k).replace('.', ',');
+const par = n => (n < 0 ? `(${numTxt(n)})` : numTxt(n));
+const gcd = (a, b) => (b ? gcd(b, a % b) : Math.abs(a));
+const lcm = (a, b) => a / gcd(a, b) * b;
+const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+const divisors = n => { const r = []; for (let i = 1; i <= n; i++) if (n % i === 0) r.push(i); return r; };
+const vx = '<span class="vx">x</span>';
+const mix = (w, n, d) => `<span class="mix">${w}${fr(n, d)}</span>`;
 
 /* Modulok gyűjtője */
 const MODS = [];

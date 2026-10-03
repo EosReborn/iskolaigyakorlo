@@ -8,7 +8,7 @@ Statikus oldal, nincs szükség adatbázisra vagy regisztrációra.
 3. Domain: Vercel > Settings > Domains > add meg az iskolaigyakorlo.hu címet, és a Rackhostnál állítsd be a Vercel által kiírt DNS rekordokat.
 
 ## Módosítás
-- A gyakorlók a `src/mods1.js` és `src/mods2.js` fájlokban vannak, a felület a `src/ui.js`-ben, a kinézet a `src/style.css`-ben.
+- A gyakorlók a `src/mods1.js`, `src/mods2.js` és `src/mods3.js` fájlokban vannak, a felület a `src/ui.js`-ben, a kinézet a `src/style.css`-ben.
 - Újraépítés: `SITE_URL=https://iskolaigyakorlo.hu python3 build.py` (Node.js és Python 3 kell hozzá). Az eredmény a `dist` mappában lesz.
 - Új gyakorló: egy új `mod({...})` blokk, a build automatikusan új oldalt, sitemap-bejegyzést és kártyát készít hozzá.
 

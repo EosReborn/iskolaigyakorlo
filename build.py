@@ -12,7 +12,7 @@ rd = lambda p: open(os.path.join(SRC, p), encoding='utf-8').read()
 meta = json.loads(subprocess.check_output(['node', os.path.join(ROOT, 'meta.js')], cwd=ROOT))
 mods, groups = meta['mods'], meta['groups']
 
-js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'ui.js']) + '\n})();\n'
+js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'mods3.js', 'ui.js']) + '\n})();\n'
 css = rd('style.css')
 ver = hashlib.md5((js + css).encode()).hexdigest()[:8]
 FONTS = 'https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700;800&display=swap'
@@ -44,14 +44,14 @@ def logo_img(src): return f'<img src="{src}" alt="{NAME}" width="{LOGO_W}" heigh
 def prerender(m):
     if not m:
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
-        return f'<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes matematikai gyakorlók alsó tagozatosoknak: szorzótábla, osztás, törtek, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul>'
+        return f'<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes matematikai gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p><ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section></div>'
 
 def page(m):
     slug = m['slug'] if m else ''
-    title = f'{m["title"]} – {NAME}' if m else f'{NAME} – ingyenes matematika gyakorlók alsósoknak'
-    desc = m['desc'] if m else 'Ingyenes, regisztráció nélküli matematika gyakorlók 1–4. osztályosoknak: szorzótábla, osztás, írásbeli műveletek, törtek, óra, pénz, geometria. Nyomtatható munkalapokkal.'
+    title = f'{m["title"]} – {NAME}' if m else f'{NAME} – ingyenes matematika gyakorlók 1–8. osztályosoknak'
+    desc = m['desc'] if m else 'Ingyenes, regisztráció nélküli matematika gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, óra, pénz, geometria. Nyomtatható munkalapokkal.'
     url = f'{SITE}/{slug + "/" if slug else ""}'
     ld = {"@context": "https://schema.org", "@type": "WebApplication", "name": m['title'] if m else NAME, "url": url, "description": desc,
           "applicationCategory": "EducationalApplication", "inLanguage": "hu", "isAccessibleForFree": True,
@@ -76,7 +76,7 @@ def page(m):
 <body>
 <header class="site"><div class="wrap"><a class="brand" href="/">{logo_img("/assets/logo.webp")}</a><nav><a href="/">Minden gyakorló</a></nav></div></header>
 <main class="wrap"><div id="app">{prerender(m)}</div></main>
-<footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók alsó tagozatosoknak. Nincs regisztráció, a legjobb eredményeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p></div></footer>
+<footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p></div></footer>
 <script src="/assets/app.js?v={ver}" defer></script>
 </body>
 </html>
@@ -93,6 +93,11 @@ for m in mods:
     os.makedirs(os.path.join(DIST, m['slug']))
     open(os.path.join(DIST, m['slug'], 'index.html'), 'w', encoding='utf-8').write(page(m))
 
+os.makedirs(os.path.join(DIST, 'profil'))
+pp = page(None).replace('data-route=""', 'data-route="profil"').replace('<title>'+e(f'{NAME} – ingyenes matematika gyakorlók 1–8. osztályosoknak')+'</title>', f'<title>Haladásom – {NAME}</title>')
+pp = re.sub(r'<link rel="canonical"[^>]*>', '<meta name="robots" content="noindex">', pp)
+open(os.path.join(DIST, 'profil', 'index.html'), 'w', encoding='utf-8').write(pp)
+
 today = datetime.date.today().isoformat()
 urls = [f'{SITE}/'] + [f'{SITE}/{m["slug"]}/' for m in mods]
 open(os.path.join(DIST, 'sitemap.xml'), 'w', encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(f'  <url><loc>{u}</loc><lastmod>{today}</lastmod></url>\n' for u in urls) + '</urlset>\n')
@@ -107,7 +112,7 @@ art = f'''<title>{NAME}</title>
 </style>
 <header class="site"><div class="wrap"><a class="brand" href="#">{logo_img("data:image/webp;base64," + base64.b64encode(LOGO_WEBP).decode())}</a></div></header>
 <main class="wrap"><div id="app"></div></main>
-<footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók alsó tagozatosoknak. Nincs regisztráció, a legjobb eredményeidet csak a saját böngésződ tárolja.</p></div></footer>
+<footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p></div></footer>
 <script>
 {js}</script>
 '''
