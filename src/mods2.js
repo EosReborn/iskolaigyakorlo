@@ -56,7 +56,7 @@ mod({
     { name: 'Mennyibe kerül összesen?', gen: () => { const [a, pa] = pick(SHOP), [b, pb] = pick(SHOP.filter(x => x[0] !== a)); const k = rnd(2, 4);
       return Math.random() < .5
         ? NUM(Q(`Egy ${a} ${fmt(pa)} Ft, egy ${b} ${fmt(pb)} Ft. Mennyibe kerül a kettő együtt?`), pa + pb, { unit: 'Ft', hint: `${fmt(pa)} + ${fmt(pb)} = ${fmt(pa + pb)} Ft.` })
-        : NUM(Q(`Egy ${a} ${fmt(pa)} Ft. Mennyibe kerül ${k} darab?`), pa * k, { unit: 'Ft', hint: `${k} · ${fmt(pa)} = ${fmt(pa * k)} Ft.` }); } }
+        : NUM(Q(`Egy ${a} ${fmt(pa)} Ft. Mennyibe kerül ${k} darab?`), pa * k, { unit: 'Ft', hint: `${k} × ${fmt(pa)} = ${fmt(pa * k)} Ft.` }); } }
   ]
 });
 
@@ -123,9 +123,9 @@ mod({
     { name: 'Több síkidom', gen: shapeQ(Object.keys(SHAPES)) },
     { name: 'Hány oldala, hány csúcsa van?', gen: () => { const n = pick(Object.keys(SHAPES).filter(x => x !== 'kör')); const v = SHAPES[n].sides; const wh = Math.random() < .5;
       return NUM(Q(shapeSVG(n), wh ? 'Hány oldala van?' : 'Hány csúcsa van?'), v, { hint: `Ez egy ${n}: ${v} oldala és ${v} csúcsa van.` }); } },
-    { name: 'Téglalap és négyzet kerülete', gen: () => { if (Math.random() < .35) { const a = rnd(2, 12); return NUM(Q(rectSVG(a, a, sideTxt(a), sideTxt(a)), 'Mennyi a négyzet kerülete?'), 4 * a, { unit: 'cm', hint: `4 · ${a} = ${4 * a} cm.` }); }
+    { name: 'Téglalap és négyzet kerülete', gen: () => { if (Math.random() < .35) { const a = rnd(2, 12); return NUM(Q(rectSVG(a, a, sideTxt(a), sideTxt(a)), 'Mennyi a négyzet kerülete?'), 4 * a, { unit: 'cm', hint: `4 × ${a} = ${4 * a} cm.` }); }
       let a, b; do { a = rnd(3, 14); b = rnd(2, 10); } while (a === b);
-      return NUM(Q(rectSVG(a, b, sideTxt(a), sideTxt(b)), 'Mennyi a téglalap kerülete?'), 2 * (a + b), { unit: 'cm', hint: `2 · (${a} + ${b}) = 2 · ${a + b} = ${2 * (a + b)} cm.` }); } },
+      return NUM(Q(rectSVG(a, b, sideTxt(a), sideTxt(b)), 'Mennyi a téglalap kerülete?'), 2 * (a + b), { unit: 'cm', hint: `2 × (${a} + ${b}) = 2 × ${a + b} = ${2 * (a + b)} cm.` }); } },
     { name: 'Háromszög kerülete', gen: () => { const a = rnd(3, 12), b = rnd(3, 12), c = rnd(Math.abs(a - b) + 1, a + b - 1);
       return NUM(Q(triSVG(a, b, c), 'Mennyi a háromszög kerülete?'), a + b + c, { unit: 'cm', hint: `${a} + ${b} + ${c} = ${a + b + c} cm.` }); } },
     { name: 'Terület: négyzetek számolása', gen: () => { const cols = rnd(2, 7), rows = rnd(2, 5); const L = Math.random() < .5 && cols > 3 && rows > 2;
@@ -134,7 +134,7 @@ mod({
       const n = cells.flat().filter(Boolean).length;
       return NUM(Q(gridSVG(cells), 'Egy négyzet 1 cm². Mennyi az alakzat területe?'), n, { unit: 'cm²', hint: `Számold meg a színes négyzeteket: ${n} darab, így a terület ${n} cm².` }); } },
     { name: 'Terület számolása képlettel', gen: () => { const a = rnd(2, 12), b = rnd(2, 12); const sq = Math.random() < .3; const B = sq ? a : b;
-      return NUM(Q(sq ? `Egy négyzet oldala ${a} cm.` : `Egy téglalap oldalai ${a} cm és ${b} cm.`, 'Mennyi a területe?'), a * B, { unit: 'cm²', hint: `Terület = hosszúság · szélesség = ${a} · ${B} = ${a * B} cm².` }); } },
+      return NUM(Q(sq ? `Egy négyzet oldala ${a} cm.` : `Egy téglalap oldalai ${a} cm és ${b} cm.`, 'Mennyi a területe?'), a * B, { unit: 'cm²', hint: `Terület = hosszúság × szélesség = ${a} × ${B} = ${a * B} cm².` }); } },
     { name: 'Hiányzó oldal kiszámítása', gen: () => { const a = rnd(3, 12), b = rnd(2, 10);
       return Math.random() < .5
         ? NUM(Q(`Egy téglalap területe ${a * b} cm², az egyik oldala ${a} cm.`, 'Mekkora a másik oldala?'), b, { unit: 'cm', hint: `${a * b} : ${a} = ${b} cm.` })
@@ -150,7 +150,7 @@ const diceQ = (cnt, kind) => () => { const arr = Array.from({ length: cnt }, () 
   if (kind === 'count') return NUM(Q(dice(arr), 'Hány pötty van a kockán?'), arr[0], { hint: `Számold meg a pöttyöket: ${arr[0]}.` });
   if (kind === 'sum') { const s = arr.reduce((x, y) => x + y, 0); return NUM(Q(dice(arr), `Mennyi a dobott pontok összege?`), s, { hint: `${arr.join(' + ')} = ${s}.` }); }
   if (kind === 'diff') { const [a, b] = arr[0] >= arr[1] ? arr : [arr[1], arr[0]]; return NUM(Q(dice([a, b]), 'Mennyivel dobtál többet az elsővel?'), a - b, { hint: `${a} − ${b} = ${a - b}.` }); }
-  const p = arr[0] * arr[1]; return NUM(Q(dice(arr), 'Mennyi a két dobott szám szorzata?'), p, { hint: `${arr[0]} · ${arr[1]} = ${p}.` }); };
+  const p = arr[0] * arr[1]; return NUM(Q(dice(arr), 'Mennyi a két dobott szám szorzata?'), p, { hint: `${arr[0]} × ${arr[1]} = ${p}.` }); };
 mod({
   slug: 'dobokocka', title: 'Dobókocka gyakorló', short: 'Dobókocka', group: 'forma', glyph: '', hue: 2, icon: 'die',
   desc: 'Pöttyök számolása, dobott számok összege, különbsége és szorzata. Dobj te is a virtuális kockákkal!',

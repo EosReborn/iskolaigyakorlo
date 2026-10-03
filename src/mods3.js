@@ -26,7 +26,7 @@ mod({
       return NUM(Q(`${numTxt(a)} − ${par(b)} = ?`), a - b, { hint: `A kivonás egy szám ellentettjének hozzáadása: ${numTxt(a)} − ${par(b)} = ${numTxt(a)} + ${par(-b)} = ${numTxt(a - b)}.` }); } },
     { name: 'Szorzás és osztás', neg: true, gen: () => { const b = pick([-9, -8, -7, -6, -5, -4, -3, -2, 2, 3, 4, 5, 6, 7, 8, 9]), c = pick([-9, -8, -7, -6, -5, -4, -3, -2, 2, 3, 4, 5, 6, 7, 8, 9]);
       const h = 'Azonos előjelű számok szorzata és hányadosa pozitív, különböző előjelűeké negatív.';
-      return Math.random() < .5 ? NUM(Q(`${par(b)} · ${par(c)} = ?`), b * c, { hint: h + ` ${par(b)} · ${par(c)} = ${numTxt(b * c)}.` })
+      return Math.random() < .5 ? NUM(Q(`${par(b)} × ${par(c)} = ?`), b * c, { hint: h + ` ${par(b)} × ${par(c)} = ${numTxt(b * c)}.` })
         : NUM(Q(`${par(b * c)} : ${par(b)} = ?`), c, { hint: h + ` ${par(b * c)} : ${par(b)} = ${numTxt(c)}.` }); } },
     { name: 'Több művelet együtt', neg: true, gen: () => { const a = rnd(-12, 12), b = rnd(-12, 12), c = rnd(-12, 12); const op = pick(['+', '−']);
       const r = op === '+' ? a + b - c : a - b - c; const t = op === '+' ? `${numTxt(a)} + ${par(b)} − ${par(c)}` : `${numTxt(a)} − ${par(b)} − ${par(c)}`;
@@ -53,12 +53,12 @@ mod({
     { name: 'Összeadás, kivonás századokkal', dec: true, gen: () => { const a = rnd(101, 999), b = rnd(101, 999); const add = Math.random() < .5; const [x, y] = add || a >= b ? [a, b] : [b, a];
       return NUM(Q(`${fixd(x / 100, 2)} ${add ? '+' : '−'} ${fixd(y / 100, 2)} = ?`), (add ? x + y : x - y) / 100, { hint: `Tizedesvesszőt tizedesvessző alá írva számolj. Az eredmény ${numTxt((add ? x + y : x - y) / 100)}.` }); } },
     { name: 'Szorzás és osztás 10-zel, 100-zal, 1000-rel', dec: true, gen: () => { const f = pick([10, 100, 1000]);
-      if (Math.random() < .5) { const n = rnd(11, 999); return NUM(Q(`${fixd(n / 100, 2)} · ${f} = ?`), n * f / 100, { hint: `${f}-zel szorozva a tizedesvessző ${String(f).length - 1} hellyel jobbra csúszik. Az eredmény ${numTxt(n * f / 100)}.` }); }
+      if (Math.random() < .5) { const n = rnd(11, 999); return NUM(Q(`${fixd(n / 100, 2)} × ${f} = ?`), n * f / 100, { hint: `${f}-zel szorozva a tizedesvessző ${String(f).length - 1} hellyel jobbra csúszik. Az eredmény ${numTxt(n * f / 100)}.` }); }
       const n = rnd(1, 9999); return NUM(Q(`${numTxt(n)} : ${f} = ?`), n / f, { hint: `${f}-zel osztva a tizedesvessző ${String(f).length - 1} hellyel balra csúszik. Az eredmény ${numTxt(n / f)}.` }); } },
     { name: 'Szorzás egész számmal', dec: true, gen: () => { const k = rnd(2, 9); const sc = pick([10, 100]); const a = sc === 10 ? rnd(11, 99) : rnd(101, 399);
-      return NUM(Q(`${fixd(a / sc, sc === 10 ? 1 : 2)} · ${k} = ?`), a * k / sc, { hint: `Szorozz úgy, mintha nem lenne tizedesvessző (${a} · ${k} = ${a * k}), aztán tedd vissza a vesszőt. Az eredmény ${numTxt(a * k / sc)}.` }); } },
+      return NUM(Q(`${fixd(a / sc, sc === 10 ? 1 : 2)} × ${k} = ?`), a * k / sc, { hint: `Szorozz úgy, mintha nem lenne tizedesvessző (${a} × ${k} = ${a * k}), aztán tedd vissza a vesszőt. Az eredmény ${numTxt(a * k / sc)}.` }); } },
     { name: 'Osztás egész számmal', dec: true, gen: () => { const d = rnd(2, 9), r = rnd(11, 399); const dividend = r * d;
-      return NUM(Q(`${fixd(dividend / 100, 2).replace(/,?0+$/, '')} : ${d} = ?`), r / 100, { hint: `Osztás után az eredmény ${numTxt(r / 100)}, mert ${numTxt(r / 100)} · ${d} = ${numTxt(dividend / 100)}.` }); } },
+      return NUM(Q(`${fixd(dividend / 100, 2).replace(/,?0+$/, '')} : ${d} = ?`), r / 100, { hint: `Osztás után az eredmény ${numTxt(r / 100)}, mert ${numTxt(r / 100)} × ${d} = ${numTxt(dividend / 100)}.` }); } },
     { name: 'Tört és tizedes tört', dec: true, gen: () => { if (Math.random() < .7) { const [n, d] = pick(DECF);
         return NUM(Q(`${fr(n, d)} = ? (tizedes tört)`), n / d, { hint: `${n} : ${d} = ${numTxt(n / d)}.` }); }
       const k = pick([10, 100]), n = k === 10 ? rnd(1, 9) : rnd(1, 99);
@@ -74,7 +74,7 @@ mod({
   seo: 'Az 5–6. osztályos törtek témakör gyakorlása: törtek bővítése és egyszerűsítése, összehasonlítás közös nevezőre hozással, összeadás és kivonás azonos és különböző nevezővel, egész számmal való szorzás, vegyes szám és közönséges tört átalakítása.',
   levels: [
     { name: 'Bővítés', gen: () => { const [n, d] = pick(FP), k = rnd(2, 6);
-      return NUM(Q(`${fr(n, d)} = ${fr('?', d * k)}`, `Bővítsd ${k}-${[2, 3, 4, 5, 6][k - 2] ? ['vel', 'mal', 'gyel', 'tel', 'tal'][k - 2] : 'val'}.`), n * k, { hint: `A számlálót és a nevezőt is ${k} számmal szorozzuk: ${n}·${k} = ${n * k}, ${d}·${k} = ${d * k}.` }); } },
+      return NUM(Q(`${fr(n, d)} = ${fr('?', d * k)}`, `Bővítsd ${k}-${[2, 3, 4, 5, 6][k - 2] ? ['vel', 'mal', 'gyel', 'tel', 'tal'][k - 2] : 'val'}.`), n * k, { hint: `A számlálót és a nevezőt is ${k} számmal szorozzuk: ${n}×${k} = ${n * k}, ${d}×${k} = ${d * k}.` }); } },
     { name: 'Egyszerűsítés', gen: () => { const [n, d] = pick(FP), k = rnd(2, 6); const askNum = Math.random() < .6;
       return NUM(Q(askNum ? `${fr(n * k, d * k)} = ${fr('?', d)}` : `${fr(n * k, d * k)} = ${fr(n, '?')}`), askNum ? n : d, { hint: `Mindkettőt ${k} számmal osztjuk: ${n * k} : ${k} = ${n}, ${d * k} : ${k} = ${d}.` }); } },
     { name: 'Legegyszerűbb alak', gen: () => { const [n, d] = pick(FP.filter(x => gcd(x[0], x[1]) === 1)), k = rnd(2, 5);
@@ -94,7 +94,7 @@ mod({
       const r = add ? v1 + v2 : v1 - v2;
       return NUM(Q(`${fr(n1, d1)} ${add ? '+' : '−'} ${fr(n2, d2)} = ${fr('?', D)}`), r, { hint: `Közös nevező: ${D}. ${fr(v1, D)} ${add ? '+' : '−'} ${fr(v2, D)} = ${fr(r, D)}.` }); } },
     { name: 'Tört szorzása egész számmal', gen: () => { const [n, d] = pick(FP), k = rnd(2, 8);
-      return NUM(Q(`${k} · ${fr(n, d)} = ${fr('?', d)}`), n * k, { hint: `A számlálót szorozzuk: ${k} · ${n} = ${n * k}, a nevező marad ${d}.` }); } },
+      return NUM(Q(`${k} × ${fr(n, d)} = ${fr('?', d)}`), n * k, { hint: `A számlálót szorozzuk: ${k} × ${n} = ${n * k}, a nevező marad ${d}.` }); } },
     { name: 'Vegyes szám és közönséges tört', gen: () => { const d = rnd(2, 9), w = rnd(1, 5), n = rnd(1, d - 1);
       return Math.random() < .5 ? NUM(Q(`${mix(w, n, d)} = ${fr('?', d)}`), w * d + n, { hint: `${w} egész = ${fr(w * d, d)}, ehhez még ${n}/${d}: ${fr(w * d + n, d)}.` })
         : NUM(Q(`${fr(w * d + n, d)} = ${w} egész ${fr('?', d)}`), n, { hint: `${w * d + n} : ${d} = ${w}, maradék ${n}, tehát ${w} egész ${n}/${d}.` }); } }
@@ -109,7 +109,7 @@ mod({
   seo: 'A százalékszámítás 6–8. osztályban az egyik legfontosabb téma: a boltban, az akciókban, a kamatoknál találkozunk vele. A gyakorló az egyszerű 50%, 25%, 10% számításoktól a kedvezményeken és áremeléseken át a visszafelé számolásig (az alap meghatározásáig) vezet.',
   levels: [
     { name: '50%, 25%, 10% és 1%', gen: () => { const o = pick([[50, [20, 40, 60, 80, 100, 200]], [25, [20, 40, 80, 100, 200]], [10, [30, 50, 80, 100, 250, 400]], [1, [100, 200, 500, 1000]], [75, [20, 40, 80, 100]], [20, [25, 50, 100, 150]]]); const b = pick(o[1]);
-      return NUM(Q(`Mennyi ${b} ${o[0]}%-a?`), pctOf(o[0], b), { hint: `${o[0]}% = ${o[0]}/100, tehát ${b} · ${o[0]} : 100 = ${pctOf(o[0], b)}.` }); } },
+      return NUM(Q(`Mennyi ${b} ${o[0]}%-a?`), pctOf(o[0], b), { hint: `${o[0]}% = ${o[0]}/100, tehát ${b} × ${o[0]} : 100 = ${pctOf(o[0], b)}.` }); } },
     { name: 'Tetszőleges százalék', gen: () => { const p = pick([5, 15, 30, 35, 40, 45, 60, 65, 80, 90]), b = rnd(1, 20) * 20;
       return NUM(Q(`Mennyi ${b} ${p}%-a?`), pctOf(p, b), { hint: `Előbb az 1%-ot számold ki: ${b} : 100 = ${numTxt(b / 100)}, ezt szorozd ${p} százalékkal: ${pctOf(p, b)}.` }); } },
     { name: 'Hány százalék?', gen: () => { const p = pick([5, 10, 20, 25, 30, 40, 50, 60, 75, 80]), b = rnd(1, 10) * 20, part = pctOf(p, b);
@@ -134,9 +134,9 @@ mod({
   desc: 'Négyzetszámok, köbszámok, hatványok, négyzetgyök, kitevő keresése és műveletek hatványokkal.',
   seo: 'A hatványozás és a négyzetgyökvonás a 7–8. osztály alapja. A gyakorló a négyzetszámokkal és a köbszámokkal indul, majd a hatványok kiszámítása, a kitevő megkeresése és a négyzetgyök becslése következik.',
   levels: [
-    { name: 'Négyzetszámok', gen: () => { const n = rnd(2, 20); return NUM(Q(`${sup(n, 2)} = ?`), n * n, { hint: `${n} · ${n} = ${n * n}.` }); } },
+    { name: 'Négyzetszámok', gen: () => { const n = rnd(2, 20); return NUM(Q(`${sup(n, 2)} = ?`), n * n, { hint: `${n} × ${n} = ${n * n}.` }); } },
     { name: 'Négyzetgyök', gen: () => { const n = rnd(2, 20); return NUM(Q(`√${n * n} = ?`), n, { hint: `${n}² = ${n * n}, ezért √${n * n} = ${n}.` }); } },
-    { name: 'Köbszámok', gen: () => { const n = rnd(2, 10); return NUM(Q(`${sup(n, 3)} = ?`), n ** 3, { hint: `${n} · ${n} · ${n} = ${n ** 3}.` }); } },
+    { name: 'Köbszámok', gen: () => { const n = rnd(2, 10); return NUM(Q(`${sup(n, 3)} = ?`), n ** 3, { hint: `${n} × ${n} × ${n} = ${n ** 3}.` }); } },
     { name: 'Hatványok kiszámítása', gen: () => { const o = pick([[2, 2, 10], [3, 2, 5], [4, 2, 4], [5, 2, 4], [10, 2, 6]]); const e = rnd(o[1], o[2]);
       return NUM(Q(`${sup(o[0], e)} = ?`), o[0] ** e, { hint: `${o[0]}-t ${e}-szer szorozzuk önmagával: ${fmt(o[0] ** e)}.` }); } },
     { name: 'Mekkora a kitevő?', gen: () => { const o = pick([[2, 2, 10], [3, 2, 5], [5, 2, 4], [10, 2, 6]]); const e = rnd(o[1], o[2]);
@@ -167,13 +167,13 @@ mod({
     { name: 'Hány osztója van?', gen: () => { const n = rnd(6, 60), dv = divisors(n);
       return NUM(Q(`Hány osztója van a ${n} számnak?`, 'Az 1-et és önmagát is számold.'), dv.length, { hint: `Az osztók: ${dv.join(', ')}.` }); } },
     { name: 'Többszörösök', gen: () => { const d = rnd(3, 12), m = rnd(20, 120), r = (Math.floor(m / d) + 1) * d;
-      return NUM(Q(`Írd fel a ${d} többszöröseit. Melyik az első olyan, ami nagyobb, mint ${m}?`), r, { hint: `${m} : ${d} = ${Math.floor(m / d)} maradék ${m % d}, tehát ${Math.floor(m / d) + 1} · ${d} = ${r}.` }); } },
+      return NUM(Q(`Írd fel a ${d} többszöröseit. Melyik az első olyan, ami nagyobb, mint ${m}?`), r, { hint: `${m} : ${d} = ${Math.floor(m / d)} maradék ${m % d}, tehát ${Math.floor(m / d) + 1} × ${d} = ${r}.` }); } },
     { name: 'Legnagyobb közös osztó (LNKO)', gen: () => { let x, y; do { x = rnd(2, 9); y = rnd(2, 9); } while (x === y || gcd(x, y) !== 1); const g = rnd(2, 12);
       return NUM(Q(`Mennyi ${g * x} és ${g * y} legnagyobb közös osztója?`), g, { hint: `Osztók: ${g * x}-é ${divisors(g * x).join(', ')}; ${g * y}-é ${divisors(g * y).join(', ')}. A legnagyobb közös: ${g}.` }); } },
     { name: 'Legkisebb közös többszörös (LKKT)', gen: () => { let a, b; do { a = rnd(2, 12); b = rnd(2, 12); } while (a === b || lcm(a, b) > 90);
       return NUM(Q(`Mennyi ${a} és ${b} legkisebb közös többszöröse?`), lcm(a, b), { hint: `A ${a} többszörösei és a ${b} többszörösei közül az első közös: ${lcm(a, b)}.` }); } },
     { name: 'Prímtényezős felbontás', gen: () => { let n; do { n = rnd(8, 100); } while (isPrime(n)); const f = factorize(n);
-      return NUM(Q(`Hány prímszám szorzata a ${n}?`, 'Az ismétlődő tényezőket is számold külön.'), f.length, { hint: `${n} = ${f.join(' · ')}, ez ${f.length} tényező.` }); } }
+      return NUM(Q(`Hány prímszám szorzata a ${n}?`, 'Az ismétlődő tényezőket is számold külön.'), f.length, { hint: `${n} = ${f.join(' × ')}, ez ${f.length} tényező.` }); } }
   ]
 });
 
@@ -185,21 +185,21 @@ mod({
   seo: 'Az egyenletmegoldás 6–8. osztályban a mérleg-elv megértésével kezdődik: azt kell tenni az egyenlet mindkét oldalán, hogy megkapjuk x értékét. A gyakorló az egyszerű összeadásos és szorzásos egyenletektől a kétlépéses és zárójeles egyenletekig, negatív megoldásokig és szöveges feladatokig vezet.',
   levels: [
     { name: 'x + a = b', gen: () => { const x = rnd(1, 25), a = rnd(2, 25); return NUM(Q(`${vx} + ${a} = ${x + a}`, 'Mennyi x?'), x, { hint: `Mindkét oldalból kivonunk ${art(a)} ${a} számot: x = ${x + a} − ${a} = ${x}.` }); } },
-    { name: 'a · x = b', gen: () => { const x = rnd(2, 12), a = rnd(2, 9); return NUM(Q(`${a} · ${vx} = ${a * x}`, 'Mennyi x?'), x, { hint: `Mindkét oldalt elosztjuk ${a} számmal: x = ${a * x} : ${a} = ${x}.` }); } },
+    { name: 'a × x = b', gen: () => { const x = rnd(2, 12), a = rnd(2, 9); return NUM(Q(`${a} × ${vx} = ${a * x}`, 'Mennyi x?'), x, { hint: `Mindkét oldalt elosztjuk ${a} számmal: x = ${a * x} : ${a} = ${x}.` }); } },
     { name: 'x − a = b és a − x = b', gen: () => { const x = rnd(3, 30), a = rnd(2, 20);
       return Math.random() < .5 ? NUM(Q(`${vx} − ${a} = ${x}`, 'Mennyi x?'), x + a, { hint: `Mindkét oldalhoz hozzáadunk ${art(a)} ${a} számot: x = ${x} + ${a} = ${x + a}.` })
         : NUM(Q(`${x + a} − ${vx} = ${a}`, 'Mennyi x?'), x, { hint: `x = ${x + a} − ${a} = ${x}.` }); } },
-    { name: 'Kétlépéses: a · x + b = c', gen: () => { const x = rnd(1, 12), a = rnd(2, 9), b = rnd(1, 20); const plus = Math.random() < .6;
-      return plus ? NUM(Q(`${a} · ${vx} + ${b} = ${a * x + b}`, 'Mennyi x?'), x, { hint: `Először kivonunk ${art(b)} ${b} számot: ${a}x = ${a * x}. Aztán osztunk ${a} számmal: x = ${x}.` })
-        : NUM(Q(`${a} · ${vx} − ${b} = ${a * x - b}`, 'Mennyi x?'), x, { hint: `Először hozzáadunk ${art(b)} ${b} számot: ${a}x = ${a * x}. Aztán osztunk ${a} számmal: x = ${x}.` }); } },
+    { name: 'Kétlépéses: a × x + b = c', gen: () => { const x = rnd(1, 12), a = rnd(2, 9), b = rnd(1, 20); const plus = Math.random() < .6;
+      return plus ? NUM(Q(`${a} × ${vx} + ${b} = ${a * x + b}`, 'Mennyi x?'), x, { hint: `Először kivonunk ${art(b)} ${b} számot: ${a}x = ${a * x}. Aztán osztunk ${a} számmal: x = ${x}.` })
+        : NUM(Q(`${a} × ${vx} − ${b} = ${a * x - b}`, 'Mennyi x?'), x, { hint: `Először hozzáadunk ${art(b)} ${b} számot: ${a}x = ${a * x}. Aztán osztunk ${a} számmal: x = ${x}.` }); } },
     { name: 'Zárójeles egyenletek', gen: () => { const x = rnd(2, 12), a = rnd(2, 6), b = rnd(1, 8); const plus = Math.random() < .5;
-      return plus ? NUM(Q(`${a} · (${vx} + ${b}) = ${a * (x + b)}`, 'Mennyi x?'), x, { hint: `Osztunk ${a} számmal: x + ${b} = ${x + b}, ebből x = ${x}.` })
-        : NUM(Q(`${a} · (${vx} − ${b}) = ${a * (x - b > 0 ? x - b : 1)}`, 'Mennyi x?'), (x - b > 0 ? x - b : 1) + b, { hint: `Osztunk ${a} számmal, aztán hozzáadunk ${art(b)} ${b} számot.` }); } },
+      return plus ? NUM(Q(`${a} × (${vx} + ${b}) = ${a * (x + b)}`, 'Mennyi x?'), x, { hint: `Osztunk ${a} számmal: x + ${b} = ${x + b}, ebből x = ${x}.` })
+        : NUM(Q(`${a} × (${vx} − ${b}) = ${a * (x - b > 0 ? x - b : 1)}`, 'Mennyi x?'), (x - b > 0 ? x - b : 1) + b, { hint: `Osztunk ${a} számmal, aztán hozzáadunk ${art(b)} ${b} számot.` }); } },
     { name: 'Szöveges egyenletek', gen: () => { const a = rnd(2, 9), x = rnd(2, 15), b = rnd(1, 20); const plus = Math.random() < .6;
       return NUM(Q(`Gondoltam egy számra. Megszoroztam ${MULW[a]}, majd ${plus ? 'a szorzathoz hozzáadtam' : 'a szorzatból kivontam'} ${art(b)} ${b} számot. Az eredmény ${a * x + (plus ? b : -b)} lett. Melyik számra gondoltam?`), x, { hint: `${a}x ${plus ? '+' : '−'} ${b} = ${a * x + (plus ? b : -b)}, ebből x = ${x}.` }); } },
     { name: 'Negatív megoldások', neg: true, gen: () => { const x = -rnd(1, 15), a = rnd(2, 9); const t = rnd(0, 1);
       return t === 0 ? NUM(Q(`${vx} + ${a + 5} = ${x + a + 5}`, 'Mennyi x?'), x, { hint: `x = ${numTxt(x + a + 5)} − ${a + 5} = ${numTxt(x)}.` })
-        : NUM(Q(`${a} · ${vx} = ${numTxt(a * x)}`, 'Mennyi x?'), x, { hint: `x = ${numTxt(a * x)} : ${a} = ${numTxt(x)}.` }); } }
+        : NUM(Q(`${a} × ${vx} = ${numTxt(a * x)}`, 'Mennyi x?'), x, { hint: `x = ${numTxt(a * x)} : ${a} = ${numTxt(x)}.` }); } }
   ]
 });
 
@@ -223,14 +223,14 @@ mod({
       const a = rnd(20, 160); return NUM(Q(`Mennyi a ${a}°-os szög kiegészítő szöge?`, 'A kiegészítő szögek összege 180°.'), 180 - a, { unit: '°', hint: `180° − ${a}° = ${180 - a}°.` }); } },
     { name: 'Háromszög szögei', gen: () => { const a = rnd(20, 100), b = rnd(20, 150 - a);
       return NUM(Q(`Egy háromszög két szöge ${a}° és ${b}°. Mekkora a harmadik szöge?`, 'A háromszög belső szögeinek összege 180°.'), 180 - a - b, { unit: '°', hint: `180° − ${a}° − ${b}° = ${180 - a - b}°.` }); } },
-    { name: 'Egyenlő szárú háromszög', gen: () => { if (Math.random() < .5) { const b = rnd(2, 8) * 10; return NUM(Q(`Egy egyenlő szárú háromszög alapon fekvő szögei ${b}°-osak. Mekkora a szárszöge?`), 180 - 2 * b, { unit: '°', hint: `180° − 2 · ${b}° = ${180 - 2 * b}°.` }); }
+    { name: 'Egyenlő szárú háromszög', gen: () => { if (Math.random() < .5) { const b = rnd(2, 8) * 10; return NUM(Q(`Egy egyenlő szárú háromszög alapon fekvő szögei ${b}°-osak. Mekkora a szárszöge?`), 180 - 2 * b, { unit: '°', hint: `180° − 2 × ${b}° = ${180 - 2 * b}°.` }); }
       const t = rnd(2, 15) * 10; return NUM(Q(`Egy egyenlő szárú háromszög szárszöge ${t}°. Mekkora az alapon fekvő szögek egyike?`), (180 - t) / 2, { unit: '°', hint: `(180° − ${t}°) : 2 = ${(180 - t) / 2}°.` }); } },
     { name: 'Négyszög szögei', gen: () => { const a = rnd(60, 120), b = rnd(60, 120), c = rnd(60, 120);
       return NUM(Q(`Egy négyszög három szöge ${a}°, ${b}° és ${c}°. Mekkora a negyedik szöge?`, 'A négyszög belső szögeinek összege 360°.'), 360 - a - b - c, { unit: '°', hint: `360° − ${a}° − ${b}° − ${c}° = ${360 - a - b - c}°.` }); } },
     { name: 'Mellékszög és csúcsszög', gen: () => { const a = rnd(2, 17) * 10; const csucs = Math.random() < .5;
       return NUM(Q(`Két egyenes metszi egymást, az egyik szög ${a}°. Mekkora ${csucs ? 'a csúcsszöge' : 'a mellékszöge'}?`), csucs ? a : 180 - a, { unit: '°', hint: csucs ? 'A csúcsszögek egyenlők.' : `A mellékszögek összege 180°: 180° − ${a}° = ${180 - a}°.` }); } },
     { name: 'Sokszögek belső szögeinek összege', gen: () => { const n = rnd(5, 10);
-      return NUM(Q(`Mennyi egy ${MS[n]} belső szögeinek összege?`), (n - 2) * 180, { unit: '°', hint: `(${n} − 2) · 180° = ${(n - 2) * 180}°.` }); } },
+      return NUM(Q(`Mennyi egy ${MS[n]} belső szögeinek összege?`), (n - 2) * 180, { unit: '°', hint: `(${n} − 2) × 180° = ${(n - 2) * 180}°.` }); } },
     { name: 'Háromszög-egyenlőtlenség', gen: () => { const ok = Math.random() < .5; let a, b, c;
       do { a = rnd(2, 12); b = rnd(2, 12); c = rnd(2, 20); } while ((a + b > c && a + c > b && b + c > a) !== ok);
       return CH(Q(`${a} cm, ${b} cm, ${c} cm`, 'Szerkeszthető háromszög ezekből az oldalakból?'), ok ? 'Igen' : 'Nem', [ok ? 'Nem' : 'Igen'], { hint: 'Háromszög akkor szerkeszthető, ha bármely két oldal összege nagyobb a harmadiknál.' }); } }
@@ -246,19 +246,19 @@ mod({
   seo: 'A kör kerületének és területének kiszámítása π ≈ 3,14 értékkel, valamint a kocka és a téglatest térfogata és felszíne a 6–8. osztály fontos témái. A gyakorló az űrmértékek átváltását és a hiányzó él kiszámítását is tartalmazza.',
   levels: [
     { name: 'Kör kerülete (π ≈ 3,14)', dec: true, gen: () => { const r = rnd(1, 10), useD = Math.random() < .4;
-      return NUM(Q(useD ? `Egy kör átmérője ${2 * r} cm.` : `Egy kör sugara ${r} cm.`, 'Mennyi a kerülete? (π ≈ 3,14)'), 2 * r * 3.14, { unit: 'cm', hint: `K = 2 · r · π = 2 · ${r} · 3,14 = ${numTxt(2 * r * 3.14)} cm.` }); } },
+      return NUM(Q(useD ? `Egy kör átmérője ${2 * r} cm.` : `Egy kör sugara ${r} cm.`, 'Mennyi a kerülete? (π ≈ 3,14)'), 2 * r * 3.14, { unit: 'cm', hint: `K = 2 × r × π = 2 × ${r} × 3,14 = ${numTxt(2 * r * 3.14)} cm.` }); } },
     { name: 'Kör területe (π ≈ 3,14)', dec: true, gen: () => { const r = rnd(1, 10);
-      return NUM(Q(`Egy kör sugara ${r} cm.`, 'Mennyi a területe? (π ≈ 3,14)'), r * r * 3.14, { unit: 'cm²', hint: `T = r² · π = ${r}² · 3,14 = ${numTxt(r * r * 3.14)} cm².` }); } },
+      return NUM(Q(`Egy kör sugara ${r} cm.`, 'Mennyi a területe? (π ≈ 3,14)'), r * r * 3.14, { unit: 'cm²', hint: `T = r² × π = ${r}² × 3,14 = ${numTxt(r * r * 3.14)} cm².` }); } },
     { name: 'Kocka térfogata és felszíne', gen: () => { const a = rnd(2, 10); const v = Math.random() < .5;
-      return NUM(Q(`Egy kocka éle ${a} cm.`, v ? 'Mennyi a térfogata?' : 'Mennyi a felszíne?'), v ? a ** 3 : 6 * a * a, { unit: v ? 'cm³' : 'cm²', hint: v ? `V = a³ = ${a}³ = ${a ** 3} cm³.` : `A = 6 · a² = 6 · ${a * a} = ${6 * a * a} cm².` }); } },
+      return NUM(Q(`Egy kocka éle ${a} cm.`, v ? 'Mennyi a térfogata?' : 'Mennyi a felszíne?'), v ? a ** 3 : 6 * a * a, { unit: v ? 'cm³' : 'cm²', hint: v ? `V = a³ = ${a}³ = ${a ** 3} cm³.` : `A = 6 × a² = 6 × ${a * a} = ${6 * a * a} cm².` }); } },
     { name: 'Téglatest térfogata', gen: () => { const a = rnd(2, 12), b = rnd(2, 10), c = rnd(2, 9);
-      return NUM(Q(boxSVG(a, b, c), 'Mennyi a téglatest térfogata?'), a * b * c, { unit: 'cm³', hint: `V = a · b · c = ${a} · ${b} · ${c} = ${a * b * c} cm³.` }); } },
+      return NUM(Q(boxSVG(a, b, c), 'Mennyi a téglatest térfogata?'), a * b * c, { unit: 'cm³', hint: `V = a × b × c = ${a} × ${b} × ${c} = ${a * b * c} cm³.` }); } },
     { name: 'Téglatest felszíne', gen: () => { const a = rnd(2, 10), b = rnd(2, 10), c = rnd(2, 9);
-      return NUM(Q(boxSVG(a, b, c), 'Mennyi a téglatest felszíne?'), 2 * (a * b + b * c + a * c), { unit: 'cm²', hint: `A = 2 · (ab + bc + ac) = 2 · (${a * b} + ${b * c} + ${a * c}) = ${2 * (a * b + b * c + a * c)} cm².` }); } },
+      return NUM(Q(boxSVG(a, b, c), 'Mennyi a téglatest felszíne?'), 2 * (a * b + b * c + a * c), { unit: 'cm²', hint: `A = 2 × (ab + bc + ac) = 2 × (${a * b} + ${b * c} + ${a * c}) = ${2 * (a * b + b * c + a * c)} cm².` }); } },
     { name: 'Térfogat mértékegységei', gen: () => { const o = pick([[1, 'dm³', 'l', 1, 'Az 1 dm³ éppen 1 liter.'], [1000, 'cm³', 'l', 1, '1 l = 1000 cm³.'], [1000, 'dm³', 'm³', 1, '1 m³ = 1000 dm³.'], [1000, 'cm³', 'dm³', 1, '1 dm³ = 1000 cm³.']]); const down = Math.random() < .5; const n = rnd(2, 9);
       return down ? NUM(Q(`${n} ${o[2]} = ? ${o[1]}`), n * o[0], { unit: o[1], hint: o[4] + ` ${n} ${o[2]} = ${fmt(n * o[0])} ${o[1]}.` }) : NUM(Q(`${fmt(n * o[0])} ${o[1]} = ? ${o[2]}`), n, { unit: o[2], hint: o[4] + ` ${fmt(n * o[0])} ${o[1]} = ${n} ${o[2]}.` }); } },
     { name: 'Hiányzó él', gen: () => { const a = rnd(2, 9), b = rnd(2, 9), c = rnd(2, 9);
-      return NUM(Q(`Egy téglatest térfogata ${a * b * c} cm³, két éle ${a} cm és ${b} cm.`, 'Mekkora a harmadik éle?'), c, { unit: 'cm', hint: `${a * b * c} : (${a} · ${b}) = ${a * b * c} : ${a * b} = ${c} cm.` }); } }
+      return NUM(Q(`Egy téglatest térfogata ${a * b * c} cm³, két éle ${a} cm és ${b} cm.`, 'Mekkora a harmadik éle?'), c, { unit: 'cm', hint: `${a * b * c} : (${a} × ${b}) = ${a * b * c} : ${a * b} = ${c} cm.` }); } }
   ]
 });
 
