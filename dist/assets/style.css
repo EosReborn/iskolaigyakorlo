@@ -281,3 +281,4 @@ main { padding-block: 8px 24px; }
 .mixrow { border-style: dashed; }
 .mixrow { margin-top: 10px; }
 .slist .wd, .wrongs .wd { font-size: 1.5rem; color: inherit; }
+.gnote { color: var(--muted); margin: 0 0 6px; } .linkbtn { background: none; border: 0; padding: 0; color: var(--blue); text-decoration: underline; font-weight: 700; }

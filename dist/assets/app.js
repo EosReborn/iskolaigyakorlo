@@ -980,11 +980,10 @@ function gradePicker() {
 }
 const card = m => `<a class="card" data-h="${m.hue}" href="${href(m.slug)}"><div class="tile">${glyph(m)}</div><h3>${m.short}</h3><div class="meta"><span>${gradeTxt(m)}</span>${modStars(m) ? starHTML(modStars(m)) : `<span>${m.levels.length} szint</span>`}</div></a>`;
 function homeView() {
-  const g = getP().grade, rec = g ? MODS.filter(m => m.grades[0] <= g && g <= m.grades[1]) : [];
-  const rest = MODS.filter(m => !rec.includes(m));
-  const recHTML = rec.length ? `<section class="grp"><h2>Neked ajánlott: ${g}. osztály</h2><div class="cards">${rec.map(card).join('')}</div></section>` : '';
-  const groups = GROUPS.map(gr => { const ms = rest.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${rec.length ? gr.name + ' (további)' : gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
-  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${pstrip()}${gradePicker()}${recHTML}${groups}`;
+  const g = getP().grade, list = g ? MODS.filter(m => m.grades[0] <= g && g <= m.grades[1]) : MODS;
+  const groups = GROUPS.map(gr => { const ms = list.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
+  const note = g ? `<p class="gnote">Csak a(z) ${g}. osztályosoknak való gyakorlókat látod. <button class="linkbtn" data-act="grade" data-g="0">Mutasd az összeset</button></p>` : '';
+  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${pstrip()}${gradePicker()}${note}${groups}`;
 }
 
 function setupView() {
