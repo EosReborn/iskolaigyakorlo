@@ -27,11 +27,12 @@ def make_brand():
     W = 1100; full_s = full.resize((W, round(W * full.height / full.width)), Image.LANCZOS)
     buf = io.BytesIO(); full_s.save(buf, 'WEBP', quality=90, method=6); logo_webp = buf.getvalue()
     ratio = full.width / full.height
-    # ikon: a bal oldali jel (a felirat előtt)
-    icon = im.crop((box[0]-pad, box[1]-pad, 452, box[3]+pad))
-    side = max(icon.size); sq = Image.new('RGBA', (side, side), (0, 0, 0, 0)); sq.paste(icon, ((side-icon.width)//2, (side-icon.height)//2))
+    # ikon: a külön megkapott favicon-grafika (átlátszó PNG), négyzetesre igazítva
+    ic0 = Image.open(os.path.join(SRC, 'brand', 'favicon-original.png')).convert('RGBA')
+    ib = ic0.getchannel('A').point(lambda v: 255 if v > 10 else 0).getbbox(); ic0 = ic0.crop(ib)
+    side = max(ic0.size); sq = Image.new('RGBA', (side, side), (0, 0, 0, 0)); sq.paste(ic0, ((side-ic0.width)//2, (side-ic0.height)//2))
     fav = sq.resize((64, 64), Image.LANCZOS)
-    ap = Image.new('RGBA', (180, 180), (243, 246, 251, 255)); ic = sq.resize((140, 140), Image.LANCZOS); ap.paste(ic, (20, 20), ic)
+    ap = Image.new('RGBA', (180, 180), (243, 246, 251, 255)); ic = sq.resize((144, 144), Image.LANCZOS); ap.paste(ic, (18, 18), ic)
     og = Image.new('RGBA', (1200, 630), (27, 42, 94, 255)); lg = full.resize((1000, round(1000 * full.height / full.width)), Image.LANCZOS)
     og.paste(lg, ((1200-lg.width)//2, (630-lg.height)//2), lg)
     return logo_webp, fav, ap.convert('RGB'), og.convert('RGB'), ratio
