@@ -41,6 +41,10 @@ LOGO_WEBP, FAV, APPLE, OG, RATIO = make_brand()
 LOGO_H = 46; LOGO_W = round(LOGO_H * RATIO)
 def logo_img(src): return f'<img src="{src}" alt="{NAME}" width="{LOGO_W}" height="{LOGO_H}">'
 
+
+def credit(src):
+    return f'<a class="kds" href="https://kochdigitalstudio.hu" target="_blank" rel="noopener"><img src="{src}" alt="" width="52" height="52"><span class="kt"><small>A weboldalt tervezte és fejlesztette</small><b>Koch Digital Studio</b><span>Prémium weboldalak, webalkalmazások és digitális megoldások cégeknek.</span></span><span class="kc">Ilyen weboldalt szeretne? →</span></a>'
+
 def prerender(m):
     if not m:
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
@@ -76,7 +80,7 @@ def page(m):
 <body>
 <header class="site"><div class="wrap"><a class="brand" href="/">{logo_img("/assets/logo.webp")}</a><nav><a href="/">Minden gyakorló</a></nav></div></header>
 <main class="wrap"><div id="app">{prerender(m)}</div></main>
-<footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p></div></footer>
+<footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p>{credit("/assets/kds.png")}</div></footer>
 <script src="/assets/app.js?v={ver}" defer></script>
 </body>
 </html>
@@ -86,6 +90,7 @@ if os.path.isdir(DIST): shutil.rmtree(DIST)
 os.makedirs(os.path.join(DIST, 'assets'))
 open(os.path.join(DIST, 'assets', 'app.js'), 'w', encoding='utf-8').write(js)
 open(os.path.join(DIST, 'assets', 'style.css'), 'w', encoding='utf-8').write(css)
+shutil.copy(os.path.join(SRC,'brand','kds-logo.png'), os.path.join(DIST,'assets','kds.png'))
 open(os.path.join(DIST, 'assets', 'logo.webp'), 'wb').write(LOGO_WEBP)
 FAV.save(os.path.join(DIST, 'assets', 'favicon.png'), optimize=True); APPLE.save(os.path.join(DIST, 'assets', 'apple-touch-icon.png'), optimize=True); OG.save(os.path.join(DIST, 'assets', 'og.png'), optimize=True)
 open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8').write(page(None))
@@ -112,7 +117,7 @@ art = f'''<title>{NAME}</title>
 </style>
 <header class="site"><div class="wrap"><a class="brand" href="#">{logo_img("data:image/webp;base64," + base64.b64encode(LOGO_WEBP).decode())}</a></div></header>
 <main class="wrap"><div id="app"></div></main>
-<footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p></div></footer>
+<footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p>{credit("data:image/png;base64," + base64.b64encode(open(os.path.join(SRC,'brand','kds-logo.png'),'rb').read()).decode())}</div></footer>
 <script>
 {js}</script>
 '''
