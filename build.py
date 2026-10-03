@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Iskolai Gyakorló – build: oldalankénti HTML-ek, SEO, sitemap, vercel.json, valamint az előnézeti (artifact) fájl."""
-import json, os, re, shutil, subprocess, hashlib, datetime, html
+import json, os, re, shutil, subprocess, hashlib, datetime, html, base64, io
+from PIL import Image
 
 SITE = os.environ.get('SITE_URL', 'https://iskolaigyakorlo.hu').rstrip('/')
 NAME = 'Iskolai Gyakorló'
@@ -15,9 +16,29 @@ js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', '
 css = rd('style.css')
 ver = hashlib.md5((js + css).encode()).hexdigest()[:8]
 FONTS = 'https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700;800&display=swap'
-BRAND = '<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="3" y="5" width="30" height="30" rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="3"/><path d="M10 20l6 6 11-13" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-FAVICON = "data:image/svg+xml," + "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect x='3' y='3' width='34' height='34' rx='8' fill='%232a64d0'/%3E%3Cpath d='M10 21l7 7 13-15' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
 e = html.escape
+
+# ---- Logó feldolgozása: teljes logó (sötét fejlécre), ikon (favicon), megosztási kép ----
+def make_brand():
+    im = Image.open(os.path.join(SRC, 'brand', 'logo-original.png')).convert('RGBA')
+    box = im.getchannel('A').point(lambda v: 255 if v > 10 else 0).getbbox()
+    pad = 12
+    full = im.crop((box[0]-pad, box[1]-pad, box[2]+pad, box[3]+pad))
+    W = 1100; full_s = full.resize((W, round(W * full.height / full.width)), Image.LANCZOS)
+    buf = io.BytesIO(); full_s.save(buf, 'WEBP', quality=90, method=6); logo_webp = buf.getvalue()
+    ratio = full.width / full.height
+    # ikon: a bal oldali jel (a felirat előtt)
+    icon = im.crop((box[0]-pad, box[1]-pad, 452, box[3]+pad))
+    side = max(icon.size); sq = Image.new('RGBA', (side, side), (0, 0, 0, 0)); sq.paste(icon, ((side-icon.width)//2, (side-icon.height)//2))
+    fav = sq.resize((64, 64), Image.LANCZOS)
+    ap = Image.new('RGBA', (180, 180), (243, 246, 251, 255)); ic = sq.resize((140, 140), Image.LANCZOS); ap.paste(ic, (20, 20), ic)
+    og = Image.new('RGBA', (1200, 630), (27, 42, 94, 255)); lg = full.resize((1000, round(1000 * full.height / full.width)), Image.LANCZOS)
+    og.paste(lg, ((1200-lg.width)//2, (630-lg.height)//2), lg)
+    return logo_webp, fav, ap.convert('RGB'), og.convert('RGB'), ratio
+
+LOGO_WEBP, FAV, APPLE, OG, RATIO = make_brand()
+LOGO_H = 46; LOGO_W = round(LOGO_H * RATIO)
+def logo_img(src): return f'<img src="{src}" alt="{NAME}" width="{LOGO_W}" height="{LOGO_H}">'
 
 def prerender(m):
     if not m:
@@ -43,16 +64,16 @@ def page(m):
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="website"><meta property="og:locale" content="hu_HU"><meta property="og:site_name" content="{NAME}">
-<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{url}">
+<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{SITE}/assets/og.png"><meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2a64d0">
-<link rel="icon" href="{FAVICON}">
+<link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{FONTS}">
 <link rel="stylesheet" href="/assets/style.css?v={ver}">
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 </head>
 <body>
-<header class="site"><div class="wrap"><a class="brand" href="/">{BRAND}<span>{NAME}</span></a><nav><a href="/">Minden gyakorló</a></nav></div></header>
+<header class="site"><div class="wrap"><a class="brand" href="/">{logo_img("/assets/logo.webp")}</a><nav><a href="/">Minden gyakorló</a></nav></div></header>
 <main class="wrap"><div id="app">{prerender(m)}</div></main>
 <footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók alsó tagozatosoknak. Nincs regisztráció, a legjobb eredményeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p></div></footer>
 <script src="/assets/app.js?v={ver}" defer></script>
@@ -64,6 +85,8 @@ if os.path.isdir(DIST): shutil.rmtree(DIST)
 os.makedirs(os.path.join(DIST, 'assets'))
 open(os.path.join(DIST, 'assets', 'app.js'), 'w', encoding='utf-8').write(js)
 open(os.path.join(DIST, 'assets', 'style.css'), 'w', encoding='utf-8').write(css)
+open(os.path.join(DIST, 'assets', 'logo.webp'), 'wb').write(LOGO_WEBP)
+FAV.save(os.path.join(DIST, 'assets', 'favicon.png'), optimize=True); APPLE.save(os.path.join(DIST, 'assets', 'apple-touch-icon.png'), optimize=True); OG.save(os.path.join(DIST, 'assets', 'og.png'), optimize=True)
 open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8').write(page(None))
 for m in mods:
     os.makedirs(os.path.join(DIST, m['slug']))
@@ -81,7 +104,7 @@ art = f'''<title>{NAME}</title>
 <style>
 {css}
 </style>
-<header class="site"><div class="wrap"><a class="brand" href="#">{BRAND}<span>{NAME}</span></a></div></header>
+<header class="site"><div class="wrap"><a class="brand" href="#">{logo_img("data:image/webp;base64," + base64.b64encode(LOGO_WEBP).decode())}</a></div></header>
 <main class="wrap"><div id="app"></div></main>
 <footer class="site"><div class="wrap"><p>{NAME}: ingyenes gyakorlók alsó tagozatosoknak. Nincs regisztráció, a legjobb eredményeidet csak a saját böngésződ tárolja.</p></div></footer>
 <script>

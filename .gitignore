@@ -1,0 +1,7 @@
+__pycache__/
+shots/
+artifact.html
+test_gen.js
+e2e.py
+shots.py
+*.zip

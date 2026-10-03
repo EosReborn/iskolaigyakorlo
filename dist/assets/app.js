@@ -517,7 +517,6 @@ const ICONS = {
   die: '<svg viewBox="0 0 60 60"><rect x="6" y="6" width="48" height="48" rx="10" fill="none" stroke="currentColor" stroke-width="4"/><g fill="currentColor"><circle cx="20" cy="20" r="4"/><circle cx="40" cy="20" r="4"/><circle cx="30" cy="30" r="4"/><circle cx="20" cy="40" r="4"/><circle cx="40" cy="40" r="4"/></g></svg>'
 };
 const glyph = m => (m.icon ? ICONS[m.icon] : m.glyph);
-const BRAND = '<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="3" y="5" width="30" height="30" rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="3"/><path d="M10 20l6 6 11-13" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const SITE_NAME = 'Iskolai Gyakorló';
 const modBySlug = s => MODS.find(m => m.slug === s);
 const ansText = q => (q.kind === 'num' ? `${fmt(q.ans)}${q.unit ? ' ' + q.unit : ''}` : q.ansLabel);
