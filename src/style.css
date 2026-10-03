@@ -282,3 +282,16 @@ main { padding-block: 8px 24px; }
 .mixrow { margin-top: 10px; }
 .slist .wd, .wrongs .wd { font-size: 1.5rem; color: inherit; }
 .gnote { color: var(--muted); margin: 0 0 6px; } .linkbtn { background: none; border: 0; padding: 0; color: var(--blue); text-decoration: underline; font-weight: 700; }
+
+.missbox { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 14px; padding: 12px 14px; background: var(--amber-soft); border: 2px solid var(--gold); border-radius: 16px; }
+.missbox .st { color: var(--muted); font-size: .92rem; }
+.result { position: relative; }
+.confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 20; }
+.confetti i { position: absolute; top: -14px; left: var(--x); width: var(--w); height: calc(var(--w) * 1.5); background: var(--c); border-radius: 2px; opacity: 0; transform: rotate(var(--r)); animation: cfall var(--t) var(--d) ease-in forwards; }
+@keyframes cfall { 0% { opacity: 1; transform: translate3d(0, 0, 0) rotate(0); } 100% { opacity: .9; transform: translate3d(calc(var(--r) / 6), 105vh, 0) rotate(var(--r)); } }
+.perfect .bigstars span { animation: pop .7s cubic-bezier(.3, 1.6, .5, 1) both; display: inline-block; }
+.perfect .bigstars span:nth-child(2) { animation-delay: .15s; } .perfect .bigstars span:nth-child(3) { animation-delay: .3s; }
+.perfect h1 { animation: pop .6s cubic-bezier(.3, 1.6, .5, 1) both; }
+@keyframes pop { 0% { transform: scale(.2) rotate(-20deg); opacity: 0; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .confetti { display: none; } .perfect .bigstars span, .perfect h1 { animation: none !important; } }
+@media print { .confetti { display: none; } }

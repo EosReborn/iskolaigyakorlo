@@ -9,6 +9,11 @@ const store = {
   get() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } },
   set(o) { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) { /* nincs tárhely */ } }
 };
+const MISS_KEY = 'iskolai-gyakorlo-miss';
+const getMiss = () => { try { return JSON.parse(localStorage.getItem(MISS_KEY)) || []; } catch (e) { return []; } };
+const setMiss = a => { try { localStorage.setItem(MISS_KEY, JSON.stringify(a.slice(-40))); } catch (e) { /* nincs tárhely */ } };
+const missKey = q => q.q + '|' + q.ans;
+const T = () => (S.hiba ? S.pool.length : N);
 const bestOf = (slug, i) => ((store.get()[slug] || {})[i]) || 0;
 const starsOf = sc => (sc >= 9 ? 3 : sc >= 7 ? 2 : sc >= 5 ? 1 : 0);
 const starHTML = n => `<span class="stars" aria-label="${n} csillag a 3-ból">${[0, 1, 2].map(i => `<span class="${i < n ? '' : 'off'}">★</span>`).join('')}</span>`;
@@ -64,6 +69,7 @@ const parseIn = s => (/^-?\d+(,\d*)?$/.test(s) ? parseFloat(s.replace(',', '.'))
 
 /* ---------- Kérdések ---------- */
 function newQ(seen = [], lv = S.lvl) {
+  if (S.hiba) return Object.assign({}, S.pool[S.i]);
   const L = S.mod.levels[lv]; let q, k = 0;
   const used = new Set(seen.map(x => x.q));
   do { q = L.gen(); k++; } while (used.has(q.q) && k < 40);
@@ -86,8 +92,9 @@ const card = m => `<a class="card" data-h="${m.hue}" href="${href(m.slug)}"><div
 function homeView() {
   const g = getP().grade, list = g ? MODS.filter(m => m.grades[0] <= g && g <= m.grades[1]) : MODS;
   const groups = GROUPS.map(gr => { const ms = list.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
+  const nm = getMiss().length, missBox = nm ? `<div class="missbox"><div><b>Hibáim gyakorlása</b><div class="st">${nm} feladat vár javításra. Ha jól válaszolsz, kikerül a listából.</div></div><button class="btn sm" data-act="miss">Gyakorlom</button></div>` : '';
   const note = g ? `<p class="gnote">Csak a(z) ${g}. osztályosoknak való gyakorlókat látod. <button class="linkbtn" data-act="grade" data-g="0">Mutasd az összeset</button></p>` : '';
-  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${pstrip()}${gradePicker()}${note}${groups}`;
+  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${pstrip()}${missBox}${gradePicker()}${note}${groups}`;
 }
 
 function setupView() {
@@ -117,17 +124,19 @@ function answerArea() {
 function feedback() {
   if (!S.done) return '';
   const q = S.cur, good = pick(['Szuper!', 'Ügyes vagy!', 'Remek!', 'Pontosan!', 'Nagyszerű!']);
-  const last = S.i + 1 >= N;
+  const last = S.i + 1 >= T();
   return `<div class="fb ${S.ok ? 'ok' : 'bad'}" role="status"><strong>${S.ok ? good : 'Nem egészen.'}</strong><p>${S.ok ? '' : `A helyes válasz: <b>${ansText(q)}</b>. `}${q.hint || ''}</p><button class="btn" data-act="next" id="nextbtn">${last ? 'Eredmény' : 'Tovább'}</button></div>`;
 }
 function quizView() {
-  return `<div class="qbar"><button data-act="quit" aria-label="Kilépés a gyakorlásból">✕ Kilépés</button><span>${S.i + 1} / ${N}</span><span class="stars">★ ${S.score}</span></div><div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${S.i + (S.done ? 1 : 0)}"><i style="width:${(S.i + (S.done ? 1 : 0)) / N * 100}%"></i></div><div class="qwrap"><div class="qcard">${S.cur.q}</div><div>${answerArea()}${feedback()}</div></div>`;
+  return `<div class="qbar"><button data-act="quit" aria-label="Kilépés a gyakorlásból">✕ Kilépés</button><span>${S.i + 1} / ${T()}</span><span class="stars">★ ${S.score}</span></div><div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${T()}" aria-valuenow="${S.i + (S.done ? 1 : 0)}"><i style="width:${(S.i + (S.done ? 1 : 0)) / T() * 100}%"></i></div><div class="qwrap"><div class="qcard">${S.cur.q}</div><div>${answerArea()}${feedback()}</div></div>`;
 }
+const CONF = ['#2a64d0', '#cf3a47', '#16805a', '#f1b62e', '#7b5cd6', '#e8743b'];
+const confetti = () => `<div class="confetti" aria-hidden="true">${Array.from({ length: 46 }, (_, i) => `<i style="--x:${rnd(0, 100)}%;--d:${(Math.random() * 1.6).toFixed(2)}s;--t:${(2.6 + Math.random() * 2).toFixed(2)}s;--r:${rnd(-360, 360)}deg;--c:${CONF[i % CONF.length]};--w:${rnd(7, 12)}px"></i>`).join('')}</div>`;
 function resultView() {
-  const st = starsOf(S.score), wrong = S.hist.filter(h => !h.ok), A = S.award;
-  const msg = st === 3 ? 'Kiváló munka!' : st === 2 ? 'Nagyon jó!' : st === 1 ? 'Jó kezdet!' : 'Ne add fel, gyakorolj még!';
+  const tot = T(), st = starsOf(Math.round(S.score / tot * 10)), wrong = S.hist.filter(h => !h.ok), A = S.award, perfect = S.score === tot && tot >= 5;
+  const msg = perfect ? 'Hibátlan! Tökéletes kör!' : st === 3 ? 'Kiváló munka!' : st === 2 ? 'Nagyon jó!' : st === 1 ? 'Jó kezdet!' : 'Ne add fel, gyakorolj még!';
   const award = A ? `<div class="award"><div class="apts">+${A.pts} pont</div><ul>${A.parts.map(([t, v]) => `<li><span>${t}</span><b>+${v}</b></li>`).join('')}</ul>${A.up ? `<div class="lvup">Szintet léptél: ${A.lvl}. szint, ${titleOf(A.lvl)}!</div>` : ''}<div class="astat"><span class="hot">${FLAME}${A.streak} napos sorozat</span><span>Mai cél: ${Math.min(A.day, DAILY_GOAL)}/${DAILY_GOAL}</span></div></div>${A.nb.length ? `<h2 class="nbh">Új jelvény${A.nb.length > 1 ? 'ek' : ''}!</h2><div class="nbadges">${A.nb.map(b => `<div class="nb">${medal(b.g, true)}<b>${b.name}</b><small>${b.desc}</small></div>`).join('')}</div>` : ''}` : '';
-  return `<div class="result"><h1>${msg}</h1><div class="bigstars" aria-label="${st} csillag a 3-ból">${[0, 1, 2].map(i => `<span class="${i < st ? '' : 'off'}">★</span>`).join('')}</div><div class="score">${S.score} helyes válasz a ${N}-ből</div>${award}<div class="ractions"><button class="btn" data-act="again">Új kör</button><button class="btn sec" data-act="quit">Másik szint</button><a class="btn sec" href="${href('')}">Főoldal</a></div>${wrong.length ? `<h2 style="margin-bottom:10px">Ezeket nézzük meg újra</h2><div class="wrongs">${wrong.map(h => `<div>${h.q.q}<div class="ans">Helyes válasz: ${ansText(h.q)}</div></div>`).join('')}</div>` : ''}</div>`;
+  return `<div class="result${perfect ? ' perfect' : ''}">${perfect ? confetti() : ''}<h1>${msg}</h1><div class="bigstars" aria-label="${st} csillag a 3-ból">${[0, 1, 2].map(i => `<span class="${i < st ? '' : 'off'}">★</span>`).join('')}</div><div class="score">${S.score} helyes válasz a ${tot}-ből</div>${award}<div class="ractions"><button class="btn" data-act="again">${S.hiba ? 'Még egy kör a hibákból' : 'Új kör'}</button><button class="btn sec" data-act="quit">${S.hiba ? 'Vissza' : 'Másik szint'}</button><a class="btn sec" href="${href('')}">Főoldal</a></div>${wrong.length ? `<h2 style="margin-bottom:10px">Ezeket nézzük meg újra</h2><div class="wrongs">${wrong.map(h => `<div>${h.q.q}<div class="ans">Helyes válasz: ${ansText(h.q)}</div></div>`).join('')}</div>` : ''}</div>`;
 }
 function sheetView() {
   const m = S.mod, L = m.levels[Math.max(0, S.lvl)];
@@ -139,7 +148,7 @@ function profileView() {
   const stat = (v, t) => `<div class="stat"><b>${v}</b><span>${t}</span></div>`;
   const badges = BADGES.map(x => `<div class="bdg ${p.badges[x.id] ? 'got' : ''}">${medal(x.g, !!p.badges[x.id])}<b>${x.name}</b><small>${x.desc}</small>${p.badges[x.id] ? `<em>${p.badges[x.id]}</em>` : ''}</div>`).join('');
   const reset = S.askReset ? `<p class="warn">Biztosan törlöd az összes pontot, jelvényt és eredményt erről az eszközről?</p><div class="ractions"><button class="btn" data-act="resetyes">Igen, törlés</button><button class="btn sec" data-act="resetno">Mégsem</button></div>` : `<button class="btn sec sm" data-act="resetask">Minden adatom törlése</button>`;
-  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>Haladásom és jelvények</h1><p class="lead">Az eredményeid csak ezen az eszközön, a böngészőben tárolódnak. Nincs fiók és nincs regisztráció.</p><div class="pbig"><div><span class="lab">${l}. szint</span><b>${titleOf(l)}</b></div><div class="pbar"><i style="width:${pc}%"></i></div><small>${fmt(p.pts)} pont, még ${fmt(b - p.pts)} a következő szintig</small></div><div class="stats">${stat(fmt(p.pts), 'pont')}${stat(fmt(p.ok), 'helyes válasz')}${stat(p.rounds, 'befejezett kör')}${stat(p.perf, 'hibátlan kör')}${stat(curStreak(p), 'napos sorozat')}${stat(p.best, 'legjobb sorozat')}${stat(Math.min(day, DAILY_GOAL) + '/' + DAILY_GOAL, 'mai cél')}${stat(Object.keys(p.played).length + '/' + MODS.length, 'kipróbált gyakorló')}</div><h2 class="sech">Jelvények (${Object.keys(p.badges).length}/${BADGES.length})</h2><div class="bgrid">${badges}</div><h2 class="sech">Haladás átvitele másik eszközre</h2><p>Készíts egy kódot, és másold be a másik eszközön ugyanide. A betöltés felülírja az ottani adatokat.</p><textarea id="code" class="code" rows="4" spellcheck="false" aria-label="Mentési kód" placeholder="Ide kerül a kód, vagy ide illeszd be a betöltéshez"></textarea><div class="ractions left"><button class="btn sm" data-act="mkcode">Kód készítése</button><button class="btn sm sec" data-act="copycode">Másolás</button><button class="btn sm sec" data-act="loadcode">Betöltés</button></div><p id="bmsg" class="bmsg" role="status"></p><div class="resetbox">${reset}</div></div>`;
+  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>Haladásom és jelvények</h1><p class="lead">Az eredményeid csak ezen az eszközön, a böngészőben tárolódnak. Nincs fiók és nincs regisztráció.</p><div class="pbig"><div><span class="lab">${l}. szint</span><b>${titleOf(l)}</b></div><div class="pbar"><i style="width:${pc}%"></i></div><small>${fmt(p.pts)} pont, még ${fmt(b - p.pts)} a következő szintig</small></div><div class="stats">${stat(fmt(p.pts), 'pont')}${stat(fmt(p.ok), 'helyes válasz')}${stat(p.rounds, 'befejezett kör')}${stat(p.perf, 'hibátlan kör')}${stat(curStreak(p), 'napos sorozat')}${stat(p.best, 'legjobb sorozat')}${stat(Math.min(day, DAILY_GOAL) + '/' + DAILY_GOAL, 'mai cél')}${stat(Object.keys(p.played).length + '/' + MODS.length, 'kipróbált gyakorló')}</div><h2 class="sech">Jelvények (${Object.keys(p.badges).length}/${BADGES.length})</h2><div class="bgrid">${badges}</div><h2 class="sech">Haladás átvitele másik eszközre</h2><p>Készíts egy kódot, és másold be a másik eszközön ugyanide. A betöltés felülírja az ottani adatokat.</p><textarea id="code" class="code" rows="4" spellcheck="false" aria-label="Mentési kód" placeholder="Ide kerül a kód, vagy ide illeszd be a betöltéshez"></textarea><div class="ractions left"><button class="btn sm" data-act="mkcode">Kód készítése</button><button class="btn sm sec" data-act="copycode">Másolás</button><button class="btn sm sec" data-act="loadcode">Betöltés</button></div><p id="bmsg" class="bmsg" role="status"></p><div class="resetbox">${reset}</div>${installBox()}</div>`;
 }
 
 function render() {
@@ -150,8 +159,15 @@ function render() {
 }
 
 /* ---------- Működés ---------- */
-function startQuiz(l) {
+function startMiss() {
+  const pool = shuffle(getMiss()).slice(0, N); if (!pool.length) return;
+  S.mod = { slug: 'hibaim', title: 'Hibáim gyakorlása', levels: [{ name: 'Hibás feladatok' }] }; S.pool = pool; S.hiba = true;
   clearTimeout(S.timer);
+  Object.assign(S, { view: 'quiz', lvl: 0, i: 0, score: 0, input: '', done: false, ok: null, pick: null, hist: [], run: 0, maxRun: 0, award: null });
+  S.cur = newQ([]); render(); window.scrollTo(0, 0);
+}
+function startQuiz(l) {
+  clearTimeout(S.timer); S.hiba = false;
   Object.assign(S, { view: 'quiz', lvl: l, i: 0, score: 0, input: '', done: false, ok: null, pick: null, hist: [], run: 0, maxRun: 0, award: null });
   S.cur = newQ([]); render(); window.scrollTo(0, 0);
 }
@@ -159,18 +175,21 @@ function answer(val) {
   if (S.done) return; const q = S.cur; let ok;
   if (q.kind === 'num') { const v = parseIn(S.input); if (v === null) return; ok = Math.abs(v - q.ans) < 1e-6; } else { S.pick = val; ok = val === q.ans; }
   S.done = true; S.ok = ok; if (ok) { S.score++; S.run++; S.maxRun = Math.max(S.maxRun, S.run); } else S.run = 0;
-  S.hist.push({ q, ok }); render();
+  S.hist.push({ q, ok });
+  const miss = getMiss().filter(x => missKey(x) !== missKey(q));
+  if (!ok) miss.push(q); else if (!S.hiba) { /* jó válasz: nincs teendő */ }
+  setMiss(miss); render();
   if (ok) S.timer = setTimeout(next, 1100);
 }
 function finishRound() {
   const all = store.get(), p = Object.assign(blankP(), all._p || {}), slug = S.mod.slug, today = todayStr();
-  all[slug] = all[slug] || {}; if (S.score > (all[slug][S.lvl] || 0)) all[slug][S.lvl] = S.score;
-  const lvBefore = levelOf(p.pts), dayBefore = p.days[today] || 0, st = starsOf(S.score);
+  if (!S.hiba) { all[slug] = all[slug] || {}; if (S.score > (all[slug][S.lvl] || 0)) all[slug][S.lvl] = S.score; }
+  const lvBefore = levelOf(p.pts), dayBefore = p.days[today] || 0, st = S.hiba ? 0 : starsOf(S.score);
   const parts = [[`${S.score} helyes válasz`, S.score * 10]];
-  if (S.score === 10) parts.push(['Hibátlan kör', 50]);
+  if (!S.hiba && S.score === 10) parts.push(['Hibátlan kör', 50]);
   if (st) parts.push([`${st} csillag`, st * 20]);
   if (S.maxRun >= 5) parts.push([`${S.maxRun} jó válasz egymás után`, 20]);
-  p.ok += S.score; p.rounds++; if (S.score === 10) p.perf++; p.played[slug] = 1;
+  p.ok += S.score; p.rounds++; if (!S.hiba && S.score === 10) p.perf++; if (!S.hiba) p.played[slug] = 1;
   p.days[today] = dayBefore + S.score;
   if (dayBefore < DAILY_GOAL && p.days[today] >= DAILY_GOAL) parts.push(['Napi cél teljesítve', 30]);
   if (p.last !== today) { p.streak = p.last === yesterdayStr() ? p.streak + 1 : 1; p.last = today; p.best = Math.max(p.best, p.streak); }
@@ -183,7 +202,7 @@ function finishRound() {
 }
 function next() {
   clearTimeout(S.timer); if (!S.done) return;
-  if (S.i + 1 >= N) { finishRound(); S.view = 'result'; render(); window.scrollTo(0, 0); return; }
+  if (S.i + 1 >= T()) { finishRound(); S.view = 'result'; render(); window.scrollTo(0, 0); return; }
   S.i++; S.cur = newQ(S.hist.map(h => h.q)); S.input = ''; S.done = false; S.ok = null; S.pick = null; render();
 }
 function makeSheet(l) {
@@ -210,6 +229,12 @@ const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 const dec = s => JSON.parse(decodeURIComponent(escape(atob(s.trim()))));
 function msg(t) { const m = $('#bmsg'); if (m) m.textContent = t; }
 
+let deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; if (S.view === 'home' || S.view === 'profile') render(); });
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent), standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+const installBox = () => (standalone ? '' : deferredInstall ? '<div class="resetbox"><b>Telepítés</b><p>Tedd az appot a telefonod vagy géped kezdőképernyőjére, internet nélkül is működik.</p><button class="btn sm" data-act="install">Telepítés</button></div>' : isIOS ? '<div class="resetbox"><b>Telepítés iPhone-ra, iPadre</b><p>Safariban koppints a Megosztás gombra, majd a „Kezdőképernyőhöz adás" menüpontra. Utána internet nélkül is működik.</p></div>' : '');
+if (PATHMODE && 'serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-act]'); if (!t) return; const a = t.dataset.act;
   if (a === 'start') startQuiz(+t.dataset.l);
@@ -217,8 +242,10 @@ document.addEventListener('click', e => {
   else if (a === 'key') keyPress(t.dataset.k);
   else if (a === 'opt') answer(t.dataset.v);
   else if (a === 'next') next();
-  else if (a === 'again') startQuiz(S.lvl);
-  else if (a === 'quit') { e.preventDefault(); clearTimeout(S.timer); S.view = 'setup'; render(); window.scrollTo(0, 0); }
+  else if (a === 'again') (S.hiba ? startMiss() : startQuiz(S.lvl));
+  else if (a === 'miss') startMiss();
+  else if (a === 'install') { if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null; render(); } }
+  else if (a === 'quit') { e.preventDefault(); clearTimeout(S.timer); if (S.hiba) { S.hiba = false; S.mod = null; S.view = 'home'; render(); window.scrollTo(0, 0); return; } S.view = 'setup'; render(); window.scrollTo(0, 0); }
   else if (a === 'print') window.print();
   else if (a === 'newsheet') makeSheet(S.lvl);
   else if (a === 'sheetn') { S.sheetN = +t.dataset.n; makeSheet(S.lvl); }
@@ -229,7 +256,7 @@ document.addEventListener('click', e => {
   else if (a === 'loadcode') { try { const o = dec($('#code').value); if (!o || typeof o !== 'object' || Array.isArray(o)) throw new Error('rossz'); store.set(o); render(); msg('Betöltve.'); } catch (er) { msg('Ez a kód nem érvényes. Ellenőrizd, hogy a teljes kódot bemásoltad-e.'); } }
   else if (a === 'resetask') { S.askReset = true; render(); }
   else if (a === 'resetno') { S.askReset = false; render(); }
-  else if (a === 'resetyes') { store.set({}); S.askReset = false; render(); msg('Az adatok törölve.'); }
+  else if (a === 'resetyes') { store.set({}); setMiss([]); S.askReset = false; render(); msg('Az adatok törölve.'); }
 });
 document.addEventListener('keydown', e => {
   if (S.view !== 'quiz' || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -252,7 +279,7 @@ function route() {
   clearTimeout(S.timer);
   const slug = PATHMODE ? (document.documentElement.dataset.route || '') : decodeURIComponent(location.hash.replace(/^#/, ''));
   const m = modBySlug(slug);
-  S.mod = m || null; S.askReset = false;
+  S.mod = m || null; S.askReset = false; S.hiba = false;
   S.view = slug === 'profil' ? 'profile' : m ? 'setup' : 'home'; render();
   if (!PATHMODE) window.scrollTo(0, 0);
 }

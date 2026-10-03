@@ -38,6 +38,16 @@ def make_brand():
     return logo_webp, fav, ap.convert('RGB'), og.convert('RGB'), ratio
 
 LOGO_WEBP, FAV, APPLE, OG, RATIO = make_brand()
+def make_icons():
+    ic0 = Image.open(os.path.join(SRC, 'brand', 'favicon-original.png')).convert('RGBA')
+    ic0 = ic0.crop(ic0.getchannel('A').point(lambda v: 255 if v > 10 else 0).getbbox())
+    side = max(ic0.size); sq = Image.new('RGBA', (side, side), (0, 0, 0, 0)); sq.paste(ic0, ((side-ic0.width)//2, (side-ic0.height)//2))
+    out = {}
+    for size, name, frac in ((192, 'icon-192.png', .72), (512, 'icon-512.png', .72), (512, 'icon-maskable.png', .56)):
+        bg = Image.new('RGBA', (size, size), (243, 246, 251, 255)); k = round(size * frac); ic = sq.resize((k, k), Image.LANCZOS)
+        bg.paste(ic, ((size-k)//2, (size-k)//2), ic); out[name] = bg.convert('RGB')
+    return out
+ICONS_PWA = make_icons()
 LOGO_H = 46; LOGO_W = round(LOGO_H * RATIO)
 def logo_img(src): return f'<img src="{src}" alt="{NAME}" width="{LOGO_W}" height="{LOGO_H}">'
 
@@ -71,6 +81,8 @@ def page(m):
 <meta property="og:type" content="website"><meta property="og:locale" content="hu_HU"><meta property="og:site_name" content="{NAME}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{SITE}/assets/og.png"><meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2a64d0">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Gyakorló">
 <link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{FONTS}">
@@ -102,6 +114,32 @@ os.makedirs(os.path.join(DIST, 'profil'))
 pp = page(None).replace('data-route=""', 'data-route="profil"').replace('<title>'+e(f'{NAME} – ingyenes matematika gyakorlók 1–8. osztályosoknak')+'</title>', f'<title>Haladásom – {NAME}</title>')
 pp = re.sub(r'<link rel="canonical"[^>]*>', '<meta name="robots" content="noindex">', pp)
 open(os.path.join(DIST, 'profil', 'index.html'), 'w', encoding='utf-8').write(pp)
+
+for n, im in ICONS_PWA.items(): im.save(os.path.join(DIST, 'assets', n), optimize=True)
+json.dump({"name": NAME, "short_name": "Gyakorló", "description": "Ingyenes, regisztráció nélküli gyakorlók 1–8. osztályosoknak.", "lang": "hu", "start_url": "/?utm_source=pwa", "scope": "/", "display": "standalone",
+           "background_color": "#f3f6fb", "theme_color": "#1b2a5e",
+           "icons": [{"src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png"}, {"src": "/assets/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]},
+          open(os.path.join(DIST, 'manifest.webmanifest'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+pre = ['/', '/profil/'] + [f'/{m["slug"]}/' for m in mods] + [f'/assets/app.js?v={ver}', f'/assets/style.css?v={ver}', '/assets/logo.webp', '/assets/kds.png', '/assets/favicon.png', '/assets/icon-192.png', '/manifest.webmanifest']
+open(os.path.join(DIST, 'sw.js'), 'w', encoding='utf-8').write('''const V = 'ig-%s';
+const PRE = %s;
+self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => Promise.all(PRE.map(u => c.add(u).catch(() => {})))).then(() => self.skipWaiting())); });
+self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
+self.addEventListener('fetch', e => {
+  const r = e.request; if (r.method !== 'GET') return;
+  const u = new URL(r.url);
+  if (r.mode === 'navigate') {
+    e.respondWith(fetch(r).then(res => { const cp = res.clone(); caches.open(V).then(c => c.put(r, cp)); return res; }).catch(() => caches.match(r, { ignoreSearch: true }).then(m => m || caches.match('/'))));
+    return;
+  }
+  if (u.origin === location.origin || /fonts\\.(googleapis|gstatic)\\.com$/.test(u.hostname)) {
+    e.respondWith(caches.match(r, { ignoreSearch: u.origin === location.origin && !u.pathname.startsWith('/assets/') }).then(m => {
+      const net = fetch(r).then(res => { if (res && (res.ok || res.type === 'opaque')) { const cp = res.clone(); caches.open(V).then(c => c.put(r, cp)); } return res; }).catch(() => m);
+      return m || net;
+    }));
+  }
+});
+''' % (ver, json.dumps(pre)))
 
 today = datetime.date.today().isoformat()
 urls = [f'{SITE}/'] + [f'{SITE}/{m["slug"]}/' for m in mods]
