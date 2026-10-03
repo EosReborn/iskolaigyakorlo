@@ -63,8 +63,8 @@ const showIn = s => esc(s.replace('-', '−'));
 const parseIn = s => (/^-?\d+(,\d*)?$/.test(s) ? parseFloat(s.replace(',', '.')) : null);
 
 /* ---------- Kérdések ---------- */
-function newQ(seen = []) {
-  const L = S.mod.levels[S.lvl]; let q, k = 0;
+function newQ(seen = [], lv = S.lvl) {
+  const L = S.mod.levels[lv]; let q, k = 0;
   const used = new Set(seen.map(x => x.q));
   do { q = L.gen(); k++; } while (used.has(q.q) && k < 40);
   if (L.neg) q.neg = true;
@@ -88,7 +88,7 @@ function homeView() {
   const rest = MODS.filter(m => !rec.includes(m));
   const recHTML = rec.length ? `<section class="grp"><h2>Neked ajánlott: ${g}. osztály</h2><div class="cards">${rec.map(card).join('')}</div></section>` : '';
   const groups = GROUPS.map(gr => { const ms = rest.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${rec.length ? gr.name + ' (további)' : gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
-  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${pstrip()}${gradePicker()}${recHTML}${groups}`;
+  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${pstrip()}${gradePicker()}${recHTML}${groups}`;
 }
 
 function setupView() {
@@ -97,7 +97,7 @@ function setupView() {
     return `<div class="lv"><div><div class="nm">${i + 1}. ${L.name}</div><div class="st">${b ? `Legjobb eredményed: ${b}/${N} ${starHTML(starsOf(b))}` : 'Még nem próbáltad'}</div></div><div class="acts"><button class="btn sm" data-act="start" data-l="${i}">Gyakorlás</button><button class="btn sm sec" data-act="sheet" data-l="${i}">Munkalap</button></div></div>`; }).join('');
   const rel = MODS.filter(x => x.group === m.group && x !== m).concat(MODS.filter(x => x.group !== m.group)).slice(0, 5).map(x => `<a href="${href(x.slug)}">${x.short}</a>`).join('');
   const roller = m.extra === 'dice' ? `<div class="roller"><button class="btn sm" data-act="roll" data-n="2">Dobj a kockákkal!</button><div class="dice" id="rollout" aria-live="polite">${dieSVG(4)}${dieSVG(2)}</div><div id="rollsum" class="sub"></div></div>` : '';
-  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>${m.title}</h1><p class="lead">${m.desc}</p><p class="grline">Ajánlott évfolyam: ${gradeTxt(m)}</p>${roller}<h2 class="sr">Szintek</h2><div class="levels">${rows}</div><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>${m.seo}</p></section><nav class="rel" aria-label="További gyakorlók">${rel}</nav></div>`;
+  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>${m.title}</h1><p class="lead">${m.desc}</p><p class="grline">Ajánlott évfolyam: ${gradeTxt(m)}</p>${roller}<h2 class="sr">Szintek</h2><div class="levels">${rows}</div>${m.levels.length > 1 ? `<div class="lv mixrow"><div><div class="nm">Vegyes munkalap</div><div class="st">Minden szintről, könnyebbtől a nehezebbig. A darabszámot a munkalapon állíthatod (10, 20 vagy 30).</div></div><div class="acts"><button class="btn sm sec" data-act="sheet" data-l="-1">Vegyes munkalap</button></div></div>` : ''}<section class="about"><h2>Mire jó ez a gyakorló?</h2><p>${m.seo}</p></section><nav class="rel" aria-label="További gyakorlók">${rel}</nav></div>`;
 }
 
 function answerArea() {
@@ -131,9 +131,9 @@ function resultView() {
   return `<div class="result"><h1>${msg}</h1><div class="bigstars" aria-label="${st} csillag a 3-ból">${[0, 1, 2].map(i => `<span class="${i < st ? '' : 'off'}">★</span>`).join('')}</div><div class="score">${S.score} helyes válasz a ${N}-ből</div>${award}<div class="ractions"><button class="btn" data-act="again">Új kör</button><button class="btn sec" data-act="quit">Másik szint</button><a class="btn sec" href="${href('')}">Főoldal</a></div>${wrong.length ? `<h2 style="margin-bottom:10px">Ezeket nézzük meg újra</h2><div class="wrongs">${wrong.map(h => `<div>${h.q.q}<div class="ans">Helyes válasz: ${ansText(h.q)}</div></div>`).join('')}</div>` : ''}</div>`;
 }
 function sheetView() {
-  const m = S.mod, L = m.levels[S.lvl];
+  const m = S.mod, L = m.levels[Math.max(0, S.lvl)];
   const items = S.sheet.map(q => `<li><div class="sq">${q.q}</div>${q.kind === 'num' ? `<div class="sline">Válasz: <span class="blank"></span> ${q.unit || ''}</div>` : `<div class="sopts">${q.choices.map((c, i) => `<span>${'ABCD'[i]}) ${c.h}</span>`).join('')}</div>`}</li>`).join('');
-  return `<div class="stool noprint"><a class="btn sec sm" href="#" data-act="quit">← Vissza</a><button class="btn sm" data-act="print">Nyomtatás</button><button class="btn sec sm" data-act="newsheet">Új munkalap</button></div><article class="sheet"><div class="shead"><h1>${m.title}</h1><div>Név: ____________________ Dátum: ____________</div><div class="lvn">${S.lvl + 1}. szint: ${L.name}</div></div><ol class="slist">${items}</ol></article>`;
+  return `<div class="stool noprint"><a class="btn sec sm" href="#" data-act="quit">← Vissza</a><button class="btn sm" data-act="print">Nyomtatás</button><button class="btn sec sm" data-act="newsheet">Új munkalap</button><span class="cnt">Feladatok: ${[10, 20, 30].map(n => `<button class="btn sm ${(S.sheetN || SHEET_N) === n ? '' : 'sec'}" data-act="sheetn" data-n="${n}" aria-pressed="${(S.sheetN || SHEET_N) === n}">${n}</button>`).join('')}</span></div><article class="sheet"><div class="shead"><h1>${m.title}</h1><div>Név: ____________________ Dátum: ____________</div><div class="lvn">${S.mix ? 'Vegyes szintek: könnyebbtől a nehezebbig' : `${S.lvl + 1}. szint: ${L.name}`}</div></div><ol class="slist">${items}</ol></article>`;
 }
 function profileView() {
   const p = getP(), l = levelOf(p.pts), a = lvlStart(l), b = lvlStart(l + 1), pc = Math.round((p.pts - a) / (b - a) * 100), day = p.days[todayStr()] || 0;
@@ -188,8 +188,8 @@ function next() {
   S.i++; S.cur = newQ(S.hist.map(h => h.q)); S.input = ''; S.done = false; S.ok = null; S.pick = null; render();
 }
 function makeSheet(l) {
-  S.lvl = l; S.sheet = [];
-  for (let i = 0; i < SHEET_N; i++) S.sheet.push(newQ(S.sheet));
+  S.lvl = l; S.sheet = []; S.mix = l < 0; const n = S.sheetN || SHEET_N, nl = S.mod.levels.length;
+  for (let i = 0; i < n; i++) S.sheet.push(newQ(S.sheet, S.mix ? Math.min(nl - 1, Math.floor(i * nl / n)) : l));
   S.view = 'sheet'; render(); window.scrollTo(0, 0);
 }
 function keyPress(k) {
@@ -222,6 +222,7 @@ document.addEventListener('click', e => {
   else if (a === 'quit') { e.preventDefault(); clearTimeout(S.timer); S.view = 'setup'; render(); window.scrollTo(0, 0); }
   else if (a === 'print') window.print();
   else if (a === 'newsheet') makeSheet(S.lvl);
+  else if (a === 'sheetn') { S.sheetN = +t.dataset.n; makeSheet(S.lvl); }
   else if (a === 'roll') rollDice(+t.dataset.n);
   else if (a === 'grade') { const all = store.get(); all._p = Object.assign(blankP(), all._p || {}); all._p.grade = +t.dataset.g; store.set(all); render(); }
   else if (a === 'mkcode') { $('#code').value = enc(store.get()); msg('A kód elkészült. Másold ki, és illeszd be a másik eszközön.'); }

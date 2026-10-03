@@ -12,7 +12,7 @@ rd = lambda p: open(os.path.join(SRC, p), encoding='utf-8').read()
 meta = json.loads(subprocess.check_output(['node', os.path.join(ROOT, 'meta.js')], cwd=ROOT))
 mods, groups = meta['mods'], meta['groups']
 
-js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'mods3.js', 'ui.js']) + '\n})();\n'
+js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'mods3.js', 'mods4.js', 'ui.js']) + '\n})();\n'
 css = rd('style.css')
 ver = hashlib.md5((js + css).encode()).hexdigest()[:8]
 FONTS = 'https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700;800&display=swap'
@@ -48,14 +48,14 @@ def credit(src):
 def prerender(m):
     if not m:
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
-        return f'<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes matematikai gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul>'
+        return f'<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes matematikai gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p><ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section></div>'
 
 def page(m):
     slug = m['slug'] if m else ''
     title = f'{m["title"]} – {NAME}' if m else f'{NAME} – ingyenes matematika gyakorlók 1–8. osztályosoknak'
-    desc = m['desc'] if m else 'Ingyenes, regisztráció nélküli matematika gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, óra, pénz, geometria. Nyomtatható munkalapokkal.'
+    desc = m['desc'] if m else 'Ingyenes, regisztráció nélküli matematika gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria. Nyomtatható munkalapokkal.'
     url = f'{SITE}/{slug + "/" if slug else ""}'
     ld = {"@context": "https://schema.org", "@type": "WebApplication", "name": m['title'] if m else NAME, "url": url, "description": desc,
           "applicationCategory": "EducationalApplication", "inLanguage": "hu", "isAccessibleForFree": True,

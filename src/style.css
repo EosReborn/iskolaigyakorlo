@@ -274,3 +274,10 @@ main { padding-block: 8px 24px; }
 .kc { color: #9db7ff; font-weight: 600; white-space: nowrap; }
 @media (max-width: 640px) { .kds { flex-wrap: wrap; } .kc { width: 100%; padding-left: 68px; } }
 @media print { .kds { display: none; } }
+
+.wd { font: 600 clamp(2rem, 9vw, 3.2rem) var(--f-display); letter-spacing: .02em; }
+.stool { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0 14px; }
+.stool .cnt { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; font-weight: 700; }
+.mixrow { border-style: dashed; }
+.mixrow { margin-top: 10px; }
+.slist .wd, .wrongs .wd { font-size: 1.5rem; color: inherit; }
