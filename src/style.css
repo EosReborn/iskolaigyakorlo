@@ -264,14 +264,14 @@ main { padding-block: 8px 24px; }
 @media (max-width: 700px) { .pstrip { grid-template-columns: 1fr 1fr; } }
 
 /* Készítői sáv */
-.kds { display: flex; align-items: center; gap: 16px; margin-top: 22px; padding: 14px 18px; background: #0c1119; border: 1px solid #263041; border-radius: 12px; text-decoration: none; color: #e8ecf5; }
-.kds:hover { border-color: #5b86ff; }
-.kds img { flex: none; width: 52px; height: 52px; }
+.kds { display: flex; align-items: center; gap: 16px; margin-top: 22px; padding: 14px 18px; background: var(--paper); border: 2px solid var(--line); border-radius: 18px; text-decoration: none; color: var(--ink); transition: border-color .15s; }
+.kds:hover { border-color: var(--blue); }
+.kds img { flex: none; width: 52px; height: 52px; padding: 6px; background: var(--brand-bg); border-radius: 14px; }
 .kt { display: flex; flex-direction: column; min-width: 0; flex: 1; }
-.kt small { color: #8d97aa; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; }
-.kt b { font: 600 1.35rem Georgia, 'Times New Roman', serif; color: #f1f4fb; }
-.kt span { color: #b6bfcf; font-size: .92rem; }
-.kc { color: #9db7ff; font-weight: 600; white-space: nowrap; }
+.kt small { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.kt b { font: 600 1.3rem/1.2 var(--f-display); color: var(--ink); }
+.kt span { color: var(--muted); font-size: .92rem; }
+.kc { color: var(--blue); font-weight: 800; white-space: nowrap; }
 @media (max-width: 640px) { .kds { flex-wrap: wrap; } .kc { width: 100%; padding-left: 68px; } }
 @media print { .kds { display: none; } }
 
