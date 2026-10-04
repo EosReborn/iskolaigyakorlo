@@ -2,6 +2,7 @@
 const N = 10;                 // kérdések száma egy körben
 const SHEET_N = 20;           // kérdések a munkalapon
 const DAILY_GOAL = 20;        // napi cél: helyes válaszok
+const XL = /*XL*/{}/*XL*/;
 const PATHMODE = document.documentElement.dataset.path === '1';
 const href = slug => (PATHMODE ? (slug ? `/${slug}/` : '/') : (slug ? `#${slug}` : '#'));
 const LS = 'iskolai-gyakorlo-v1';
@@ -100,7 +101,19 @@ function homeView() {
   const groups = GROUPS.map(gr => { const ms = list.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
   const nm = getMiss().length, missBox = nm ? `<div class="missbox"><div><b>Hibáim gyakorlása</b><div class="st">${nm} feladat vár javításra. Ha jól válaszolsz, kikerül a listából.</div></div><button class="btn sm" data-act="miss">Gyakorlom</button></div>` : '';
   const note = g ? `<p class="gnote">Csak a(z) ${g}. osztályosoknak való gyakorlókat látod. <button class="linkbtn" data-act="grade" data-g="0">Mutasd az összeset</button></p>` : '';
-  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${pstrip()}${missBox}${gradePicker()}${note}${groups}`;
+  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
+}
+
+function fbBox(label) {
+  const mt = (k, body) => `mailto:info@kochdigitalstudio.hu?subject=${encodeURIComponent('Iskolai Gyakorló visszajelzés – ' + k + ' – ' + label)}&body=${encodeURIComponent(body)}`;
+  const tail = '\n\n\n(Kérjük, ne írj le a gyerek nevét vagy más személyes adatot.)';
+  return `<section class="fb"><h2>Hasznos volt ez az oldal?</h2><p>Írd meg, mi segített, mi hiányzik, vagy hol találtál hibát. Így fejlődik az oldal.</p><p class="fbb"><a class="btn sm" href="${mt('hasznos', 'Mi volt hasznos?' + tail)}">Hasznos volt</a><a class="btn sm sec" href="${mt('javaslat', 'Mi nem volt jó, mi hiányzik, vagy hol találtál hibát?' + tail)}">Hibát találtam / hiányzik valami</a></p></section>`;
+}
+
+function homeLinks() {
+  if (!PATHMODE || !XL.g) return '';
+  const a = (u, t) => `<a href="${u}">${t}</a>`;
+  return `<section class="grp"><h2>Gyakorlók évfolyamonként</h2><nav class="rel" aria-label="Évfolyamok">${XL.g.m.map((u, i) => a(u, `${i + 1}. osztályos matek`)).join('')}${XL.g.n.map((u, i) => a(u, `${i + 1}. osztályos helyesírás`)).join('')}</nav></section><section class="grp"><h2>Szülőknek</h2><nav class="rel" aria-label="Tudástár">${XL.art.map(x => a(x[0], x[1])).join('')}${a('/tudastar/', 'Minden cikk →')}</nav></section>`;
 }
 
 function setupView() {
@@ -111,7 +124,7 @@ function setupView() {
     return `<div class="lv"><div><div class="nm">${i + 1}. ${L.name}</div><div class="st">${st}</div></div><div class="acts"><button class="btn sm" data-act="start" data-l="${i}">${S.timed ? 'Indítás ⏱' : 'Gyakorlás'}</button><button class="btn sm sec" data-act="sheet" data-l="${i}">Munkalap</button></div></div>`; }).join('');
   const rel = MODS.filter(x => x.group === m.group && x !== m).concat(MODS.filter(x => x.group !== m.group)).slice(0, 5).map(x => `<a href="${href(x.slug)}">${x.short}</a>`).join('');
   const roller = m.extra === 'dice' ? `<div class="roller"><button class="btn sm" data-act="roll" data-n="2">Dobj a kockákkal!</button><div class="dice" id="rollout" aria-live="polite">${dieSVG(4)}${dieSVG(2)}</div><div id="rollsum" class="sub"></div></div>` : '';
-  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>${m.title}</h1><p class="lead">${m.desc}</p><p class="grline">Ajánlott évfolyam: ${gradeTxt(m)}</p>${roller}<div class="tmode"><div><b>Időre megy</b><small>${TIME_SEC} másodperc alatt annyi feladatot oldj meg, amennyit csak tudsz. Bármikor kikapcsolhatod.</small></div><button class="sw" role="switch" aria-checked="${S.timed}" aria-label="Időre menő mód" data-act="timed"><i></i></button></div><h2 class="sr">Szintek</h2><div class="levels">${rows}</div>${m.levels.length > 1 ? `<div class="lv mixrow"><div><div class="nm">Vegyes munkalap</div><div class="st">Minden szintről, könnyebbtől a nehezebbig. A darabszámot a munkalapon állíthatod (10, 20 vagy 30).</div></div><div class="acts"><button class="btn sm sec" data-act="sheet" data-l="-1">Vegyes munkalap</button></div></div>` : ''}<section class="about"><h2>Mire jó ez a gyakorló?</h2><p>${m.seo}</p></section><nav class="rel" aria-label="További gyakorlók">${rel}</nav></div>`;
+  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>${m.title}</h1><p class="lead">${m.desc}</p><p class="grline">Ajánlott évfolyam: ${gradeTxt(m)}</p>${roller}<div class="tmode"><div><b>Időre megy</b><small>${TIME_SEC} másodperc alatt annyi feladatot oldj meg, amennyit csak tudsz. Bármikor kikapcsolhatod.</small></div><button class="sw" role="switch" aria-checked="${S.timed}" aria-label="Időre menő mód" data-act="timed"><i></i></button></div><h2 class="sr">Szintek</h2><div class="levels">${rows}</div>${m.levels.length > 1 ? `<div class="lv mixrow"><div><div class="nm">Vegyes munkalap</div><div class="st">Minden szintről, könnyebbtől a nehezebbig. A darabszámot a munkalapon állíthatod (10, 20 vagy 30).</div></div><div class="acts"><button class="btn sm sec" data-act="sheet" data-l="-1">Vegyes munkalap</button></div></div>` : ''}<section class="about"><h2>Mire jó ez a gyakorló?</h2><p>${m.seo}</p></section>${PATHMODE && XL.mod && XL.mod[m.slug] ? `<section class="about"><h2>Kapcsolódó oldalak</h2><ul class="xl">${XL.mod[m.slug].map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul></section>` : ''}${PATHMODE ? fbBox(m.title) : ''}<nav class="rel" aria-label="További gyakorlók">${rel}</nav></div>`;
 }
 
 function answerArea() {
