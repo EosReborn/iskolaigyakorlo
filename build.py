@@ -136,7 +136,7 @@ PRIV_HTML = """<div class="setup legal"><a class="crumb" href="/">← Minden gya
 <li>A pontjaidat, jelvényeidet és a hibáidat csak a saját böngésződ tárolja az eszközödön. Ezek nem jutnak el hozzánk.</li>
 <li>A betűtípusokat is az oldal saját szerveréről töltjük be, nem a Google-éről.</li></ul></section>
 <section class="about"><h2>Ki üzemelteti az oldalt?</h2>
-<p><b>Koch Digital Studio</b><br>E-mail: <a href="mailto:info@kochdigitalstudio.hu">info@kochdigitalstudio.hu</a><br>Weboldal: <a href="https://kochdigitalstudio.hu" rel="noopener">kochdigitalstudio.hu</a></p>
+<p><b>Koch Digital Studio</b> (Koch Norbert egyéni vállalkozó)<br>Székhely: 9151 Abda<br>Adószám: 91806891-1-28<br>Nyilvántartási szám: 61942471<br>E-mail: <a href="mailto:info@kochdigitalstudio.hu">info@kochdigitalstudio.hu</a><br>Weboldal: <a href="https://kochdigitalstudio.hu" rel="noopener">kochdigitalstudio.hu</a></p>
 <p>Adatvédelmi kérdéseddel ezen az e-mail-címen fordulhatsz hozzánk.</p></section>
 <section class="about"><h2>Mit tárol a böngésződ?</h2>
 <p>A gyakorlás közben a böngésző helyi tárolójában (localStorage) két bejegyzés jön létre: az egyikben a pontjaid, a jelvényeid, a napi sorozatod és az eredményeid vannak, a másikban azok a feladatok, amelyeket elrontottál (ebből készül a „Hibáim gyakorlása”). Ha az oldalt telepíted a kezdőképernyőre, a böngésző az oldal fájljait is eltárolja, hogy internet nélkül is működjön.</p>
