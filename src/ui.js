@@ -9,11 +9,15 @@ const store = {
   get() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } },
   set(o) { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) { /* nincs tárhely */ } }
 };
+const OPT_KEY = 'iskolai-gyakorlo-opt';   // beállítások (pl. időre menő mód); nem része a mentési kódnak
+const getOpt = () => { try { return JSON.parse(localStorage.getItem(OPT_KEY)) || {}; } catch (e) { return {}; } };
+const setOpt = o => { try { localStorage.setItem(OPT_KEY, JSON.stringify(o)); } catch (e) { /* nincs tárhely */ } };
+const TIME_SEC = 60;          // időre menő mód hossza
 const MISS_KEY = 'iskolai-gyakorlo-miss';
 const getMiss = () => { try { return JSON.parse(localStorage.getItem(MISS_KEY)) || []; } catch (e) { return []; } };
 const setMiss = a => { try { localStorage.setItem(MISS_KEY, JSON.stringify(a.slice(-40))); } catch (e) { /* nincs tárhely */ } };
 const missKey = q => q.q + '|' + q.ans;
-const T = () => (S.hiba ? S.pool.length : N);
+const T = () => (S.hiba ? S.pool.length : S.tm ? S.hist.length : N);
 const bestOf = (slug, i) => ((store.get()[slug] || {})[i]) || 0;
 const starsOf = sc => (sc >= 9 ? 3 : sc >= 7 ? 2 : sc >= 5 ? 1 : 0);
 const starHTML = n => `<span class="stars" aria-label="${n} csillag a 3-ból">${[0, 1, 2].map(i => `<span class="${i < n ? '' : 'off'}">★</span>`).join('')}</span>`;
@@ -44,6 +48,7 @@ const BADGES = [
   { id: 'ex12', g: '12', name: 'Mindentudó', desc: 'Próbálj ki 12 különböző gyakorlót.', t: p => Object.keys(p.played).length >= 12 },
   { id: 'star10', g: '★10', name: 'Csillagász', desc: 'Szerezz 3 csillagot 10 különböző szinten.', t: (p, a) => count3(a) >= 10 },
   { id: 'star30', g: '★30', name: 'Csillagzápor', desc: 'Szerezz 3 csillagot 30 különböző szinten.', t: (p, a) => count3(a) >= 30 },
+  { id: 'fast', g: '60 s', name: 'Villámkéz', desc: 'Oldj meg 20 feladatot 60 másodperc alatt.', t: p => (p.tbest || 0) >= 20 },
   { id: 'pts1000', g: '1000', name: 'Ezer pont', desc: 'Gyűjts 1000 pontot.', t: p => p.pts >= 1000 },
   { id: 'lv5', g: 'Sz. 5', name: 'Ötös szint', desc: 'Érd el az 5. szintet.', t: p => levelOf(p.pts) >= 5 },
   { id: 'big', g: '5–8', name: 'Nagy kihívás', desc: 'Szerezz 3 csillagot egy felsős (5–8. osztályos) gyakorlón.', t: (p, a) => MODS.some(m => m.grades[0] >= 5 && m.levels.some((_, i) => starsOf(((a[m.slug] || {})[i]) || 0) === 3)) },
@@ -52,7 +57,8 @@ const BADGES = [
 const medal = (g, on) => `<svg class="medal ${on ? 'on' : ''}" viewBox="0 0 64 64" aria-hidden="true"><path d="M18 3h11l5 15H23zM46 3H35l-5 15h11z" class="mrib"/><circle cx="32" cy="38" r="22" class="mcir"/><text x="32" y="${g.length > 4 ? 42 : 44}" text-anchor="middle" class="mtxt" style="font-size:${g.length > 4 ? 12 : g.length > 2 ? 15 : 19}px">${g}</text></svg>`;
 const FLAME = '<svg class="flame" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-10z" fill="currentColor"/></svg>';
 
-const S = { view: 'home', mod: null, lvl: 0, cur: null, i: 0, score: 0, input: '', done: false, ok: null, pick: null, hist: [], timer: null, sheet: [], run: 0, maxRun: 0, award: null, askReset: false };
+const S = { view: 'home', mod: null, lvl: 0, cur: null, i: 0, score: 0, input: '', done: false, ok: null, pick: null, hist: [], timer: null, sheet: [], run: 0, maxRun: 0, award: null, askReset: false, tm: false, tick: null, tEnd: 0, trec: null };
+S.timed = !!getOpt().timed;
 const ICONS = {
   clock: '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="currentColor" stroke-width="4"/><path d="M30 14v17l11 7" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>',
   coin: '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="currentColor" stroke-width="4"/><text x="30" y="37" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="600" font-size="20" fill="currentColor">Ft</text></svg>',
@@ -99,11 +105,13 @@ function homeView() {
 
 function setupView() {
   const m = S.mod;
-  const rows = m.levels.map((L, i) => { const b = bestOf(m.slug, i);
-    return `<div class="lv"><div><div class="nm">${i + 1}. ${L.name}</div><div class="st">${b ? `Legjobb eredményed: ${b}/${N} ${starHTML(starsOf(b))}` : 'Még nem próbáltad'}</div></div><div class="acts"><button class="btn sm" data-act="start" data-l="${i}">Gyakorlás</button><button class="btn sm sec" data-act="sheet" data-l="${i}">Munkalap</button></div></div>`; }).join('');
+  const tb = (store.get()._t || {})[m.slug] || {};
+  const rows = m.levels.map((L, i) => { const b = bestOf(m.slug, i), r = tb[i] || 0;
+    const st = S.timed ? (r ? `Időrekordod: ${r} helyes válasz ${TIME_SEC} másodperc alatt` : 'Még nem próbáltad időre') : (b ? `Legjobb eredményed: ${b}/${N} ${starHTML(starsOf(b))}` : 'Még nem próbáltad');
+    return `<div class="lv"><div><div class="nm">${i + 1}. ${L.name}</div><div class="st">${st}</div></div><div class="acts"><button class="btn sm" data-act="start" data-l="${i}">${S.timed ? 'Indítás ⏱' : 'Gyakorlás'}</button><button class="btn sm sec" data-act="sheet" data-l="${i}">Munkalap</button></div></div>`; }).join('');
   const rel = MODS.filter(x => x.group === m.group && x !== m).concat(MODS.filter(x => x.group !== m.group)).slice(0, 5).map(x => `<a href="${href(x.slug)}">${x.short}</a>`).join('');
   const roller = m.extra === 'dice' ? `<div class="roller"><button class="btn sm" data-act="roll" data-n="2">Dobj a kockákkal!</button><div class="dice" id="rollout" aria-live="polite">${dieSVG(4)}${dieSVG(2)}</div><div id="rollsum" class="sub"></div></div>` : '';
-  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>${m.title}</h1><p class="lead">${m.desc}</p><p class="grline">Ajánlott évfolyam: ${gradeTxt(m)}</p>${roller}<h2 class="sr">Szintek</h2><div class="levels">${rows}</div>${m.levels.length > 1 ? `<div class="lv mixrow"><div><div class="nm">Vegyes munkalap</div><div class="st">Minden szintről, könnyebbtől a nehezebbig. A darabszámot a munkalapon állíthatod (10, 20 vagy 30).</div></div><div class="acts"><button class="btn sm sec" data-act="sheet" data-l="-1">Vegyes munkalap</button></div></div>` : ''}<section class="about"><h2>Mire jó ez a gyakorló?</h2><p>${m.seo}</p></section><nav class="rel" aria-label="További gyakorlók">${rel}</nav></div>`;
+  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>${m.title}</h1><p class="lead">${m.desc}</p><p class="grline">Ajánlott évfolyam: ${gradeTxt(m)}</p>${roller}<div class="tmode"><div><b>Időre megy</b><small>${TIME_SEC} másodperc alatt annyi feladatot oldj meg, amennyit csak tudsz. Bármikor kikapcsolhatod.</small></div><button class="sw" role="switch" aria-checked="${S.timed}" aria-label="Időre menő mód" data-act="timed"><i></i></button></div><h2 class="sr">Szintek</h2><div class="levels">${rows}</div>${m.levels.length > 1 ? `<div class="lv mixrow"><div><div class="nm">Vegyes munkalap</div><div class="st">Minden szintről, könnyebbtől a nehezebbig. A darabszámot a munkalapon állíthatod (10, 20 vagy 30).</div></div><div class="acts"><button class="btn sm sec" data-act="sheet" data-l="-1">Vegyes munkalap</button></div></div>` : ''}<section class="about"><h2>Mire jó ez a gyakorló?</h2><p>${m.seo}</p></section><nav class="rel" aria-label="További gyakorlók">${rel}</nav></div>`;
 }
 
 function answerArea() {
@@ -128,11 +136,19 @@ function feedback() {
   return `<div class="fb ${S.ok ? 'ok' : 'bad'}" role="status"><strong>${S.ok ? good : 'Nem egészen.'}</strong><p>${S.ok ? '' : `A helyes válasz: <b>${ansText(q)}</b>. `}${q.hint || ''}</p><button class="btn" data-act="next" id="nextbtn">${last ? 'Eredmény' : 'Tovább'}</button></div>`;
 }
 function quizView() {
+  if (S.tm) { const left = Math.max(0, Math.ceil((S.tEnd - Date.now()) / 1000)); return `<div class="qbar${left <= 10 ? ' low' : ''}"><button data-act="quit" aria-label="Kilépés a gyakorlásból">✕ Kilépés</button><span class="tleft">⏱ <b id="tleft">${left} mp</b></span><span class="stars">★ ${S.score}</span></div><div class="prog tprog" aria-hidden="true"><i id="tbar" style="width:${left / TIME_SEC * 100}%"></i></div><div class="qwrap"><div class="qcard">${S.cur.q}</div><div>${answerArea()}${feedback()}</div></div>`; }
   return `<div class="qbar"><button data-act="quit" aria-label="Kilépés a gyakorlásból">✕ Kilépés</button><span>${S.i + 1} / ${T()}</span><span class="stars">★ ${S.score}</span></div><div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${T()}" aria-valuenow="${S.i + (S.done ? 1 : 0)}"><i style="width:${(S.i + (S.done ? 1 : 0)) / T() * 100}%"></i></div><div class="qwrap"><div class="qcard">${S.cur.q}</div><div>${answerArea()}${feedback()}</div></div>`;
+}
+function timedResultView() {
+  const tot = S.hist.length, wrong = S.hist.filter(h => !h.ok), A = S.award, R = S.trec || {}, acc = tot ? Math.round(S.score / tot * 100) : 0;
+  const msg = R.rec ? 'Új időrekord!' : S.score >= 15 ? 'Nagyon gyors vagy!' : S.score >= 8 ? 'Szép tempó!' : 'Jó kezdet, még gyorsabb is lehetsz!';
+  const award = A ? `<div class="award"><div class="apts">+${A.pts} pont</div><ul>${A.parts.map(([t, v]) => `<li><span>${t}</span><b>+${v}</b></li>`).join('')}</ul>${A.up ? `<div class="lvup">Szintet léptél: ${A.lvl}. szint, ${titleOf(A.lvl)}!</div>` : ''}<div class="astat"><span class="hot">${FLAME}${A.streak} napos sorozat</span><span>Mai cél: ${Math.min(A.day, DAILY_GOAL)}/${DAILY_GOAL}</span></div></div>${A.nb.length ? `<h2 class="nbh">Új jelvény${A.nb.length > 1 ? 'ek' : ''}!</h2><div class="nbadges">${A.nb.map(b => `<div class="nb">${medal(b.g, true)}<b>${b.name}</b><small>${b.desc}</small></div>`).join('')}</div>` : ''}` : '';
+  return `<div class="result${R.rec ? ' perfect' : ''}">${R.rec ? confetti() : ''}<h1>${msg}</h1><div class="tbig"><b>${S.score}</b><span>helyes válasz ${TIME_SEC} másodperc alatt</span></div><div class="score">${tot} feladatot oldottál meg, pontosság: ${acc}%${R.prev && !R.rec ? `. Az időrekordod: ${R.prev}` : ''}</div>${award}<div class="ractions"><button class="btn" data-act="again">Új kör időre</button><button class="btn sec" data-act="quit">Másik szint</button><a class="btn sec" href="${href('')}">Főoldal</a></div>${wrong.length ? `<h2 style="margin-bottom:10px">Ezeket nézzük meg újra</h2><div class="wrongs">${wrong.slice(0, 12).map(h => `<div>${h.q.q}<div class="ans">Helyes válasz: ${ansText(h.q)}</div></div>`).join('')}</div>` : ''}</div>`;
 }
 const CONF = ['#2a64d0', '#cf3a47', '#16805a', '#f1b62e', '#7b5cd6', '#e8743b'];
 const confetti = () => `<div class="confetti" aria-hidden="true">${Array.from({ length: 46 }, (_, i) => `<i style="--x:${rnd(0, 100)}%;--d:${(Math.random() * 1.6).toFixed(2)}s;--t:${(2.6 + Math.random() * 2).toFixed(2)}s;--r:${rnd(-360, 360)}deg;--c:${CONF[i % CONF.length]};--w:${rnd(7, 12)}px"></i>`).join('')}</div>`;
 function resultView() {
+  if (S.tm) return timedResultView();
   const tot = T(), st = starsOf(Math.round(S.score / tot * 10)), wrong = S.hist.filter(h => !h.ok), A = S.award, perfect = S.score === tot && tot >= 5;
   const msg = perfect ? 'Hibátlan! Tökéletes kör!' : st === 3 ? 'Kiváló munka!' : st === 2 ? 'Nagyon jó!' : st === 1 ? 'Jó kezdet!' : 'Ne add fel, gyakorolj még!';
   const award = A ? `<div class="award"><div class="apts">+${A.pts} pont</div><ul>${A.parts.map(([t, v]) => `<li><span>${t}</span><b>+${v}</b></li>`).join('')}</ul>${A.up ? `<div class="lvup">Szintet léptél: ${A.lvl}. szint, ${titleOf(A.lvl)}!</div>` : ''}<div class="astat"><span class="hot">${FLAME}${A.streak} napos sorozat</span><span>Mai cél: ${Math.min(A.day, DAILY_GOAL)}/${DAILY_GOAL}</span></div></div>${A.nb.length ? `<h2 class="nbh">Új jelvény${A.nb.length > 1 ? 'ek' : ''}!</h2><div class="nbadges">${A.nb.map(b => `<div class="nb">${medal(b.g, true)}<b>${b.name}</b><small>${b.desc}</small></div>`).join('')}</div>` : ''}` : '';
@@ -162,14 +178,28 @@ function render() {
 function startMiss() {
   const pool = shuffle(getMiss()).slice(0, N); if (!pool.length) return;
   S.mod = { slug: 'hibaim', title: 'Hibáim gyakorlása', levels: [{ name: 'Hibás feladatok' }] }; S.pool = pool; S.hiba = true;
-  clearTimeout(S.timer);
+  clearTimeout(S.timer); clearInterval(S.tick); S.tm = false;
   Object.assign(S, { view: 'quiz', lvl: 0, i: 0, score: 0, input: '', done: false, ok: null, pick: null, hist: [], run: 0, maxRun: 0, award: null });
   S.cur = newQ([]); render(); window.scrollTo(0, 0);
 }
 function startQuiz(l) {
-  clearTimeout(S.timer); S.hiba = false;
-  Object.assign(S, { view: 'quiz', lvl: l, i: 0, score: 0, input: '', done: false, ok: null, pick: null, hist: [], run: 0, maxRun: 0, award: null });
-  S.cur = newQ([]); render(); window.scrollTo(0, 0);
+  clearTimeout(S.timer); clearInterval(S.tick); S.hiba = false; S.tm = S.timed;
+  Object.assign(S, { view: 'quiz', lvl: l, i: 0, score: 0, input: '', done: false, ok: null, pick: null, hist: [], run: 0, maxRun: 0, award: null, trec: null });
+  S.cur = newQ([]);
+  if (S.tm) { S.tEnd = Date.now() + TIME_SEC * 1000; S.tick = setInterval(timeTick, 250); }
+  render(); window.scrollTo(0, 0);
+}
+function timeTick() {
+  const left = Math.max(0, S.tEnd - Date.now());
+  const a = $('#tleft'), b = $('#tbar'), q = $('.qbar');
+  if (a) a.textContent = Math.ceil(left / 1000) + ' mp';
+  if (b) b.style.width = (left / (TIME_SEC * 1000) * 100) + '%';
+  if (q) q.classList.toggle('low', left <= 10000);
+  if (left <= 0) endTimed();
+}
+function endTimed() {
+  clearInterval(S.tick); clearTimeout(S.timer);
+  finishRound(); S.view = 'result'; render(); window.scrollTo(0, 0);
 }
 function answer(val) {
   if (S.done) return; const q = S.cur; let ok;
@@ -179,17 +209,21 @@ function answer(val) {
   const miss = getMiss().filter(x => missKey(x) !== missKey(q));
   if (!ok) miss.push(q); else if (!S.hiba) { /* jó válasz: nincs teendő */ }
   setMiss(miss); render();
-  if (ok) S.timer = setTimeout(next, 1100);
+  if (S.tm) S.timer = setTimeout(next, ok ? 350 : 1500);
+  else if (ok) S.timer = setTimeout(next, 1100);
 }
 function finishRound() {
   const all = store.get(), p = Object.assign(blankP(), all._p || {}), slug = S.mod.slug, today = todayStr();
-  if (!S.hiba) { all[slug] = all[slug] || {}; if (S.score > (all[slug][S.lvl] || 0)) all[slug][S.lvl] = S.score; }
-  const lvBefore = levelOf(p.pts), dayBefore = p.days[today] || 0, st = S.hiba ? 0 : starsOf(S.score);
-  const parts = [[`${S.score} helyes válasz`, S.score * 10]];
-  if (!S.hiba && S.score === 10) parts.push(['Hibátlan kör', 50]);
+  const tm = S.tm; S.trec = null;
+  if (tm) { all._t = all._t || {}; all._t[slug] = all._t[slug] || {}; const prev = all._t[slug][S.lvl] || 0, rec = S.score > prev; if (rec) all._t[slug][S.lvl] = S.score; S.trec = { prev, rec: rec && prev > 0 }; p.tbest = Math.max(p.tbest || 0, S.score); }
+  else if (!S.hiba) { all[slug] = all[slug] || {}; if (S.score > (all[slug][S.lvl] || 0)) all[slug][S.lvl] = S.score; }
+  const lvBefore = levelOf(p.pts), dayBefore = p.days[today] || 0, st = S.hiba || tm ? 0 : starsOf(S.score);
+  const parts = [[`${S.score} helyes válasz`, S.score * (tm ? 5 : 10)]];
+  if (tm && S.trec.rec) parts.push(['Új időrekord', 20]);
+  if (!S.hiba && !tm && S.score === 10) parts.push(['Hibátlan kör', 50]);
   if (st) parts.push([`${st} csillag`, st * 20]);
   if (S.maxRun >= 5) parts.push([`${S.maxRun} jó válasz egymás után`, 20]);
-  p.ok += S.score; p.rounds++; if (!S.hiba && S.score === 10) p.perf++; if (!S.hiba) p.played[slug] = 1;
+  p.ok += S.score; p.rounds++; if (!S.hiba && !tm && S.score === 10) p.perf++; if (!S.hiba) p.played[slug] = 1;
   p.days[today] = dayBefore + S.score;
   if (dayBefore < DAILY_GOAL && p.days[today] >= DAILY_GOAL) parts.push(['Napi cél teljesítve', 30]);
   if (p.last !== today) { p.streak = p.last === yesterdayStr() ? p.streak + 1 : 1; p.last = today; p.best = Math.max(p.best, p.streak); }
@@ -202,7 +236,7 @@ function finishRound() {
 }
 function next() {
   clearTimeout(S.timer); if (!S.done) return;
-  if (S.i + 1 >= T()) { finishRound(); S.view = 'result'; render(); window.scrollTo(0, 0); return; }
+  if (!S.tm && S.i + 1 >= T()) { finishRound(); S.view = 'result'; render(); window.scrollTo(0, 0); return; }
   S.i++; S.cur = newQ(S.hist.map(h => h.q)); S.input = ''; S.done = false; S.ok = null; S.pick = null; render();
 }
 function makeSheet(l) {
@@ -245,7 +279,8 @@ document.addEventListener('click', e => {
   else if (a === 'again') (S.hiba ? startMiss() : startQuiz(S.lvl));
   else if (a === 'miss') startMiss();
   else if (a === 'install') { if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null; render(); } }
-  else if (a === 'quit') { e.preventDefault(); clearTimeout(S.timer); if (S.hiba) { S.hiba = false; S.mod = null; S.view = 'home'; render(); window.scrollTo(0, 0); return; } S.view = 'setup'; render(); window.scrollTo(0, 0); }
+  else if (a === 'quit') { e.preventDefault(); clearTimeout(S.timer); clearInterval(S.tick); S.tm = false; if (S.hiba) { S.hiba = false; S.mod = null; S.view = 'home'; render(); window.scrollTo(0, 0); return; } S.view = 'setup'; render(); window.scrollTo(0, 0); }
+  else if (a === 'timed') { S.timed = !S.timed; const o = getOpt(); o.timed = S.timed; setOpt(o); render(); const sw = $('.sw'); if (sw) sw.focus({ preventScroll: true }); }
   else if (a === 'print') window.print();
   else if (a === 'newsheet') makeSheet(S.lvl);
   else if (a === 'sheetn') { S.sheetN = +t.dataset.n; makeSheet(S.lvl); }
@@ -276,7 +311,7 @@ document.addEventListener('keydown', e => {
 });
 
 function route() {
-  clearTimeout(S.timer);
+  clearTimeout(S.timer); clearInterval(S.tick); S.tm = false;
   const slug = PATHMODE ? (document.documentElement.dataset.route || '') : decodeURIComponent(location.hash.replace(/^#/, ''));
   const m = modBySlug(slug);
   S.mod = m || null; S.askReset = false; S.hiba = false;
