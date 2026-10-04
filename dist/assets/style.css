@@ -366,3 +366,8 @@ header.site nav { display: flex; gap: 16px; align-items: center; }
 .fb h2 { font-size: 1.15rem; margin: 0 0 4px !important; } .fb p { margin: .3rem 0; }
 .fbb { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px !important; }
 @media print { .fb { display: none !important; } }
+
+.chg { margin-top: 22px; max-width: 66ch; } .chg h2 { font-size: 1.15rem; margin-bottom: 6px; } .chg ul { list-style: none; padding: 0; }
+.chg li { margin: .5rem 0; line-height: 1.55; }
+.tag { display: inline-block; font-size: .8rem; font-weight: 800; padding: 1px 9px; border-radius: 99px; margin-right: 6px; background: var(--blue-soft); color: var(--blue); }
+.tag.fix { background: var(--green-soft); color: var(--green); }

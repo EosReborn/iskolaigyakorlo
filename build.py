@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'con
 from grades import MATH as G_MATH, NYELV as G_NYELV
 from articles import ARTICLES
 from extra import EXTRA
+from changelog import CHANGES
 for _a in ARTICLES:
     _a['body'] = _a['body'].rstrip() + EXTRA.get(_a['slug'], '')
 
@@ -77,7 +78,7 @@ def prerender(m):
     if not m:
         gl = lambda k, rng: ''.join(f'<li><a href="{g_url(k, n)}">{g_name(k, n)}</a></li>' for n in rng)
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
-        return f'<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes matematikai gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}</ul><h2>Szülőknek</h2><ul><li><a href="/tudastar/">Tudástár: cikkek szülőknek</a></li></ul>'
+        return f'<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes matematikai gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}</ul><h2>Szülőknek</h2><ul><li><a href="/tudastar/">Tudástár: cikkek szülőknek</a></li><li><a href="/ujdonsagok/">Újdonságok</a></li></ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p><ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section><section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{fb_html(m["title"])}</div>'
 
@@ -157,7 +158,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True):
 <body>
 <header class="site"><div class="wrap"><a class="brand" href="/">{logo_img("/assets/logo.webp")}</a><nav><a href="/tudastar/">Szülőknek</a><a href="/">Minden gyakorló</a></nav></div></header>
 <main class="wrap"><div id="app">{body}</div></main>
-<footer class="site"><div class="wrap">{fnav()}<p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p><p><a href="mailto:info@kochdigitalstudio.hu?subject=Iskolai%20Gyakorl%C3%B3%20visszajelz%C3%A9s">Visszajelzés küldése</a> · <a href="/adatvedelem/">Adatvédelmi tájékoztató</a></p>{credit("/assets/kds.png")}</div></footer>
+<footer class="site"><div class="wrap">{fnav()}<p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p><p><a href="/ujdonsagok/">Újdonságok</a> · <a href="mailto:info@kochdigitalstudio.hu?subject=Iskolai%20Gyakorl%C3%B3%20visszajelz%C3%A9s">Visszajelzés küldése</a> · <a href="/adatvedelem/">Adatvédelmi tájékoztató</a></p>{credit("/assets/kds.png")}</div></footer>
 {'<script src="/assets/app.js?v=' + ver + '" defer></script>' if app else ''}
 </body>
 </html>
@@ -240,6 +241,16 @@ def article_page(a):
            bc_ld(trail), faq_ld(a['faq'])]
     return path, shell(title, a['desc'], path, body, lds, '', ogtype='article', app=False)
 
+def ujdonsagok_page():
+    path = '/ujdonsagok/'
+    desc = 'Mi változott az Iskolai Gyakorlón? Új gyakorlók, javított feladatok és helyesírás, újdonságok időrendben.'
+    trail = [("Kezdőlap", "/"), ("Újdonságok", path)]
+    hu = lambda d: d.replace('-', '. ', 2) + '.'
+    blocks = ''.join(f'<section class="chg"><h2>{hu(d)}</h2><ul>' + ''.join(f'<li><span class="tag {"new" if t == "Új" else "fix"}">{t}</span> {e(x)}</li>' for t, x in items) + '</ul></section>' for d, items in CHANGES)
+    body = (f'<div class="setup gpage legal">{bc_html(trail)}<h1>Újdonságok</h1><p class="lead">Itt látod, mit építettünk be és mit javítottunk. Ha hibát találsz, vagy van ötleted, írj nekünk az oldal alján lévő gombokkal.</p>{blocks}{fb_html("Újdonságok")}</div>')
+    lds = [bc_ld(trail)]
+    return path, shell(f'Újdonságok – mi változott | {NAME}', desc, path, body, lds, '', app=False)
+
 def tudastar_page():
     path = '/tudastar/'
     desc = 'Rövid, gyakorlatias cikkek szülőknek: szorzótábla, törtek, j és ly, írásbeli osztás, és mennyi gyakorlás elég naponta. Mindegyikhez ingyenes gyakorló.'
@@ -266,7 +277,7 @@ for m in mods:
     os.makedirs(os.path.join(DIST, m['slug']))
     open(os.path.join(DIST, m['slug'], 'index.html'), 'w', encoding='utf-8').write(page(m))
 
-SEO_PAGES = [grade_page(k, n) for k, n in GRADES] + [tudastar_page()] + [article_page(a) for a in ARTICLES]
+SEO_PAGES = [grade_page(k, n) for k, n in GRADES] + [tudastar_page(), ujdonsagok_page()] + [article_page(a) for a in ARTICLES]
 for pth, htm in SEO_PAGES:
     d = os.path.join(DIST, pth.strip('/')); os.makedirs(d, exist_ok=True)
     open(os.path.join(d, 'index.html'), 'w', encoding='utf-8').write(htm)
