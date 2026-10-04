@@ -67,19 +67,20 @@ mod({
 /* ---- Szófajok ---- */
 const FONEV = ['asztal', 'kutya', 'iskola', 'kenyér', 'tó', 'ember', 'ház', 'könyv', 'alma', 'madár', 'füzet', 'autó', 'kert', 'tanár'];
 const MELLEK = ['nagy', 'piros', 'gyors', 'kedves', 'magas', 'hideg', 'kerek', 'okos', 'édes', 'kicsi', 'szép', 'zöld', 'vidám'];
-const IGE = ['fut', 'ír', 'olvas', 'alszik', 'nevet', 'főz', 'rajzol', 'ugrik', 'énekel', 'játszik', 'tanul', 'számol', 'mosdik', 'eszik'];
+const IGE = ['fut', 'tanít', 'olvas', 'alszik', 'kacag', 'főz', 'rajzol', 'ugrik', 'énekel', 'játszik', 'tanul', 'számol', 'mosdik', 'eszik'];
 const SZAMNEV = ['három', 'hét', 'tíz', 'húsz', 'száz', 'ötödik', 'kettő', 'kilenc'];
+const AZ = w => /^[aáeéiíoóöőuúüű]/i.test(w) ? 'Az' : 'A';
 const POS = { főnév: FONEV, melléknév: MELLEK, ige: IGE, számnév: SZAMNEV };
 mod({
   slug: 'szofajok', title: 'Szófajok gyakorló', short: 'Szófajok', group: 'nyelv', glyph: 'ige', hue: 4, grades: [3, 6],
   desc: 'Főnév, melléknév, ige, számnév: ismerd fel a szavak szófaját.',
   seo: 'A főnév a dolgok nevét adja meg (asztal, kutya), a melléknév a tulajdonságot (nagy, piros), az ige a cselekvést (fut, olvas), a számnév pedig a mennyiséget (három, húsz). A gyakorló szavakat mutat, és azt kéri, hogy ismerd fel a szófajukat.',
   levels: [
-    { name: 'Főnév vagy ige?', gen: () => { const t = pick(['főnév', 'ige']), o = t === 'főnév' ? 'ige' : 'főnév'; const w = pick(POS[t]); return CH(wq(esc(w), 'Milyen szófajú ez a szó?'), t, [o], { hint: `A(z) ${w} ${t}: ${t === 'ige' ? 'cselekvést jelent' : 'dolgot, élőlényt nevez meg'}.` }); } },
-    { name: 'Főnév, melléknév vagy ige?', gen: () => { const t = pick(['főnév', 'melléknév', 'ige']); const w = pick(POS[t]); return CH(wq(esc(w), 'Milyen szófajú ez a szó?'), t, ['főnév', 'melléknév', 'ige'].filter(x => x !== t), { hint: `A(z) ${w} ${t}.` }); } },
+    { name: 'Főnév vagy ige?', gen: () => { const t = pick(['főnév', 'ige']), o = t === 'főnév' ? 'ige' : 'főnév'; const w = pick(POS[t]); return CH(wq(esc(w), 'Milyen szófajú ez a szó?'), t, [o], { hint: `${AZ(w)} ${w} ${t}: ${t === 'ige' ? 'cselekvést jelent' : 'dolgot, élőlényt nevez meg'}.` }); } },
+    { name: 'Főnév, melléknév vagy ige?', gen: () => { const t = pick(['főnév', 'melléknév', 'ige']); const w = pick(POS[t]); return CH(wq(esc(w), 'Milyen szófajú ez a szó?'), t, ['főnév', 'melléknév', 'ige'].filter(x => x !== t), { hint: `${AZ(w)} ${w} ${t}.` }); } },
     { name: 'Melyik szó a ...?', gen: () => { const t = pick(['főnév', 'melléknév', 'ige']); const w = pick(POS[t]); const others = shuffle(['főnév', 'melléknév', 'ige'].filter(x => x !== t)).map(x => pick(POS[x]));
-      return CH(Q(`Melyik szó ${t}?`), w, others.concat(pick(POS[['főnév', 'melléknév', 'ige'].filter(x => x !== t)[0]])), { hint: `A(z) ${w} ${t}.` }); } },
-    { name: 'Négy szófaj: számnévvel', gen: () => { const t = pick(['főnév', 'melléknév', 'ige', 'számnév']); const w = pick(POS[t]); return CH(wq(esc(w), 'Milyen szófajú ez a szó?'), t, ['főnév', 'melléknév', 'ige', 'számnév'].filter(x => x !== t), { hint: `A(z) ${w} ${t}.` }); } }
+      return CH(Q(`Melyik szó ${t}?`), w, others.concat(pick(POS[['főnév', 'melléknév', 'ige'].filter(x => x !== t)[0]])), { hint: `${AZ(w)} ${w} ${t}.` }); } },
+    { name: 'Négy szófaj: számnévvel', gen: () => { const t = pick(['főnév', 'melléknév', 'ige', 'számnév']); const w = pick(POS[t]); return CH(wq(esc(w), 'Milyen szófajú ez a szó?'), t, ['főnév', 'melléknév', 'ige', 'számnév'].filter(x => x !== t), { hint: `${AZ(w)} ${w} ${t}.` }); } }
   ]
 });
 
@@ -100,7 +101,7 @@ mod({
     { name: 'Kijelentő vagy kérdő?', gen: () => { const t = pick(['kijelentő', 'kérdő']); const s = pick(MONDAT[t]); return CH(Q(`<span class="wd">${esc(s)}</span>`, 'Milyen mondat ez?'), t, [t === 'kijelentő' ? 'kérdő' : 'kijelentő'], { hint: `Ez ${t} mondat.` }); } },
     { name: 'Négy mondatfajta', gen: () => { const t = pick(MT); const s = pick(MONDAT[t]); return CH(Q(`<span class="wd">${esc(s)}</span>`, 'Milyen mondat ez?'), t, MT.filter(x => x !== t), { hint: `Ez ${t} mondat.` }); } },
     { name: 'Az írásjel pótlása', gen: () => { const t = pick(['kijelentő', 'kérdő', 'felkiáltó']); const s = pick(MONDAT[t]); const stem = s.slice(0, -1); const right = s.slice(-1);
-      return CH(Q(`<span class="wd">${esc(stem)}<span class="slot">?</span></span>`, 'Melyik írásjel kerül a mondat végére?'), right, ['.', '?', '!'].filter(x => x !== right), { hint: `A mondat így helyes: ${s}` }); } },
+      return CH(Q(`<span class="wd">${esc(stem)}<span class="slot">?</span></span>`, `Ez ${t} mondat. Melyik írásjel kerül a végére?`), right, ['.', '?', '!'].filter(x => x !== right), { hint: `A mondat így helyes: ${s}` }); } },
     { name: 'Óhajtó mondatokkal', gen: () => { const all = [...MT, 'óhajtó']; const t = pick(all); const s = pick(MONDAT[t]); return CH(Q(`<span class="wd">${esc(s)}</span>`, 'Milyen mondat ez?'), t, all.filter(x => x !== t), { hint: `Ez ${t} mondat.` }); } }
   ]
 });

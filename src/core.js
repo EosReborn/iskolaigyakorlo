@@ -14,6 +14,16 @@ const art = n => {
   if (n < 100) return Math.floor(n / 10) === 5 ? 'az' : 'a';
   return Math.floor(n / 100) === 5 ? 'az' : 'a';
 };
+/* toldalék a kimondott szám utolsó szava szerint: nak/nek, hoz/hez/höz */
+const numLast = n => { n = Math.abs(n);
+  if (n % 10) return ['', 'egy', 'kettő', 'három', 'négy', 'öt', 'hat', 'hét', 'nyolc', 'kilenc'][n % 10];
+  if (n % 100) return ['', 'tíz', 'húsz', 'harminc', 'negyven', 'ötven', 'hatvan', 'hetven', 'nyolcvan', 'kilencven'][n / 10 % 10];
+  if (n % 1000) return 'száz';
+  return n === 0 ? 'nulla' : 'ezer'; };
+const harm = n => { const w = numLast(n); if (w === 'harminc') return 'b';
+  const v = w.replace(/[^aáeéiíoóöőuúüű]/g, '').slice(-1); return 'aáoóuú'.includes(v) ? 'b' : 'öőüű'.includes(v) ? 'r' : 'f'; };
+const sfxNak = n => harm(n) === 'b' ? 'nak' : 'nek';
+const sfxHoz = n => ({ b: 'hoz', f: 'hez', r: 'höz' })[harm(n)];
 const fr = (n, d) => `<span class="fr"><span>${n}</span><span>${d}</span></span>`;
 const Q = (main, sub) => `<div class="big${main.replace(/<[^>]*>/g, '').length > 46 ? ' txt' : ''}">${main}</div>${sub ? `<div class="sub">${sub}</div>` : ''}`;
 const slot = t => `<span class="slot">${t === undefined ? '?' : t}</span>`;

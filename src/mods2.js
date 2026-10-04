@@ -12,13 +12,16 @@ const clockSVG = (h, m, size = 220) => {
 };
 const hm = (h, m) => `${h}:${String(m).padStart(2, '0')}`;
 const timeWords = (h, m) => { const nx = h % 12 + 1; if (m === 0) return `${h} óra`; if (m === 30) return `fél ${nx}`; if (m === 15) return `negyed ${nx}`; if (m === 45) return `háromnegyed ${nx}`; return `${h} óra ${m} perc`; };
+const ESX = { 1: 'es', 2: 'es', 3: 'as', 4: 'es', 5: 'ös', 6: 'os', 7: 'es', 8: 'as', 9: 'es', 10: 'es', 11: 'es', 12: 'es' };
+const cEs = n => `${n}-${ESX[n]}`;                                  /* 3-as, 5-ös */
+const cNel = n => `${n}-${ESX[n]}${ESX[n] === 'as' || ESX[n] === 'os' ? 'nál' : 'nél'}`; /* 3-asnál, 5-ösnél */
 const randTime = lv => { const h = rnd(1, 12); let m;
   if (lv === 1) m = 0; else if (lv === 2) m = pick([0, 30]); else if (lv === 3) m = pick([0, 15, 30, 45]); else if (lv === 4) m = rnd(0, 11) * 5; else m = rnd(0, 59);
   return [h, m]; };
 const timeWrongs = (h, m) => { const set = [[m / 5 || 12, h * 5 % 60], [h % 12 + 1, m], [h === 1 ? 12 : h - 1, m], [h, (m + 5) % 60], [h, (m + 55) % 60], [h, (m + 15) % 60], [h, (m + 30) % 60], [h % 12 + 1, (m + 30) % 60]];
   return set.filter(([a, b]) => Number.isInteger(a) && Number.isInteger(b) && !(a === h && b === m)).map(([a, b]) => [a, b]); };
 const clockQ = lv => () => { const [h, m] = randTime(lv); const ws = shuffle(timeWrongs(h, m)).map(([a, b]) => hm(a, b));
-  return CH(Q(clockSVG(h, m), 'Mennyi az idő?'), hm(h, m), ws, { hint: `Az óramutató (rövid) a ${h}-esnél van, a percmutató (hosszú) ${m === 0 ? 'a 12-esnél' : `a ${m / 5 | 0}-es szám körül, ${m} perc`}. Az idő ${hm(h, m)} (${timeWords(h, m)}).` }); };
+  return CH(Q(clockSVG(h, m), 'Mennyi az idő?'), hm(h, m), ws, { hint: `Az óramutató (rövid) ${art(h)} ${cNel(h)} van, a percmutató (hosszú) ${m === 0 ? 'a ' + cNel(12) : `${art(m / 5 | 0 || 12)} ${cEs(m / 5 | 0 || 12)} szám körül, ${m} perc`}. Az idő ${hm(h, m)} (${timeWords(h, m)}).` }); };
 mod({
   slug: 'ora-leolvasas', title: 'Óra leolvasása gyakorló', short: 'Óra leolvasása', group: 'meres', glyph: '', hue: 1, icon: 'clock',
   desc: 'Analóg óra leolvasása egész órától a percre pontos időig.',
@@ -31,7 +34,7 @@ mod({
     { name: 'Percre pontosan', gen: clockQ(5) },
     { name: 'Melyik óra mutatja? (idő → óra)', gen: () => { const [h, m] = randTime(4); const ws = shuffle(timeWrongs(h, m)).slice(0, 3);
       const ch = x => ({ v: hm(x[0], x[1]), h: clockSVG(x[0], x[1], 120) });
-      return CH(Q(`<span class="digital">${hm(h, m)}</span>`, 'Melyik óra mutatja ezt az időt?'), ch([h, m]), ws.map(ch), { grid: true, hint: `${hm(h, m)}: a rövid mutató a ${h}-esnél, a hosszú mutató a ${m / 5}-es számnál áll (${m} perc).` }); } }
+      return CH(Q(`<span class="digital">${hm(h, m)}</span>`, 'Melyik óra mutatja ezt az időt?'), ch([h, m]), ws.map(ch), { grid: true, hint: `${hm(h, m)}: a rövid mutató ${art(h)} ${cNel(h)}, a hosszú mutató ${art(m / 5 || 12)} ${cEs(m / 5 || 12)} számnál áll (${m} perc).` }); } }
   ]
 });
 
@@ -45,8 +48,8 @@ const sumQ = pool => () => { const n = rnd(2, 5); const items = Array.from({ len
 const SHOP = [['füzet', 120], ['toll', 90], ['radír', 60], ['ceruza', 80], ['matrica', 50], ['tábla csoki', 350], ['szendvics', 450], ['alma', 70], ['limonádé', 300], ['jégkrém', 400], ['kifli', 60]];
 mod({
   slug: 'penz-szamolas', title: 'Pénz számolás gyakorló', short: 'Pénz számolás', group: 'meres', glyph: '', hue: 4, icon: 'coin',
-  desc: 'Forint érmék és bankjegyek összeadása, vásárlás és visszajáró számolása.',
-  seo: 'A pénzzel való számolás hétköznapi készség. A gyakorló forint érméket és bankjegyeket mutat, ezek összegét kell kiszámolni. Később vásárlási és visszajáró feladatok is jönnek. A bankjegyek ábrái csak szemléltetésre szolgálnak.',
+  desc: 'Forintérmék és bankjegyek összeadása, vásárlás és visszajáró számolása.',
+  seo: 'A pénzzel való számolás hétköznapi készség. A gyakorló forintérméket és bankjegyeket mutat, ezek összegét kell kiszámolni. Később vásárlási és visszajáró feladatok is jönnek. A bankjegyek ábrái csak szemléltetésre szolgálnak.',
   levels: [
     { name: 'Érmék (5–200 Ft)', gen: sumQ(COINS) },
     { name: 'Bankjegyek (500–5000 Ft)', gen: sumQ(NOTES.slice(0, 4)) },
@@ -149,7 +152,7 @@ const dice = arr => `<div class="dice">${arr.map(dieSVG).join('')}</div>`;
 const diceQ = (cnt, kind) => () => { const arr = Array.from({ length: cnt }, () => rnd(1, 6));
   if (kind === 'count') return NUM(Q(dice(arr), 'Hány pötty van a kockán?'), arr[0], { hint: `Számold meg a pöttyöket: ${arr[0]}.` });
   if (kind === 'sum') { const s = arr.reduce((x, y) => x + y, 0); return NUM(Q(dice(arr), `Mennyi a dobott pontok összege?`), s, { hint: `${arr.join(' + ')} = ${s}.` }); }
-  if (kind === 'diff') { const [a, b] = arr[0] >= arr[1] ? arr : [arr[1], arr[0]]; return NUM(Q(dice([a, b]), 'Mennyivel dobtál többet az elsővel?'), a - b, { hint: `${a} − ${b} = ${a - b}.` }); }
+  if (kind === 'diff') { const [a, b] = arr[0] >= arr[1] ? arr : [arr[1], arr[0]]; return NUM(Q(dice([a, b]), 'Mennyivel dobtál többet az első kockával, mint a másodikkal?'), a - b, { hint: `${a} − ${b} = ${a - b}.` }); }
   const p = arr[0] * arr[1]; return NUM(Q(dice(arr), 'Mennyi a két dobott szám szorzata?'), p, { hint: `${arr[0]} × ${arr[1]} = ${p}.` }); };
 mod({
   slug: 'dobokocka', title: 'Dobókocka gyakorló', short: 'Dobókocka', group: 'forma', glyph: '', hue: 2, icon: 'die',

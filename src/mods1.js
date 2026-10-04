@@ -7,7 +7,7 @@ const noCross = (a, b) => (a % 10) + (b % 10) < 10;
 mod({
   slug: 'osszeadas-kivonas', title: 'Összeadás és kivonás gyakorló', short: 'Összeadás, kivonás', group: 'szamolas', glyph: '3 + 4', hue: 1,
   desc: 'Összeadás és kivonás 10-es, 20-as, 100-as és 1000-es számkörben. Tízesátlépéssel és hiányzó számos feladatokkal.',
-  seo: 'Az összeadás és kivonás gyakorlása 1–3. osztályban a 10-es számkörtől a 1000-es számkörig. A feladatok fokozatosan nehezednek: először tízesátlépés nélkül, majd tízesátlépéssel számolhatsz, a hiányzó számos feladatok pedig a fejszámolást és az ellenőrzést is gyakoroltatják.',
+  seo: 'Az összeadás és kivonás gyakorlása 1–3. osztályban a 10-es számkörtől az 1000-es számkörig. A feladatok fokozatosan nehezednek: először tízesátlépés nélkül, majd tízesátlépéssel számolhatsz, a hiányzó számos feladatok pedig a fejszámolást és az ellenőrzést is gyakoroltatják.',
   levels: [
     { name: '10-es számkör', gen: addsub({
       add: () => { const a = rnd(0, 10), b = rnd(0, 10 - a); return AS(a, '+', b, a + b); },
@@ -150,7 +150,7 @@ const cmpNums = mx => () => {
   const a = rnd(0, mx); const t = Math.random(); let b;
   if (t < .2) b = a; else if (t < .5 && a > 9) b = digitShuffle(a); else b = rnd(0, mx);
   return CMP(Q(`${fmt(a)} ${slot()} ${fmt(b)}`, 'Melyik jel illik a két szám közé?'), a, b,
-    { hint: `${fmt(a)} ${a < b ? 'kisebb' : a > b ? 'nagyobb' : 'egyenlő'}, mint ${fmt(b)}: ${fmt(a)} ${a < b ? '&lt;' : a > b ? '&gt;' : '='} ${fmt(b)}.` });
+    { hint: a === b ? `A két szám egyenlő: ${fmt(a)} = ${fmt(b)}.` : `${fmt(a)} ${a < b ? 'kisebb' : 'nagyobb'}, mint ${fmt(b)}: ${fmt(a)} ${a < b ? '&lt;' : '&gt;'} ${fmt(b)}.` });
 };
 mod({
   slug: 'szamok-osszehasonlitasa', title: 'Számok összehasonlítása gyakorló', short: 'Összehasonlítás', group: 'szamok', glyph: '5 &lt; 9', hue: 2,
@@ -180,13 +180,13 @@ const mkSeq = (steps, desc) => () => {
 mod({
   slug: 'szomszedok-sorozatok', title: 'Számszomszédok és számsorozatok gyakorló', short: 'Szomszédok, sorozatok', group: 'szamok', glyph: '4 5 6', hue: 1,
   desc: 'Melyik szám jön előtte, utána, melyik van két szám között? Számsorozatok folytatása és hiányzó számok keresése.',
-  seo: 'A szomszédos számok, a tízes szomszédok és a számsorozatok a számfogalom alapjai. A gyakorló előre és hátra is számoltat, különböző lépésközökkel, és megkeresteti a sorozat szabályát.',
+  seo: 'A szomszédos számok, a tízes szomszédok és a számsorozatok a számfogalom alapjai. A gyakorló előre és hátra is számoltat, különböző lépésközökkel, és a sorozat szabályát is megkerested.',
   levels: [
     { name: 'Előző és következő szám', gen: () => { const n = rnd(1, 99), nx = Math.random() < .5;
       return NUM(Q(nx ? `Melyik szám következik ${fmt(n)} után?` : `Melyik szám van ${fmt(n)} előtt?`), nx ? n + 1 : n - 1, { hint: `${nx ? 'Egyet hozzáadunk' : 'Egyet elveszünk'}: ${nx ? n + 1 : n - 1}.` }); } },
     { name: 'Két szám között', gen: () => { const n = rnd(2, 998); return NUM(Q(`Melyik szám van ${fmt(n - 1)} és ${fmt(n + 1)} között?`), n, { hint: `${n - 1}, ${n}, ${n + 1}: a középső szám ${n}.` }); } },
     { name: 'Tízes szomszédok', gen: () => { let k; do { k = rnd(11, 99); } while (k % 10 === 0); const lo = Math.random() < .5; const base = k - (k % 10);
-      return NUM(Q(`${lo ? 'Alsó' : 'Felső'} tízes szomszédja: ${fmt(k)}`, 'Melyik kerek tízes ez?'), lo ? base : base + 10, { hint: `${k} a ${base} és a ${base + 10} között van.` }); } },
+      return NUM(Q(`${lo ? 'Alsó' : 'Felső'} tízes szomszédja: ${fmt(k)}`, 'Melyik kerek tízes ez?'), lo ? base : base + 10, { hint: `${k} ${base} és ${base + 10} között van.` }); } },
     { name: 'Sorozatok: növekvő', gen: mkSeq([1, 2, 3, 5, 10], false) },
     { name: 'Sorozatok: nagyobb lépés, csökkenő is', gen: mkSeq([4, 6, 7, 8, 9, 20, 25, 50, 100], true) },
     { name: 'Mennyi a lépésköz?', gen: () => { const st = pick([2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 25, 50, 100]); const sign = Math.random() < .3 ? -1 : 1; const start = sign > 0 ? rnd(0, 20) : st * 6 + rnd(0, 20);
