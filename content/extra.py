@@ -45,7 +45,7 @@ EXTRA = {
 """,
 "tortek-bovitese-egyszerusitese": """
 <h2>Hogyan gyakoroljunk?</h2>
-<p>Először gyakoroljátok külön a két műveletet. A bővítésnél a gyerek vegyen egy törtet, és írjon hozzá három azonos értékű alakot (1/2 = 2/4 = 3/6 = 4/8). Az egyszerűsítésnél adjatok neki nagyobb számokat, például 12/18, és kérdezzétek meg, mivel osztható mindkettő. A szorzótábla és az oszthatósági szabályok ismerete itt nagy segítség: ha a gyerek látja, hogy mindkét szám páros, vagy hogy 5-re végződik, máris tud egyszerűsíteni.</p>
+<p>Először gyakoroljátok külön a két műveletet. A bővítésnél a gyerek vegyen egy törtet, és írjon hozzá három azonos értékű alakot (1/2 = 2/4 = 3/6 = 4/8). Az egyszerűsítésnél adjatok neki nagyobb számokat, például 12/18, és kérdezzétek meg, mivel osztható mindkettő. A szorzótábla és az oszthatósági szabályok ismerete itt nagy segítség: ha a gyerek látja, hogy mindkét szám páros, vagy hogy 0-ra vagy 5-re végződik, máris tud egyszerűsíteni.</p>
 <p>Csak ezután kombináljátok a kettőt a közös nevezőhöz. A különböző nevezőjű törtek összeadása akkor megy gördülékenyen, ha a bővítés már rutinszerű. A gyakorlók szintjei ezt a sorrendet követik, ezért érdemes sorban haladni.</p>
 """,
 "maradekos-osztas-magyarazat": """

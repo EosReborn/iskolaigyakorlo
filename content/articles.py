@@ -59,7 +59,7 @@ dict(
 <h3>Hasonlítsunk össze törteket</h3>
 <p>A leggyakoribb tévedés: „az ⅓ nagyobb, mint az ½, mert a 3 nagyobb, mint a 2”. Ilyenkor érdemes megmutatni, hogy ha az egészet 3 részre osztjuk, a részek kisebbek, mint ha csak 2 részre osztjuk. Azonos számlálónál a kisebb nevezőjű tört a nagyobb.</p>
 <h3>Törtrész kiszámítása</h3>
-<p>Mennyi 12 negyede? Osszuk 4 egyenlő részre (12 : 4 = 3), és ha a ¾-ét kérdezzük, 3 részt veszünk: 3 × 3 = 9. Ez a lépés később a százalékszámítás alapja is.</p>
+<p>Mennyi a 12 háromnegyede? Először kiszámoljuk a negyedét: 12 : 4 = 3. A háromnegyede ennek a háromszorosa: 3 × 3 = 9. Ez a lépés később a százalékszámítás alapja is.</p>
 <h2>Gyakori hibák</h2>
 <ul>
 <li>Az összeadásnál a nevezőket is összeadják (⅓ + ⅓ = ²⁄₆ helyett ²⁄₃ a helyes).</li>
@@ -69,7 +69,7 @@ dict(
 <h2>Hogyan gyakoroljunk?</h2>
 <p>Rövid, napi körökkel. A törtek gyakorló ábrákkal kezd, aztán a törtrész kiszámításán át az összeadásig vezet. Az ötödik-hatodik osztályos anyaghoz a törtek haladó gyakorló tartozik (bővítés, egyszerűsítés, közös nevező, vegyes számok). A tizedes törtek külön gyakorlóban találhatók.</p>
 """,
- faq=[("Melyik osztályban tanulják a törteket?","A fogalom általában másodikban-harmadikban jelenik meg, a rendszeres tanítás harmadikban-negyedikben kezdődik, a bővítés, egyszerűsítés és a különböző nevezőjű törtek hatodikban-hetedikben jönnek. Ez tankönyvenként eltérhet."),
+ faq=[("Melyik osztályban tanulják a törteket?","A fogalom általában másodikban-harmadikban jelenik meg, a rendszeres tanítás harmadikban-negyedikben kezdődik, a bővítés, egyszerűsítés és a különböző nevezőjű törtek ötödikben-hatodikban jönnek. Ez tankönyvenként eltérhet."),
       ("Miért nehéz a törtek tanulása?","Mert a gyerekek a természetes számokhoz szoktak, ahol a nagyobb szám nagyobbat jelent. A törtnél a nevező nagysága fordítva hat, és ez szokatlan."),
       ("Mit tegyek, ha a gyerek nem érti a törteket?","Menj vissza az ábrákhoz és a valós tárgyakhoz (pizza, szakasz), és csak utána térj át a számokra. Napi 5–10 perc gyakorlás elég.")],
  mods=["tortek","tortek-halado","tizedes-tortek"], related=["tortek-bovitese-egyszerusitese","szazalekszamitas-egyszeruen","hogyan-tanuljuk-meg-a-szorzotablat"], grades=[3,4,5,6]),
@@ -84,7 +84,7 @@ dict(
 <h2>Miért nehéz a j és az ly?</h2>
 <p>A mai magyarban a két betű kiejtése megegyezik (a „ly” is j-nek hangzik). Ezért a helyesírás a szóképre, vagyis arra épül, hogy a gyerek lássa és megjegyezze, hogyan néz ki a szó. Ez a szemléletes memória rendszeres olvasással és ismétléssel erősödik.</p>
 <h2>Az ly-os szavak a kisebb csoport</h2>
-<p>Az ly-os szavak összességében kevesebben vannak, mint a j-sek. Ezért az a gyakorlati stratégia, hogy a gyerek a gyakori ly-os szavakat tanulja meg, és ami nem szerepel a listán, azt j-vel írja. A leggyakoribb ly-os szavak közé tartozik: <b>hely, folyó, golyó, király, bagoly, lyuk, olyan, milyen, ilyen, mely, tengely, selyem, kehely, pehely, hólyag, mályva, gólya</b>.</p>
+<p>Az ly-os szavak összességében kevesebben vannak, mint a j-sek. Ezért az a gyakorlati stratégia, hogy a gyerek a gyakori ly-os szavakat külön megtanulja, és ha egy szóról nem tudja, hogy ly-os-e, többnyire a j a valószínűbb. Ez nem szabály, csak támpont, ezért a bizonytalan szavakat érdemes ellenőrizni (szótárban vagy a tanítótól). A leggyakoribb ly-os szavak közé tartozik: <b>hely, folyó, golyó, király, bagoly, lyuk, olyan, milyen, ilyen, mely, tengely, selyem, kehely, pehely, hólyag, mályva, gólya</b>.</p>
 <h2>Szócsaládok és toldalékok</h2>
 <p>A j és az ly a toldalékolt és az összetett szavakban is megmarad. A folyik, a folyó, a folyam és a folyosó egy családba tartoznak, és mind ly-nal írjuk. Hasonlóan a lyuk, lyukas, lyuggat. A j-s szavaknál ugyanez igaz: fej, fejes, fejlődik; haj, hajnal.</p>
 <h2>Gyakori j-s szavak, amelyeket gyakran elírnak</h2>
@@ -101,7 +101,7 @@ dict(
 <p>Ne büntessük a hibát, és ne kényszerítsük a gyereket hosszú, unalmas másolásra. A j és ly tanulása évekig tart, és ez normális. A rövid, pozitív gyakorlás tartósabb eredményt ad.</p>
 """,
  faq=[("Melyik osztályban tanulják a j és ly helyesírását?","A j-ly helyesírás gyakorlása általában másodikban kezdődik, és az alsó tagozaton végig folytatódik. Ötödikben-hatodikban is előfordul ismétlés."),
-      ("Van szabály a j és ly helyesírására?","Nincs egyetlen szabály, amely mindent lefed. Az ly-os szavak kisebb csoportot alkotnak, ezért ezeket érdemes megtanulni, a toldalékolt és összetett alakokban pedig a j és ly megmarad."),
+      ("Van szabály a j és ly helyesírására?","Nincs egyetlen szabály, amely mindent lefed. Az ly-os szavak kisebb csoportot alkotnak, ezért ezeket érdemes külön megtanulni, a toldalékolt és összetett alakokban pedig a j és ly megmarad. Kétség esetén a szótár a biztos."),
       ("Mennyit gyakoroljon a gyerek naponta?","Napi 5–10 perc elég, ha rendszeres. Rövid, gyakori körök többet segítenek, mint egy hosszú hétvégi gyakorlás.")],
  mods=["j-ly-helyesiras","hosszu-rovid-hangok","toldalekok-val-vel"], related=["mennyit-gyakoroljon-a-gyerek-naponta","a-hibakbol-tanulas"], grades=[2,3,4,5]),
 
@@ -205,7 +205,7 @@ dict(
 <p>Használjatok valódi órát: kérdezzétek meg naponta kétszer, hány óra van. A gyakorló szintekre bontva halad: egész órák, fél órák, negyedek, öt perces lépések, végül a percre pontos olvasás. A hatodik szinten fordítva kell dolgozni: a digitális időhöz kell kiválasztani az órát.</p>
 """,
  faq=[("Melyik osztályban tanulják az óra leolvasását?","Az egész órák és a fél óra általában elsőben-másodikban jelennek meg, a percre pontos leolvasás másodikban-harmadikban. Ez az iskolától függ."),
-      ("Mit jelent a negyed 8?","A magyarban a „negyed 8” 7:15-öt jelent, mert negyedóra múlva lesz a következő, vagyis 8. óra fele után. A „fél 8” 7:30, a „háromnegyed 8” 7:45."),
+      ("Mit jelent a negyed 8?","A magyarban a „negyed 8” 7:15-öt jelent: a 8. órának az első negyede telt el. A „fél 8” 7:30, a „háromnegyed 8” 7:45."),
       ("Hogyan gyakoroljon a gyerek otthon?","Valódi órával, naponta rövid ideig. Kérdezzétek meg többször, hány óra van, és ő mondja ki a digitális és a szöveges alakot is.")],
  mods=["ora-leolvasas","mertekegysegek","penz-szamolas"], related=["mennyit-gyakoroljon-a-gyerek-naponta"], grades=[1,2,3]),
 
@@ -295,7 +295,7 @@ dict(
 <p>A <a href="/szazalekszamitas/">százalékszámítás gyakorló</a> hét szinten halad: egyszerű százalékoktól a kedvezményeken át a növekedésig és csökkenésig.</p>
 """,
  faq=[("Melyik osztályban tanulják a százalékszámítást?","A százalék fogalma hatodikban jelenik meg, a részletesebb számítás hetedikben-nyolcadikban. Ez tankönyvenként eltérhet."),
-      ("Hogyan számoljuk ki fejben a 15%-ot?","Számoljuk ki a 10%-ot (osztás 10-zel), a 5%-ot (annak a fele), és adjuk össze őket."),
+      ("Hogyan számoljuk ki fejben a 15%-ot?","Számoljuk ki a 10%-ot (osztás 10-zel), az 5%-ot (annak a fele), és adjuk össze őket."),
       ("Hogyan számoljuk ki a kedvezményt?","A kedvezmény a százalékérték. Az új ár: az eredeti ár mínusz a kedvezmény, vagy az eredeti ár (100 − százalék)%-a.")],
  mods=["szazalekszamitas","tizedes-tortek","tortek-halado"], related=["mikor-kezdodik-a-tortek-tanitasa","tortek-bovitese-egyszerusitese"], grades=[6,7,8]),
 
@@ -321,7 +321,7 @@ dict(
 <ol>
 <li><b>Rövid körök.</b> Egy hibakör kb. 3–5 perc.</li>
 <li><b>Beszéljünk a hibáról.</b> Ne a jó választ mondjuk meg, hanem kérdezzük meg: „Hogyan gondolkodtál?”</li>
-<li><b>Ismételjük meg másnap is.</b> A tanult anyag két-három nap múlva stabilizálódik.</li>
+<li><b>Ismételjük meg másnap is.</b> Az ismétlés másnap és néhány nap múlva sokat segít a rögzítésben.</li>
 <li><b>Ünnepeljük meg a javulást.</b> Ha egy korábban nehéz feladat már megy, az sikerélmény.</li>
 </ol>
 <h2>Mikor érdemes a hibák gyakorlását használni?</h2>
