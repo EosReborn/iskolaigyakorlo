@@ -295,3 +295,4 @@ main { padding-block: 8px 24px; }
 @keyframes pop { 0% { transform: scale(.2) rotate(-20deg); opacity: 0; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .confetti { display: none; } .perfect .bigstars span, .perfect h1 { animation: none !important; } }
 @media print { .confetti { display: none; } }
+.legal ul { padding-left: 1.2rem; } .legal li { margin: .35rem 0; } .legal .about { margin-top: 1.2rem; } .legal p.muted { color: var(--muted); font-size: .9rem; margin-top: 1.4rem; }
