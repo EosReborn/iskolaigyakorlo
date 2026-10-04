@@ -43,7 +43,7 @@ def make_brand():
     box = im.getchannel('A').point(lambda v: 255 if v > 10 else 0).getbbox()
     pad = 12
     full = im.crop((box[0]-pad, box[1]-pad, box[2]+pad, box[3]+pad))
-    W = 1100; full_s = full.resize((W, round(W * full.height / full.width)), Image.LANCZOS)
+    W = 620; full_s = full.resize((W, round(W * full.height / full.width)), Image.LANCZOS)
     buf = io.BytesIO(); full_s.save(buf, 'WEBP', quality=90, method=6); logo_webp = buf.getvalue()
     ratio = full.width / full.height
     # ikon: a külön megkapott favicon-grafika (átlátszó PNG), négyzetesre igazítva
