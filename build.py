@@ -26,11 +26,16 @@ css = rd('style.css')
 FONT_FILES = sorted(f for f in os.listdir(os.path.join(SRC, 'fonts')) if f.endswith('.woff2'))
 UR = {'latin': 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD',
       'latin-ext': 'U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF'}
+FR_RANGE = 'U+0025,U+002B-003A,U+003D,U+003F,U+00B0,U+00B2-00B3,U+00D7,U+00F7,U+2212,U+2260,U+2264-2265,U+2248'
 def font_css():
     out = []
     for f in FONT_FILES:
         m = re.match(r'(fredoka|nunito)-(latin(?:-ext)?)-(\d+)-normal\.woff2', f)
         fam, sub, w = m.group(1).capitalize(), m.group(2), m.group(3)
+        if fam == 'Fredoka':   # a Fredoka nem tartalmazza az ő/ű betűket: csak a számokhoz és műveleti jelekhez használjuk
+            if sub != 'latin': continue
+            out.append(f"@font-face{{font-family:'Fredoka';font-style:normal;font-weight:{w};font-display:swap;src:url(/assets/fonts/{f}) format('woff2');unicode-range:{FR_RANGE}}}")
+            continue
         out.append(f"@font-face{{font-family:'{fam}';font-style:normal;font-weight:{w};font-display:swap;src:url(/assets/fonts/{f}) format('woff2');unicode-range:{UR[sub]}}}")
     return '\n'.join(out) + '\n'
 css = font_css() + css
@@ -152,7 +157,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True):
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Gyakorló">
 <link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preload" href="/assets/fonts/nunito-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/nunito-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css?v={ver}">
 {ldh}</head>
 <body>
@@ -269,7 +274,7 @@ open(os.path.join(DIST, 'assets', 'app.js'), 'w', encoding='utf-8').write(js)
 open(os.path.join(DIST, 'assets', 'style.css'), 'w', encoding='utf-8').write(css)
 shutil.copy(os.path.join(SRC,'brand','kds-logo.png'), os.path.join(DIST,'assets','kds.png'))
 os.makedirs(os.path.join(DIST, 'assets', 'fonts'))
-for f in FONT_FILES: shutil.copy(os.path.join(SRC, 'fonts', f), os.path.join(DIST, 'assets', 'fonts', f))
+for f in [x for x in FONT_FILES if not x.startswith('fredoka-latin-ext')]: shutil.copy(os.path.join(SRC, 'fonts', f), os.path.join(DIST, 'assets', 'fonts', f))
 open(os.path.join(DIST, 'assets', 'logo.webp'), 'wb').write(LOGO_WEBP)
 FAV.save(os.path.join(DIST, 'assets', 'favicon.png'), optimize=True); APPLE.save(os.path.join(DIST, 'assets', 'apple-touch-icon.png'), optimize=True); OG.save(os.path.join(DIST, 'assets', 'og.png'), optimize=True)
 open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8').write(page(None))
@@ -330,7 +335,7 @@ json.dump({"name": NAME, "short_name": "Gyakorló", "description": "Ingyenes, re
            "background_color": "#f3f6fb", "theme_color": "#1b2a5e",
            "icons": [{"src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png"}, {"src": "/assets/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]},
           open(os.path.join(DIST, 'manifest.webmanifest'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
-pre = ['/', '/profil/'] + [f'/{m["slug"]}/' for m in mods] + [p for p, _ in SEO_PAGES] + [f'/assets/app.js?v={ver}', f'/assets/style.css?v={ver}', '/assets/logo.webp', '/assets/kds.png', '/assets/favicon.png', '/assets/icon-192.png', '/manifest.webmanifest', '/adatvedelem/'] + [f'/assets/fonts/{f}' for f in FONT_FILES]
+pre = ['/', '/profil/'] + [f'/{m["slug"]}/' for m in mods] + [p for p, _ in SEO_PAGES] + [f'/assets/app.js?v={ver}', f'/assets/style.css?v={ver}', '/assets/logo.webp', '/assets/kds.png', '/assets/favicon.png', '/assets/icon-192.png', '/manifest.webmanifest', '/adatvedelem/'] + [f'/assets/fonts/{f}' for f in FONT_FILES if not f.startswith('fredoka-latin-ext')]
 open(os.path.join(DIST, 'sw.js'), 'w', encoding='utf-8').write('''const V = 'ig-%s';
 const PRE = %s;
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => Promise.all(PRE.map(u => c.add(u).catch(() => {})))).then(() => self.skipWaiting())); });
