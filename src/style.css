@@ -396,3 +396,6 @@ header.site nav a { white-space: nowrap; margin-left: 0; }
 .sk[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--blue); }
 .sk:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
 .skname { font-weight: 700; color: var(--muted); }
+
+.h1sub { display: block; margin-top: 8px; font: 700 clamp(1rem, 3.4vw, 1.25rem)/1.35 var(--f-body); color: var(--muted); }
+.sfoot { margin-top: 18px; padding-top: 8px; border-top: 1px solid #bbb; font-size: .8rem; color: #555; text-align: center; }
