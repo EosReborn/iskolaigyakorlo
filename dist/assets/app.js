@@ -1341,6 +1341,10 @@ function gradePicker() {
   return `<div class="gpick" role="group" aria-label="Évfolyam"><span class="gl">Hányadikos vagy?</span><div class="gchips">${[1, 2, 3, 4, 5, 6, 7, 8].map(n => chip(n, n + '.')).join('')}${chip(0, 'Mind')}</div></div>`;
 }
 const card = m => `<a class="card" data-h="${m.hue}" href="${href(m.slug)}"><div class="tile">${glyph(m)}</div><h3>${m.short}</h3><div class="meta"><span>${gradeTxt(m)}</span>${modStars(m) ? starHTML(modStars(m)) : `<span>${m.levels.length} szint</span>`}</div></a>`;
+const SKINS = [['fuzet', 'Füzet', '#2a64d0', '#f3f6fb'], ['erdo', 'Erdő', '#2d7a3e', '#f1f7ee'], ['naplemente', 'Naplemente', '#b84d00', '#fff5ee'], ['ur', 'Űr', '#6a3fd0', '#f3f0fb'], ['cukorka', 'Cukorka', '#c2286f', '#fff2f7']];
+const curSkin = () => { const k = (PR.list.find(x => x.id === PR.cur) || {}).skin; return SKINS.some(x => x[0] === k) ? k : 'fuzet'; };
+const applySkin = () => { const k = curSkin(), r = document.documentElement; if (k === 'fuzet') r.removeAttribute('data-skin'); else r.setAttribute('data-skin', k); };
+const skinBar = () => `<div class="skins" role="group" aria-label="Színtéma"><span class="lab">Színek:</span>${SKINS.map(([id, n, c1, c2]) => `<button class="sk" style="--c1:${c1};--c2:${c2}" data-act="skin" data-id="${id}" aria-pressed="${id === curSkin()}" aria-label="${n} téma" title="${n}"></button>`).join('')}<span class="skname">${SKINS.find(x => x[0] === curSkin())[1]}</span></div>`;
 const cleanName = v => String(v || '').replace(/\s+/g, ' ').trim().slice(0, 16);
 const playerBar = home => {
   if (!home && PR.list.length < 2) return '';
@@ -1356,7 +1360,7 @@ function homeView() {
   const groups = GROUPS.map(gr => { const ms = list.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
   const nm = getMiss().length, missBox = nm ? `<div class="missbox"><div><b>Hibáim gyakorlása</b><div class="st">${nm} feladat vár javításra. Ha jól válaszolsz, kikerül a listából.</div></div><button class="btn sm" data-act="miss">Gyakorlom</button></div>` : '';
   const note = g ? `<p class="gnote">Csak a(z) ${g}. osztályosoknak való gyakorlókat látod. <button class="linkbtn" data-act="grade" data-g="0">Mutasd az összeset</button></p>` : '';
-  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${playerBar(true)}${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
+  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${playerBar(true)}${skinBar()}${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
 }
 
 function fbBox(label) {
@@ -1441,6 +1445,7 @@ function profileView() {
 }
 
 function render() {
+  applySkin();
   const app = $('#app');
   app.innerHTML = S.view === 'home' ? homeView() : S.view === 'setup' ? setupView() : S.view === 'quiz' ? quizView() : S.view === 'result' ? resultView() : S.view === 'profile' ? profileView() : sheetView();
   if (S.addP && S.view === 'home') { const n = $('#newp'); if (n) n.focus({ preventScroll: true }); }
@@ -1559,6 +1564,7 @@ document.addEventListener('click', e => {
   else if (a === 'brkok') { hideBreak(); }
   else if (a === 'who') { PR.cur = t.dataset.id; setProfs(PR); S.askReset = S.askDel = false; render(); }
   else if (a === 'rename') { const n = cleanName($('#pname').value); if (n) { PR.list.find(x => x.id === PR.cur).name = n; setProfs(PR); render(); } }
+  else if (a === 'skin') { PR.list.find(x => x.id === PR.cur).skin = t.dataset.id; setProfs(PR); render(); const b = $(`.sk[data-id="${t.dataset.id}"]`); if (b) b.focus({ preventScroll: true }); }
   else if (a === 'addopen') { S.addP = true; render(); }
   else if (a === 'addcancel') { S.addP = false; render(); }
   else if (a === 'addp') { const n = cleanName($('#newp').value); if (n && PR.list.length < MAX_PLAYERS) { const id = String(Math.max(...PR.list.map(x => +x.id)) + 1); PR.list.push({ id, name: n }); PR.cur = id; setProfs(PR); S.askReset = S.askDel = S.addP = false; render(); window.scrollTo(0, 0); } }
