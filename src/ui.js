@@ -107,13 +107,21 @@ function gradePicker() {
 }
 const card = m => `<a class="card" data-h="${m.hue}" href="${href(m.slug)}"><div class="tile">${glyph(m)}</div><h3>${m.short}</h3><div class="meta"><span>${gradeTxt(m)}</span>${modStars(m) ? starHTML(modStars(m)) : `<span>${m.levels.length} szint</span>`}</div></a>`;
 const cleanName = v => String(v || '').replace(/\s+/g, ' ').trim().slice(0, 16);
-const playerBar = () => PR.list.length < 2 ? '' : `<div class="pl" role="group" aria-label="Ki gyakorol?"><span class="lab">Ki gyakorol?</span>${PR.list.map(x => `<button class="chip ${x.id === PR.cur ? 'on' : ''}" data-act="who" data-id="${x.id}" aria-pressed="${x.id === PR.cur}">${esc(x.name)}</button>`).join('')}</div>`;
+const playerBar = home => {
+  if (!home && PR.list.length < 2) return '';
+  const chips = PR.list.map(x => `<button class="chip ${x.id === PR.cur ? 'on' : ''}" data-act="who" data-id="${x.id}" aria-pressed="${x.id === PR.cur}">${esc(x.name)}</button>`).join('');
+  const add = !home || PR.list.length >= MAX_PLAYERS ? '' : S.addP
+    ? `<span class="padd"><input id="newp" class="tin" maxlength="16" placeholder="Név, pl. Anna" aria-label="Az új játékos neve" autocomplete="off"><button class="btn sm" data-act="addp">Hozzáadás</button><button class="btn sm sec" data-act="addcancel">Mégse</button></span>`
+    : '<button class="chip add" data-act="addopen">+ Új játékos</button>';
+  const tip = home && PR.list.length < 2 && !S.addP ? '<small class="ptip">Többen gyakoroltok ezen az eszközön? Mindenkinek külön pontja és jelvénye lehet.</small>' : '';
+  return `<div class="pl" role="group" aria-label="Ki gyakorol?"><span class="lab">Ki gyakorol?</span>${chips}${add}${tip}</div>`;
+};
 function homeView() {
   const g = getP().grade, list = g ? MODS.filter(m => m.grades[0] <= g && g <= m.grades[1]) : MODS;
   const groups = GROUPS.map(gr => { const ms = list.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
   const nm = getMiss().length, missBox = nm ? `<div class="missbox"><div><b>Hibáim gyakorlása</b><div class="st">${nm} feladat vár javításra. Ha jól válaszolsz, kikerül a listából.</div></div><button class="btn sm" data-act="miss">Gyakorlom</button></div>` : '';
   const note = g ? `<p class="gnote">Csak a(z) ${g}. osztályosoknak való gyakorlókat látod. <button class="linkbtn" data-act="grade" data-g="0">Mutasd az összeset</button></p>` : '';
-  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${playerBar()}${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
+  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${playerBar(true)}${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
 }
 
 function fbBox(label) {
@@ -200,6 +208,7 @@ function profileView() {
 function render() {
   const app = $('#app');
   app.innerHTML = S.view === 'home' ? homeView() : S.view === 'setup' ? setupView() : S.view === 'quiz' ? quizView() : S.view === 'result' ? resultView() : S.view === 'profile' ? profileView() : sheetView();
+  if (S.addP && S.view === 'home') { const n = $('#newp'); if (n) n.focus({ preventScroll: true }); }
   if (S.view === 'quiz' && S.done && !S.ok) { const b = $('#nextbtn'); if (b) b.focus({ preventScroll: true }); }
   document.title = S.view === 'profile' ? `Haladásom és jelvények – ${SITE_NAME}` : S.mod && S.view !== 'home' ? `${S.mod.title} – ${SITE_NAME}` : `${SITE_NAME} – ingyenes matematika gyakorlók 1–8. osztályosoknak`;
 }
@@ -315,7 +324,9 @@ document.addEventListener('click', e => {
   else if (a === 'brkok') { hideBreak(); }
   else if (a === 'who') { PR.cur = t.dataset.id; setProfs(PR); S.askReset = S.askDel = false; render(); }
   else if (a === 'rename') { const n = cleanName($('#pname').value); if (n) { PR.list.find(x => x.id === PR.cur).name = n; setProfs(PR); render(); } }
-  else if (a === 'addp') { const n = cleanName($('#newp').value); if (n && PR.list.length < MAX_PLAYERS) { const id = String(Math.max(...PR.list.map(x => +x.id)) + 1); PR.list.push({ id, name: n }); PR.cur = id; setProfs(PR); S.askReset = S.askDel = false; render(); window.scrollTo(0, 0); } }
+  else if (a === 'addopen') { S.addP = true; render(); }
+  else if (a === 'addcancel') { S.addP = false; render(); }
+  else if (a === 'addp') { const n = cleanName($('#newp').value); if (n && PR.list.length < MAX_PLAYERS) { const id = String(Math.max(...PR.list.map(x => +x.id)) + 1); PR.list.push({ id, name: n }); PR.cur = id; setProfs(PR); S.askReset = S.askDel = S.addP = false; render(); window.scrollTo(0, 0); } }
   else if (a === 'delask') { S.askDel = true; render(); }
   else if (a === 'delno') { S.askDel = false; render(); }
   else if (a === 'delyes') { try { localStorage.removeItem(LS + sfx()); localStorage.removeItem(MISS_KEY + sfx()); } catch (er) { /* nincs tárhely */ } PR.list = PR.list.filter(x => x.id !== PR.cur); PR.cur = PR.list[0].id; setProfs(PR); S.askDel = false; render(); }
@@ -332,6 +343,8 @@ document.addEventListener('click', e => {
   else if (a === 'resetyes') { store.set({}); setMiss([]); S.askReset = false; render(); msg('Az adatok törölve.'); }
 });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.target.id === 'newp' || e.target.id === 'pname')) { e.preventDefault(); const b = $(`[data-act="${e.target.id === 'newp' ? 'addp' : 'rename'}"]`); if (b) b.click(); return; }
+  if (e.key === 'Escape' && e.target.id === 'newp' && S.addP) { S.addP = false; render(); return; }
   if (S.view !== 'quiz' || e.ctrlKey || e.metaKey || e.altKey) return;
   const q = S.cur;
   if (e.key === 'Enter') { e.preventDefault(); if (S.done) next(); else if (q.kind === 'num') answer(); return; }
@@ -370,7 +383,7 @@ function route() {
   clearTimeout(S.timer); clearInterval(S.tick); S.tm = false;
   const slug = PATHMODE ? (document.documentElement.dataset.route || '') : decodeURIComponent(location.hash.replace(/^#/, ''));
   const m = modBySlug(slug);
-  S.mod = m || null; S.askReset = false; S.askDel = false; S.hiba = false;
+  S.mod = m || null; S.askReset = false; S.askDel = false; S.addP = false; S.hiba = false;
   S.view = slug === 'profil' ? 'profile' : m ? 'setup' : 'home'; render();
   if (!PATHMODE) window.scrollTo(0, 0);
 }
