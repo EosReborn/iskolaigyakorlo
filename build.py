@@ -159,6 +159,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True):
 <link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/nunito-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css?v={ver}">
+<script>try{{var p=JSON.parse(localStorage.getItem("iskolai-gyakorlo-players")),c=p.list.filter(function(x){{return x.id===p.cur}})[0];if(c&&c.skin&&c.skin!=="fuzet")document.documentElement.setAttribute("data-skin",c.skin)}}catch(e){{}}</script>
 {ldh}</head>
 <body>
 <header class="site"><div class="wrap"><a class="brand" href="/">{logo_img("/assets/logo.webp")}</a><nav><a href="/tudastar/">Szülőknek</a><a href="/">Minden gyakorló</a></nav></div></header>

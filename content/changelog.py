@@ -2,6 +2,7 @@
 """Újdonságok: (dátum, [(címke, szöveg), ...]) – legújabb felül. Címke: Új / Javítva."""
 CHANGES = [
 ("2026-10-09", [
+ ("Új", "Színtémák: a kezdőlapon ötféle színvilág közül választhatsz (Füzet, Erdő, Naplemente, Űr, Cukorka). Minden játékosnak saját témája lehet, és a sötét módban is működnek."),
  ("Új", "A kezdőlapon mostantól mindig látszik a „Ki gyakorol?” sor: egy kattintással válthatsz játékost, vagy felvehetsz újat (pl. testvért), külön ponttal és jelvényekkel."),
  ("Új", "Jóval több feladat minden évfolyamon: a meglévő gyakorlókhoz 60-nál is több új szint került. Kalandos történetek, Igaz vagy hamis?, Hibakereső, Szám-detektív, Gondoltam egy számra, Melyik nem illik közé? és még sok más. A régi szintek és az eddigi csillagaid megmaradtak, az újak a lista végén vannak."),
 ]),

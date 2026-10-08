@@ -385,3 +385,24 @@ header.site nav a { white-space: nowrap; margin-left: 0; }
 .chip.add { border-style: dashed; color: var(--blue); }
 .padd { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; } .padd .tin { flex: 0 1 180px; min-height: 40px; }
 .ptip { flex-basis: 100%; color: var(--muted); }
+
+/* ---------- Színtémák (játékosonként választható; a világos/sötét váltás a rendszerbeállítást követi) ---------- */
+:root[data-skin="erdo"] { --bg: #f1f7ee; --grid: #d9e8d2; --paper: #ffffff; --ink: #1d3a26; --muted: #4f6b57; --line: #c5dbc0; --blue: #2d7a3e; --blue-soft: #dff2dc; --on-blue: #ffffff; --shape: #b9dcb4; --brand-bg: #1f4a2c; --brand-ink: #d4efd8; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-skin="erdo"] { --bg: #0d1a12; --grid: #162a1c; --paper: #14241a; --ink: #e6f4e8; --muted: #a5c4ac; --line: #2a4632; --blue: #6fd48a; --blue-soft: #1d4a2b; --on-blue: #0d1a12; --shape: #2e6b42; --brand-bg: #08120c; --brand-ink: #d4efd8; color-scheme: dark; } }
+:root[data-theme="dark"][data-skin="erdo"] { --bg: #0d1a12; --grid: #162a1c; --paper: #14241a; --ink: #e6f4e8; --muted: #a5c4ac; --line: #2a4632; --blue: #6fd48a; --blue-soft: #1d4a2b; --on-blue: #0d1a12; --shape: #2e6b42; --brand-bg: #08120c; --brand-ink: #d4efd8; color-scheme: dark; }
+:root[data-skin="naplemente"] { --bg: #fff5ee; --grid: #fbe1d3; --paper: #ffffff; --ink: #4a2330; --muted: #7d5560; --line: #f0cdbc; --blue: #b84d00; --blue-soft: #ffe6d2; --on-blue: #ffffff; --shape: #f8c9a8; --brand-bg: #7a2d3f; --brand-ink: #ffe3d6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-skin="naplemente"] { --bg: #1f1114; --grid: #2e1a1e; --paper: #2a171b; --ink: #ffe9df; --muted: #d2aaa0; --line: #4a2c32; --blue: #ff9a4d; --blue-soft: #4a2a14; --on-blue: #1f1114; --shape: #8a4a22; --brand-bg: #170a0d; --brand-ink: #ffe3d6; color-scheme: dark; } }
+:root[data-theme="dark"][data-skin="naplemente"] { --bg: #1f1114; --grid: #2e1a1e; --paper: #2a171b; --ink: #ffe9df; --muted: #d2aaa0; --line: #4a2c32; --blue: #ff9a4d; --blue-soft: #4a2a14; --on-blue: #1f1114; --shape: #8a4a22; --brand-bg: #170a0d; --brand-ink: #ffe3d6; color-scheme: dark; }
+:root[data-skin="ur"] { --bg: #f3f0fb; --grid: #e0daf3; --paper: #ffffff; --ink: #2a1f55; --muted: #5d5490; --line: #d2cbea; --blue: #6a3fd0; --blue-soft: #e8e0ff; --on-blue: #ffffff; --shape: #cbbdf5; --brand-bg: #231a52; --brand-ink: #dcd5fa; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-skin="ur"] { --bg: #0c0a1f; --grid: #171433; --paper: #17143a; --ink: #ece8ff; --muted: #b0a8de; --line: #302a63; --blue: #a68bff; --blue-soft: #2a2260; --on-blue: #0c0a1f; --shape: #4a3b9a; --brand-bg: #070614; --brand-ink: #dcd5fa; color-scheme: dark; } }
+:root[data-theme="dark"][data-skin="ur"] { --bg: #0c0a1f; --grid: #171433; --paper: #17143a; --ink: #ece8ff; --muted: #b0a8de; --line: #302a63; --blue: #a68bff; --blue-soft: #2a2260; --on-blue: #0c0a1f; --shape: #4a3b9a; --brand-bg: #070614; --brand-ink: #dcd5fa; color-scheme: dark; }
+:root[data-skin="cukorka"] { --bg: #fff2f7; --grid: #fbdbe8; --paper: #ffffff; --ink: #4a1f3a; --muted: #7d4f69; --line: #f0c6da; --blue: #c2286f; --blue-soft: #ffe0ee; --on-blue: #ffffff; --shape: #f7bcd6; --brand-bg: #7b1f5a; --brand-ink: #ffe0ef; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-skin="cukorka"] { --bg: #1f0f19; --grid: #2d1824; --paper: #2a1522; --ink: #ffe6f1; --muted: #d6a9c1; --line: #4a2a3c; --blue: #ff7fb8; --blue-soft: #4a1d35; --on-blue: #1f0f19; --shape: #8a3a63; --brand-bg: #170811; --brand-ink: #ffe0ef; color-scheme: dark; } }
+:root[data-theme="dark"][data-skin="cukorka"] { --bg: #1f0f19; --grid: #2d1824; --paper: #2a1522; --ink: #ffe6f1; --muted: #d6a9c1; --line: #4a2a3c; --blue: #ff7fb8; --blue-soft: #4a1d35; --on-blue: #1f0f19; --shape: #8a3a63; --brand-bg: #170811; --brand-ink: #ffe0ef; color-scheme: dark; }
+
+.skins { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 6px 0 10px; }
+.skins .lab, .pl .lab { font-weight: 800; font-size: .85rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.sk { width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 3px solid var(--line); cursor: pointer; background: linear-gradient(135deg, var(--c1) 0 50%, var(--c2) 50% 100%); }
+.sk[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--blue); }
+.sk:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.skname { font-weight: 700; color: var(--muted); }
