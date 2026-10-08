@@ -2,6 +2,7 @@
 """Újdonságok: (dátum, [(címke, szöveg), ...]) – legújabb felül. Címke: Új / Javítva."""
 CHANGES = [
 ("2026-10-08", [
+ ("Új", "Több játékos egy eszközön: testvéreknek külön pont, jelvény és hibalista. A Haladásom oldalon veheted fel őket, a kezdőlapon egy kattintással váltasz. Nincs fiók, minden csak a böngészőben marad."),
  ("Új", "Szünet-emlékeztető: ha 20 percet gyakoroltál megszakítás nélkül, egy kedves üzenet jelzi, hogy ideje pihenni. A Haladásom oldalon ki- és bekapcsolhatod, és semmit nem tárol rólad."),
 ]),
 ("2026-10-04", [
