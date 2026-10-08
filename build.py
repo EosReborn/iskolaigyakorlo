@@ -83,7 +83,7 @@ def prerender(m):
     if not m:
         gl = lambda k, rng: ''.join(f'<li><a href="{g_url(k, n)}">{g_name(k, n)}</a></li>' for n in rng)
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
-        return f'<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes matematikai gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}</ul><h2>Szülőknek</h2><ul><li><a href="/tudastar/">Tudástár: cikkek szülőknek</a></li><li><a href="/ujdonsagok/">Újdonságok</a></li></ul>'
+        return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}</ul><h2>Szülőknek</h2><ul><li><a href="/tudastar/">Tudástár: cikkek szülőknek</a></li><li><a href="/ujdonsagok/">Újdonságok</a></li></ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p><ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section><section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{fb_html(m["title"])}</div>'
 
@@ -109,6 +109,7 @@ XL = {'mod': {x['slug']: mod_links(x) for x in mods},
       'g': {'m': [g_url('m', n) for n in range(1, 9)], 'n': [g_url('n', n) for n in range(1, 7)]},
       'art': [[a_url(a), a['title']] for a in ARTICLES[:4]]}
 js = js.replace('/*XL*/{}/*XL*/', json.dumps(XL, ensure_ascii=False))
+js = js.replace("/*SH*/'iskolaigyakorlo.hu'/*SH*/", json.dumps(SITE.split('://', 1)[-1]))
 ver = hashlib.md5((js + css).encode()).hexdigest()[:8]
 
 FB_MAIL = 'info@kochdigitalstudio.hu'
@@ -170,10 +171,20 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True):
 </html>
 """
 
+HOME_TITLE = f'Ingyenes matek és helyesírás gyakorló 1–8. osztály – {NAME}'
+def mod_title(m):
+    a, z = m['grades']; t = f'{m["title"]} {a}–{z}. osztály – {NAME}' if a != z else f'{m["title"]} {a}. osztály – {NAME}'
+    return t if len(t) <= 62 else f'{m["title"]} – {NAME}'
+def mod_desc(m):
+    d = m['desc'].rstrip('.') + '.'
+    if len(d) >= 130: return d
+    for s in (f' {len(m["levels"])} szint, ingyenes, regisztráció nélkül, nyomtatható munkalappal.', ' Ingyenes, regisztráció nélkül, nyomtatható munkalappal.', ' Ingyenes, nyomtatható munkalappal.'):
+        if len(d + s) <= 158: return d + s
+    return d
 def page(m):
     slug = m['slug'] if m else ''
-    title = f'{m["title"]} – {NAME}' if m else f'{NAME} – ingyenes matematika és helyesírás gyakorlók 1–8. osztályosoknak'
-    desc = (m['desc'] if len(m['desc']) >= 100 else m['desc'].rstrip('.') + '. Ingyenes, regisztráció nélkül, szintekkel és nyomtatható munkalappal.') if m else 'Ingyenes, regisztráció nélküli matematika és helyesírás gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, j–ly, óra, pénz, geometria. Nyomtatható munkalapokkal.'
+    title = mod_title(m) if m else HOME_TITLE
+    desc = mod_desc(m) if m else 'Ingyenes, regisztráció nélküli matematika és helyesírás gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, j–ly, óra, pénz, geometria. Nyomtatható munkalapokkal.'
     path = f'/{slug + "/" if slug else ""}'
     url = SITE + path
     ld = {"@context": "https://schema.org", "@type": "WebApplication", "name": m['title'] if m else NAME, "url": url, "description": desc,
@@ -249,7 +260,7 @@ def article_page(a):
 
 def ujdonsagok_page():
     path = '/ujdonsagok/'
-    desc = 'Mi változott az Iskolai Gyakorlón? Új gyakorlók, javított feladatok és helyesírás, újdonságok időrendben.'
+    desc = 'Mi változott az Iskolai Gyakorlón? Új gyakorlók és szintek, színtémák, több játékos egy eszközön, javított feladatok: az újdonságok időrendben.'
     trail = [("Kezdőlap", "/"), ("Újdonságok", path)]
     hu = lambda d: d.replace('-', '. ', 2) + '.'
     blocks = ''.join(f'<section class="chg"><h2>{hu(d)}</h2><ul>' + ''.join(f'<li><span class="tag {"new" if t == "Új" else "fix"}">{t}</span> {e(x)}</li>' for t, x in items) + '</ul></section>' for d, items in CHANGES)
@@ -289,7 +300,7 @@ for pth, htm in SEO_PAGES:
     open(os.path.join(d, 'index.html'), 'w', encoding='utf-8').write(htm)
 
 os.makedirs(os.path.join(DIST, 'profil'))
-pp = page(None).replace('data-route=""', 'data-route="profil"').replace('<title>'+e(f'{NAME} – ingyenes matematika és helyesírás gyakorlók 1–8. osztályosoknak')+'</title>', f'<title>Haladásom – {NAME}</title>')
+pp = page(None).replace('data-route=""', 'data-route="profil"').replace('<title>'+e(HOME_TITLE)+'</title>', f'<title>Haladásom – {NAME}</title>')
 pp = re.sub(r'<meta name="robots"[^>]*>\n', '', pp)
 pp = re.sub(r'<link rel="alternate"[^>]*><link rel="alternate"[^>]*>\n', '', pp)
 pp = re.sub(r'<link rel="canonical"[^>]*>', '<meta name="robots" content="noindex">', pp)
@@ -323,7 +334,7 @@ PRIV_HTML = """<div class="setup legal"><a class="crumb" href="/">← Minden gya
 <p class="muted">Utolsó frissítés: 2026. október 4.</p></div>"""
 os.makedirs(os.path.join(DIST, 'adatvedelem'))
 ap = page(None).replace('data-route=""', 'data-route="adatvedelem"')
-ap = ap.replace('<title>'+e(f'{NAME} – ingyenes matematika és helyesírás gyakorlók 1–8. osztályosoknak')+'</title>', f'<title>Adatvédelmi tájékoztató – {NAME}</title>')
+ap = ap.replace('<title>'+e(HOME_TITLE)+'</title>', f'<title>Adatvédelmi tájékoztató – {NAME}</title>')
 ap = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="Az Iskolai Gyakorló adatvédelmi tájékoztatója: nincs regisztráció, nincs cookie, a pontjaid csak a saját böngésződben tárolódnak.">', ap, count=1)
 ap = ap.replace(SITE+'/">', SITE+'/adatvedelem/">')
 ap = re.sub(r'<script type="application/ld\+json">.*?</script>\n', '', ap, flags=re.S)
