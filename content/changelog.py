@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Újdonságok: (dátum, [(címke, szöveg), ...]) – legújabb felül. Címke: Új / Javítva."""
 CHANGES = [
+("2026-10-08", [
+ ("Új", "Szünet-emlékeztető: ha 20 percet gyakoroltál megszakítás nélkül, egy kedves üzenet jelzi, hogy ideje pihenni. A Haladásom oldalon ki- és bekapcsolhatod, és semmit nem tárol rólad."),
+]),
 ("2026-10-04", [
  ("Új", "Évfolyam-oldalak: 1–8. osztályos matek és 1–6. osztályos helyesírás gyakorló, hogy gyorsan megtaláld, mi való az adott évfolyamnak."),
  ("Új", "Tudástár szülőknek: 11 rövid cikk (szorzótábla, törtek, j és ly, írásbeli osztás, mennyit gyakoroljon a gyerek) a hozzájuk tartozó gyakorlókkal."),

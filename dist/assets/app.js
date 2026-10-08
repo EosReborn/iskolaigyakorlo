@@ -924,6 +924,8 @@ const store = {
 const OPT_KEY = 'iskolai-gyakorlo-opt';   // beállítások (pl. időre menő mód); nem része a mentési kódnak
 const getOpt = () => { try { return JSON.parse(localStorage.getItem(OPT_KEY)) || {}; } catch (e) { return {}; } };
 const setOpt = o => { try { localStorage.setItem(OPT_KEY, JSON.stringify(o)); } catch (e) { /* nincs tárhely */ } };
+const BREAK_MIN = 20;         // szünet-emlékeztető: gyakorlással töltött percek
+const BREAK_IDLE = 300;       // ennyi mp tétlenség után a számláló nullázódik
 const TIME_SEC = 60;          // időre menő mód hossza
 const MISS_KEY = 'iskolai-gyakorlo-miss';
 const getMiss = () => { try { return JSON.parse(localStorage.getItem(MISS_KEY)) || []; } catch (e) { return []; } };
@@ -971,6 +973,7 @@ const FLAME = '<svg class="flame" viewBox="0 0 24 24" aria-hidden="true"><path d
 
 const S = { view: 'home', mod: null, lvl: 0, cur: null, i: 0, score: 0, input: '', done: false, ok: null, pick: null, hist: [], timer: null, sheet: [], run: 0, maxRun: 0, award: null, askReset: false, tm: false, tick: null, tEnd: 0, trec: null };
 S.timed = !!getOpt().timed;
+S.breakOn = getOpt().brk !== false;   // szünet-emlékeztető (alapból be)
 const ICONS = {
   clock: '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="currentColor" stroke-width="4"/><path d="M30 14v17l11 7" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>',
   coin: '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="currentColor" stroke-width="4"/><text x="30" y="37" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="600" font-size="20" fill="currentColor">Ft</text></svg>',
@@ -1088,7 +1091,7 @@ function profileView() {
   const stat = (v, t) => `<div class="stat"><b>${v}</b><span>${t}</span></div>`;
   const badges = BADGES.map(x => `<div class="bdg ${p.badges[x.id] ? 'got' : ''}">${medal(x.g, !!p.badges[x.id])}<b>${x.name}</b><small>${x.desc}</small>${p.badges[x.id] ? `<em>${p.badges[x.id]}</em>` : ''}</div>`).join('');
   const reset = S.askReset ? `<p class="warn">Biztosan törlöd az összes pontot, jelvényt és eredményt erről az eszközről?</p><div class="ractions"><button class="btn" data-act="resetyes">Igen, törlés</button><button class="btn sec" data-act="resetno">Mégsem</button></div>` : `<button class="btn sec sm" data-act="resetask">Minden adatom törlése</button>`;
-  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>Haladásom és jelvények</h1><p class="lead">Az eredményeid csak ezen az eszközön, a böngészőben tárolódnak. Nincs fiók és nincs regisztráció.</p><div class="pbig"><div><span class="lab">${l}. szint</span><b>${titleOf(l)}</b></div><div class="pbar"><i style="width:${pc}%"></i></div><small>${fmt(p.pts)} pont, még ${fmt(b - p.pts)} a következő szintig</small></div><div class="stats">${stat(fmt(p.pts), 'pont')}${stat(fmt(p.ok), 'helyes válasz')}${stat(p.rounds, 'befejezett kör')}${stat(p.perf, 'hibátlan kör')}${stat(curStreak(p), 'napos sorozat')}${stat(p.best, 'legjobb sorozat')}${stat(Math.min(day, DAILY_GOAL) + '/' + DAILY_GOAL, 'mai cél')}${stat(Object.keys(p.played).length + '/' + MODS.length, 'kipróbált gyakorló')}</div><h2 class="sech">Jelvények (${Object.keys(p.badges).length}/${BADGES.length})</h2><div class="bgrid">${badges}</div><h2 class="sech">Haladás átvitele másik eszközre</h2><p>Készíts egy kódot, és másold be a másik eszközön ugyanide. A betöltés felülírja az ottani adatokat.</p><textarea id="code" class="code" rows="4" spellcheck="false" aria-label="Mentési kód" placeholder="Ide kerül a kód, vagy ide illeszd be a betöltéshez"></textarea><div class="ractions left"><button class="btn sm" data-act="mkcode">Kód készítése</button><button class="btn sm sec" data-act="copycode">Másolás</button><button class="btn sm sec" data-act="loadcode">Betöltés</button></div><p id="bmsg" class="bmsg" role="status"></p><div class="resetbox">${reset}</div>${installBox()}</div>`;
+  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>Haladásom és jelvények</h1><p class="lead">Az eredményeid csak ezen az eszközön, a böngészőben tárolódnak. Nincs fiók és nincs regisztráció.</p><div class="pbig"><div><span class="lab">${l}. szint</span><b>${titleOf(l)}</b></div><div class="pbar"><i style="width:${pc}%"></i></div><small>${fmt(p.pts)} pont, még ${fmt(b - p.pts)} a következő szintig</small></div><div class="stats">${stat(fmt(p.pts), 'pont')}${stat(fmt(p.ok), 'helyes válasz')}${stat(p.rounds, 'befejezett kör')}${stat(p.perf, 'hibátlan kör')}${stat(curStreak(p), 'napos sorozat')}${stat(p.best, 'legjobb sorozat')}${stat(Math.min(day, DAILY_GOAL) + '/' + DAILY_GOAL, 'mai cél')}${stat(Object.keys(p.played).length + '/' + MODS.length, 'kipróbált gyakorló')}</div><h2 class="sech">Jelvények (${Object.keys(p.badges).length}/${BADGES.length})</h2><div class="bgrid">${badges}</div><div class="tmode"><div><b>Szünet-emlékeztető</b><small>Ha összesen ${BREAK_MIN} percet gyakoroltál megszakítás nélkül, egy kedves üzenet jelzi, hogy ideje pihenni.</small></div><button class="sw" role="switch" aria-checked="${S.breakOn}" aria-label="Szünet-emlékeztető" data-act="brk"><i></i></button></div><h2 class="sech">Haladás átvitele másik eszközre</h2><p>Készíts egy kódot, és másold be a másik eszközön ugyanide. A betöltés felülírja az ottani adatokat.</p><textarea id="code" class="code" rows="4" spellcheck="false" aria-label="Mentési kód" placeholder="Ide kerül a kód, vagy ide illeszd be a betöltéshez"></textarea><div class="ractions left"><button class="btn sm" data-act="mkcode">Kód készítése</button><button class="btn sm sec" data-act="copycode">Másolás</button><button class="btn sm sec" data-act="loadcode">Betöltés</button></div><p id="bmsg" class="bmsg" role="status"></p><div class="resetbox">${reset}</div>${installBox()}</div>`;
 }
 
 function render() {
@@ -1205,6 +1208,8 @@ document.addEventListener('click', e => {
   else if (a === 'install') { if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null; render(); } }
   else if (a === 'quit') { e.preventDefault(); clearTimeout(S.timer); clearInterval(S.tick); S.tm = false; if (S.hiba) { S.hiba = false; S.mod = null; S.view = 'home'; render(); window.scrollTo(0, 0); return; } S.view = 'setup'; render(); window.scrollTo(0, 0); }
   else if (a === 'timed') { S.timed = !S.timed; const o = getOpt(); o.timed = S.timed; setOpt(o); render(); const sw = $('.sw'); if (sw) sw.focus({ preventScroll: true }); }
+  else if (a === 'brk') { S.breakOn = !S.breakOn; const o = getOpt(); o.brk = S.breakOn; setOpt(o); breakSecs = 0; hideBreak(); render(); const sw = $('.sw[data-act="brk"]'); if (sw) sw.focus({ preventScroll: true }); }
+  else if (a === 'brkok') { hideBreak(); }
   else if (a === 'print') window.print();
   else if (a === 'newsheet') makeSheet(S.lvl);
   else if (a === 'sheetn') { S.sheetN = +t.dataset.n; makeSheet(S.lvl); }
@@ -1233,6 +1238,23 @@ document.addEventListener('keydown', e => {
     else if (e.key in map && q.choices[map[e.key]]) answer(q.choices[map[e.key]].v);
   }
 });
+
+/* ---------- Szünet-emlékeztető: csak a ténylegesen gyakorlással töltött időt számolja, semmit nem tárol ---------- */
+let breakSecs = 0, lastAct = Date.now();
+const hideBreak = () => { const b = $('#brkbox'); if (b) b.remove(); };
+function showBreak() {
+  if ($('#brkbox')) return;
+  const d = document.createElement('div'); d.id = 'brkbox'; d.className = 'brk noprint'; d.setAttribute('role', 'status');
+  d.innerHTML = `<div><b>Már ${BREAK_MIN} perce gyakorolsz, pihenj egy kicsit.</b><small>Igyál egy pohár vizet, nyújtózz egyet, nézz ki az ablakon.</small></div><button class="btn sm" data-act="brkok">Rendben</button>`;
+  document.body.appendChild(d);
+}
+['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, { passive: true }));
+setInterval(() => {
+  if (!S.breakOn || document.hidden) return;
+  if (Date.now() - lastAct > BREAK_IDLE * 1000) { breakSecs = 0; return; }   // már tartott szünetet
+  if (S.view === 'quiz') breakSecs++;
+  if (breakSecs >= BREAK_MIN * 60 && !(S.view === 'quiz' && (S.tm || !S.done))) { breakSecs = 0; showBreak(); }
+}, 1000);
 
 function route() {
   clearTimeout(S.timer); clearInterval(S.tick); S.tm = false;
