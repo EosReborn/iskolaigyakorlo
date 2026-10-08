@@ -314,6 +314,8 @@ main { padding-block: 8px 24px; }
 .tbig { text-align: center; margin: 6px 0 10px; }
 .tbig b { display: block; font-family: var(--f-display); font-size: 4.2rem; line-height: 1; color: var(--blue); }
 .tbig span { color: var(--muted); font-weight: 700; }
+.brk { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 50; max-width: 560px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px; background: var(--amber-soft); color: var(--ink); border: 2px solid var(--gold); border-radius: 16px; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
+.brk b { display: block; font-weight: 800; } .brk small { display: block; color: var(--muted); margin-top: 2px; }
 @media (prefers-reduced-motion: reduce) { .sw, .sw i, .tprog i { transition: none; } }
 
 /* évfolyam-oldalak, tudástár */
