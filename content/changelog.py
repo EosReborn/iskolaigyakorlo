@@ -2,6 +2,7 @@
 """Újdonságok: (dátum, [(címke, szöveg), ...]) – legújabb felül. Címke: Új / Javítva."""
 CHANGES = [
 ("2026-10-09", [
+ ("Új", "Tanároknak menü: a munkalap-készítő és a kész munkalapok külön, a tanároknak szóló oldalon érhetők el, így a gyerekek kezdőlapja egyszerű marad."),
  ("Új", "Nyomtatható munkalap-készítő: kiválaszthatod, melyik témából hány feladat legyen a lapon, kérhetsz megoldókulcsot, és kinyomtathatod. Minden témához és évfolyamhoz készült külön, azonnal nyomtatható munkalap-oldal is."),
  ("Új", "Megosztás: a gyakorlás végén egy gombbal elküldheted a gyakorlót egy barátodnak, a kinyomtatott munkalap alján pedig már az oldal neve is szerepel."),
  ("Új", "Színtémák: a kezdőlapon ötféle színvilág közül választhatsz (Füzet, Erdő, Naplemente, Űr, Cukorka). Csak a gombok, a linkek és a fejléc színe változik, a háttér és a szövegek mindig a megszokottak maradnak. Minden játékosnak saját témája lehet, és a sötét módban is működnek."),
