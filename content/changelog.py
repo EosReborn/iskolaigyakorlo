@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Újdonságok: (dátum, [(címke, szöveg), ...]) – legújabb felül. Címke: Új / Javítva."""
 CHANGES = [
+("2026-10-09", [
+ ("Új", "Jóval több feladat minden évfolyamon: a meglévő gyakorlókhoz 60-nál is több új szint került. Kalandos történetek, Igaz vagy hamis?, Hibakereső, Szám-detektív, Gondoltam egy számra, Melyik nem illik közé? és még sok más. A régi szintek és az eddigi csillagaid megmaradtak, az újak a lista végén vannak."),
+]),
 ("2026-10-08", [
  ("Új", "Több játékos egy eszközön: testvéreknek külön pont, jelvény és hibalista. A Haladásom oldalon veheted fel őket, a kezdőlapon egy kattintással váltasz. Nincs fiók, minden csak a böngészőben marad."),
  ("Új", "Szünet-emlékeztető: ha 20 percet gyakoroltál megszakítás nélkül, egy kedves üzenet jelzi, hogy ideje pihenni. A Haladásom oldalon ki- és bekapcsolhatod, és semmit nem tárol rólad."),
