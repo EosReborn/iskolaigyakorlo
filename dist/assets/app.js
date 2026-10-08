@@ -917,9 +917,16 @@ const XL = {"mod": {"osszeadas-kivonas": [["/1-osztalyos-matek-gyakorlo/", "1. o
 const PATHMODE = document.documentElement.dataset.path === '1';
 const href = slug => (PATHMODE ? (slug ? `/${slug}/` : '/') : (slug ? `#${slug}` : '#'));
 const LS = 'iskolai-gyakorlo-v1';
+/* ---------- Játékosok: ugyanazon az eszközön több gyerek, külön haladással (csak a böngészőben) ---------- */
+const PROF_KEY = 'iskolai-gyakorlo-players', MAX_PLAYERS = 6;
+const getProfs = () => { try { const o = JSON.parse(localStorage.getItem(PROF_KEY)); if (o && Array.isArray(o.list) && o.list.length && o.list.some(x => x.id === o.cur)) return o; } catch (e) { /* alapérték */ } return { list: [{ id: '1', name: 'Játékos' }], cur: '1' }; };
+const setProfs = o => { try { localStorage.setItem(PROF_KEY, JSON.stringify(o)); } catch (e) { /* nincs tárhely */ } };
+let PR = getProfs();
+const sfx = () => (PR.cur === '1' ? '' : '-' + PR.cur);   // az első játékos a régi kulcsokat használja, így a meglévő haladás megmarad
+const curName = () => (PR.list.find(x => x.id === PR.cur) || PR.list[0]).name;
 const store = {
-  get() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } },
-  set(o) { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) { /* nincs tárhely */ } }
+  get() { try { return JSON.parse(localStorage.getItem(LS + sfx())) || {}; } catch (e) { return {}; } },
+  set(o) { try { localStorage.setItem(LS + sfx(), JSON.stringify(o)); } catch (e) { /* nincs tárhely */ } }
 };
 const OPT_KEY = 'iskolai-gyakorlo-opt';   // beállítások (pl. időre menő mód); nem része a mentési kódnak
 const getOpt = () => { try { return JSON.parse(localStorage.getItem(OPT_KEY)) || {}; } catch (e) { return {}; } };
@@ -928,8 +935,8 @@ const BREAK_MIN = 20;         // szünet-emlékeztető: gyakorlással töltött 
 const BREAK_IDLE = 300;       // ennyi mp tétlenség után a számláló nullázódik
 const TIME_SEC = 60;          // időre menő mód hossza
 const MISS_KEY = 'iskolai-gyakorlo-miss';
-const getMiss = () => { try { return JSON.parse(localStorage.getItem(MISS_KEY)) || []; } catch (e) { return []; } };
-const setMiss = a => { try { localStorage.setItem(MISS_KEY, JSON.stringify(a.slice(-40))); } catch (e) { /* nincs tárhely */ } };
+const getMiss = () => { try { return JSON.parse(localStorage.getItem(MISS_KEY + sfx())) || []; } catch (e) { return []; } };
+const setMiss = a => { try { localStorage.setItem(MISS_KEY + sfx(), JSON.stringify(a.slice(-40))); } catch (e) { /* nincs tárhely */ } };
 const missKey = q => q.q + '|' + q.ans;
 const T = () => (S.hiba ? S.pool.length : S.tm ? S.hist.length : N);
 const bestOf = (slug, i) => ((store.get()[slug] || {})[i]) || 0;
@@ -1010,12 +1017,14 @@ function gradePicker() {
   return `<div class="gpick" role="group" aria-label="Évfolyam"><span class="gl">Hányadikos vagy?</span><div class="gchips">${[1, 2, 3, 4, 5, 6, 7, 8].map(n => chip(n, n + '.')).join('')}${chip(0, 'Mind')}</div></div>`;
 }
 const card = m => `<a class="card" data-h="${m.hue}" href="${href(m.slug)}"><div class="tile">${glyph(m)}</div><h3>${m.short}</h3><div class="meta"><span>${gradeTxt(m)}</span>${modStars(m) ? starHTML(modStars(m)) : `<span>${m.levels.length} szint</span>`}</div></a>`;
+const cleanName = v => String(v || '').replace(/\s+/g, ' ').trim().slice(0, 16);
+const playerBar = () => PR.list.length < 2 ? '' : `<div class="pl" role="group" aria-label="Ki gyakorol?"><span class="lab">Ki gyakorol?</span>${PR.list.map(x => `<button class="chip ${x.id === PR.cur ? 'on' : ''}" data-act="who" data-id="${x.id}" aria-pressed="${x.id === PR.cur}">${esc(x.name)}</button>`).join('')}</div>`;
 function homeView() {
   const g = getP().grade, list = g ? MODS.filter(m => m.grades[0] <= g && g <= m.grades[1]) : MODS;
   const groups = GROUPS.map(gr => { const ms = list.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
   const nm = getMiss().length, missBox = nm ? `<div class="missbox"><div><b>Hibáim gyakorlása</b><div class="st">${nm} feladat vár javításra. Ha jól válaszolsz, kikerül a listából.</div></div><button class="btn sm" data-act="miss">Gyakorlom</button></div>` : '';
   const note = g ? `<p class="gnote">Csak a(z) ${g}. osztályosoknak való gyakorlókat látod. <button class="linkbtn" data-act="grade" data-g="0">Mutasd az összeset</button></p>` : '';
-  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
+  return `<div class="hero"><h1>Gyakorolj játékosan!</h1><p>Ingyenes gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${playerBar()}${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
 }
 
 function fbBox(label) {
@@ -1086,12 +1095,17 @@ function sheetView() {
   const items = S.sheet.map(q => `<li><div class="sq">${q.q}</div>${q.kind === 'num' ? `<div class="sline">Válasz: <span class="blank"></span> ${q.unit || ''}</div>` : `<div class="sopts">${q.choices.map((c, i) => `<span>${'ABCD'[i]}) ${c.h}</span>`).join('')}</div>`}</li>`).join('');
   return `<div class="stool noprint"><a class="btn sec sm" href="#" data-act="quit">← Vissza</a><button class="btn sm" data-act="print">Nyomtatás</button><button class="btn sec sm" data-act="newsheet">Új munkalap</button><span class="cnt">Feladatok: ${[10, 20, 30].map(n => `<button class="btn sm ${(S.sheetN || SHEET_N) === n ? '' : 'sec'}" data-act="sheetn" data-n="${n}" aria-pressed="${(S.sheetN || SHEET_N) === n}">${n}</button>`).join('')}</span></div><article class="sheet"><div class="shead"><h1>${m.title}</h1><div>Név: ____________________ Dátum: ____________</div><div class="lvn">${S.mix ? 'Vegyes szintek: könnyebbtől a nehezebbig' : `${S.lvl + 1}. szint: ${L.name}`}</div></div><ol class="slist">${items}</ol></article>`;
 }
+function playersBox() {
+  const full = PR.list.length >= MAX_PLAYERS, many = PR.list.length > 1;
+  const del = !many ? '' : S.askDel ? `<p class="warn">Biztosan törlöd ${esc(curName())} játékost és az összes eredményét?</p><div class="ractions left"><button class="btn sm" data-act="delyes">Igen, törlés</button><button class="btn sm sec" data-act="delno">Mégsem</button></div>` : '<button class="btn sec sm" data-act="delask">Ennek a játékosnak a törlése</button>';
+  return `<h2 class="sech">Játékosok</h2><p>Ha többen használjátok ugyanezt az eszközt, mindenkinek külön pontja, jelvénye és hibalistája lehet. Nem kell hozzá fiók, minden csak a böngészőben marad.</p><div class="prow"><label for="pname" class="lab">Az aktuális játékos neve</label><input id="pname" class="tin" maxlength="16" value="${esc(curName())}" autocomplete="off"><button class="btn sm sec" data-act="rename">Átnevezés</button></div>${full ? `<p class="lead">Legfeljebb ${MAX_PLAYERS} játékos lehet.</p>` : '<div class="prow"><label for="newp" class="lab">Új játékos neve</label><input id="newp" class="tin" maxlength="16" placeholder="pl. Anna" autocomplete="off"><button class="btn sm" data-act="addp">Hozzáadás</button></div>'}${del}`;
+}
 function profileView() {
   const p = getP(), l = levelOf(p.pts), a = lvlStart(l), b = lvlStart(l + 1), pc = Math.round((p.pts - a) / (b - a) * 100), day = p.days[todayStr()] || 0;
   const stat = (v, t) => `<div class="stat"><b>${v}</b><span>${t}</span></div>`;
   const badges = BADGES.map(x => `<div class="bdg ${p.badges[x.id] ? 'got' : ''}">${medal(x.g, !!p.badges[x.id])}<b>${x.name}</b><small>${x.desc}</small>${p.badges[x.id] ? `<em>${p.badges[x.id]}</em>` : ''}</div>`).join('');
-  const reset = S.askReset ? `<p class="warn">Biztosan törlöd az összes pontot, jelvényt és eredményt erről az eszközről?</p><div class="ractions"><button class="btn" data-act="resetyes">Igen, törlés</button><button class="btn sec" data-act="resetno">Mégsem</button></div>` : `<button class="btn sec sm" data-act="resetask">Minden adatom törlése</button>`;
-  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>Haladásom és jelvények</h1><p class="lead">Az eredményeid csak ezen az eszközön, a böngészőben tárolódnak. Nincs fiók és nincs regisztráció.</p><div class="pbig"><div><span class="lab">${l}. szint</span><b>${titleOf(l)}</b></div><div class="pbar"><i style="width:${pc}%"></i></div><small>${fmt(p.pts)} pont, még ${fmt(b - p.pts)} a következő szintig</small></div><div class="stats">${stat(fmt(p.pts), 'pont')}${stat(fmt(p.ok), 'helyes válasz')}${stat(p.rounds, 'befejezett kör')}${stat(p.perf, 'hibátlan kör')}${stat(curStreak(p), 'napos sorozat')}${stat(p.best, 'legjobb sorozat')}${stat(Math.min(day, DAILY_GOAL) + '/' + DAILY_GOAL, 'mai cél')}${stat(Object.keys(p.played).length + '/' + MODS.length, 'kipróbált gyakorló')}</div><h2 class="sech">Jelvények (${Object.keys(p.badges).length}/${BADGES.length})</h2><div class="bgrid">${badges}</div><div class="tmode"><div><b>Szünet-emlékeztető</b><small>Ha összesen ${BREAK_MIN} percet gyakoroltál megszakítás nélkül, egy kedves üzenet jelzi, hogy ideje pihenni.</small></div><button class="sw" role="switch" aria-checked="${S.breakOn}" aria-label="Szünet-emlékeztető" data-act="brk"><i></i></button></div><h2 class="sech">Haladás átvitele másik eszközre</h2><p>Készíts egy kódot, és másold be a másik eszközön ugyanide. A betöltés felülírja az ottani adatokat.</p><textarea id="code" class="code" rows="4" spellcheck="false" aria-label="Mentési kód" placeholder="Ide kerül a kód, vagy ide illeszd be a betöltéshez"></textarea><div class="ractions left"><button class="btn sm" data-act="mkcode">Kód készítése</button><button class="btn sm sec" data-act="copycode">Másolás</button><button class="btn sm sec" data-act="loadcode">Betöltés</button></div><p id="bmsg" class="bmsg" role="status"></p><div class="resetbox">${reset}</div>${installBox()}</div>`;
+  const reset = S.askReset ? `<p class="warn">Biztosan törlöd ${PR.list.length > 1 ? esc(curName()) + ' ' : ''}az összes pontját, jelvényét és eredményét erről az eszközről?</p><div class="ractions"><button class="btn" data-act="resetyes">Igen, törlés</button><button class="btn sec" data-act="resetno">Mégsem</button></div>` : `<button class="btn sec sm" data-act="resetask">Minden adatom törlése</button>`;
+  return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>Haladásom és jelvények${PR.list.length > 1 ? ': ' + esc(curName()) : ''}</h1>${playerBar()}<p class="lead">Az eredményeid csak ezen az eszközön, a böngészőben tárolódnak. Nincs fiók és nincs regisztráció.</p><div class="pbig"><div><span class="lab">${l}. szint</span><b>${titleOf(l)}</b></div><div class="pbar"><i style="width:${pc}%"></i></div><small>${fmt(p.pts)} pont, még ${fmt(b - p.pts)} a következő szintig</small></div><div class="stats">${stat(fmt(p.pts), 'pont')}${stat(fmt(p.ok), 'helyes válasz')}${stat(p.rounds, 'befejezett kör')}${stat(p.perf, 'hibátlan kör')}${stat(curStreak(p), 'napos sorozat')}${stat(p.best, 'legjobb sorozat')}${stat(Math.min(day, DAILY_GOAL) + '/' + DAILY_GOAL, 'mai cél')}${stat(Object.keys(p.played).length + '/' + MODS.length, 'kipróbált gyakorló')}</div><h2 class="sech">Jelvények (${Object.keys(p.badges).length}/${BADGES.length})</h2><div class="bgrid">${badges}</div><div class="tmode"><div><b>Szünet-emlékeztető</b><small>Ha összesen ${BREAK_MIN} percet gyakoroltál megszakítás nélkül, egy kedves üzenet jelzi, hogy ideje pihenni.</small></div><button class="sw" role="switch" aria-checked="${S.breakOn}" aria-label="Szünet-emlékeztető" data-act="brk"><i></i></button></div>${playersBox()}<h2 class="sech">Haladás átvitele másik eszközre</h2><p>Készíts egy kódot, és másold be a másik eszközön ugyanide.${PR.list.length > 1 ? ` A kód csak ${esc(curName())} haladását tartalmazza.` : ''} A betöltés felülírja az ottani adatokat.</p><textarea id="code" class="code" rows="4" spellcheck="false" aria-label="Mentési kód" placeholder="Ide kerül a kód, vagy ide illeszd be a betöltéshez"></textarea><div class="ractions left"><button class="btn sm" data-act="mkcode">Kód készítése</button><button class="btn sm sec" data-act="copycode">Másolás</button><button class="btn sm sec" data-act="loadcode">Betöltés</button></div><p id="bmsg" class="bmsg" role="status"></p><div class="resetbox">${reset}</div>${installBox()}</div>`;
 }
 
 function render() {
@@ -1210,6 +1224,12 @@ document.addEventListener('click', e => {
   else if (a === 'timed') { S.timed = !S.timed; const o = getOpt(); o.timed = S.timed; setOpt(o); render(); const sw = $('.sw'); if (sw) sw.focus({ preventScroll: true }); }
   else if (a === 'brk') { S.breakOn = !S.breakOn; const o = getOpt(); o.brk = S.breakOn; setOpt(o); breakSecs = 0; hideBreak(); render(); const sw = $('.sw[data-act="brk"]'); if (sw) sw.focus({ preventScroll: true }); }
   else if (a === 'brkok') { hideBreak(); }
+  else if (a === 'who') { PR.cur = t.dataset.id; setProfs(PR); S.askReset = S.askDel = false; render(); }
+  else if (a === 'rename') { const n = cleanName($('#pname').value); if (n) { PR.list.find(x => x.id === PR.cur).name = n; setProfs(PR); render(); } }
+  else if (a === 'addp') { const n = cleanName($('#newp').value); if (n && PR.list.length < MAX_PLAYERS) { const id = String(Math.max(...PR.list.map(x => +x.id)) + 1); PR.list.push({ id, name: n }); PR.cur = id; setProfs(PR); S.askReset = S.askDel = false; render(); window.scrollTo(0, 0); } }
+  else if (a === 'delask') { S.askDel = true; render(); }
+  else if (a === 'delno') { S.askDel = false; render(); }
+  else if (a === 'delyes') { try { localStorage.removeItem(LS + sfx()); localStorage.removeItem(MISS_KEY + sfx()); } catch (er) { /* nincs tárhely */ } PR.list = PR.list.filter(x => x.id !== PR.cur); PR.cur = PR.list[0].id; setProfs(PR); S.askDel = false; render(); }
   else if (a === 'print') window.print();
   else if (a === 'newsheet') makeSheet(S.lvl);
   else if (a === 'sheetn') { S.sheetN = +t.dataset.n; makeSheet(S.lvl); }
@@ -1257,10 +1277,11 @@ setInterval(() => {
 }, 1000);
 
 function route() {
+  PR = getProfs();
   clearTimeout(S.timer); clearInterval(S.tick); S.tm = false;
   const slug = PATHMODE ? (document.documentElement.dataset.route || '') : decodeURIComponent(location.hash.replace(/^#/, ''));
   const m = modBySlug(slug);
-  S.mod = m || null; S.askReset = false; S.hiba = false;
+  S.mod = m || null; S.askReset = false; S.askDel = false; S.hiba = false;
   S.view = slug === 'profil' ? 'profile' : m ? 'setup' : 'home'; render();
   if (!PATHMODE) window.scrollTo(0, 0);
 }
