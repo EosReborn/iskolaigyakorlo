@@ -106,7 +106,7 @@ function gradePicker() {
   return `<div class="gpick" role="group" aria-label="Évfolyam"><span class="gl">Hányadikos vagy?</span><div class="gchips">${[1, 2, 3, 4, 5, 6, 7, 8].map(n => chip(n, n + '.')).join('')}${chip(0, 'Mind')}</div></div>`;
 }
 const card = m => `<a class="card" data-h="${m.hue}" href="${href(m.slug)}"><div class="tile">${glyph(m)}</div><h3>${m.short}</h3><div class="meta"><span>${gradeTxt(m)}</span>${modStars(m) ? starHTML(modStars(m)) : `<span>${m.levels.length} szint</span>`}</div></a>`;
-const SKINS = [['fuzet', 'Füzet', '#2a64d0', '#f3f6fb'], ['erdo', 'Erdő', '#2d7a3e', '#f1f7ee'], ['naplemente', 'Naplemente', '#b84d00', '#fff5ee'], ['ur', 'Űr', '#6a3fd0', '#f3f0fb'], ['cukorka', 'Cukorka', '#c2286f', '#fff2f7']];
+const SKINS = [['fuzet', 'Füzet', '#2a64d0', '#e2ecff'], ['erdo', 'Erdő', '#2d7a3e', '#dff2dc'], ['naplemente', 'Naplemente', '#b84d00', '#ffe6d2'], ['ur', 'Űr', '#6a3fd0', '#e8e0ff'], ['cukorka', 'Cukorka', '#c2286f', '#ffe0ee']];
 const curSkin = () => { const k = (PR.list.find(x => x.id === PR.cur) || {}).skin; return SKINS.some(x => x[0] === k) ? k : 'fuzet'; };
 const applySkin = () => { const k = curSkin(), r = document.documentElement; if (k === 'fuzet') r.removeAttribute('data-skin'); else r.setAttribute('data-skin', k); };
 const skinBar = () => `<div class="skins" role="group" aria-label="Színtéma"><span class="lab">Színek:</span>${SKINS.map(([id, n, c1, c2]) => `<button class="sk" style="--c1:${c1};--c2:${c2}" data-act="skin" data-id="${id}" aria-pressed="${id === curSkin()}" aria-label="${n} téma" title="${n}"></button>`).join('')}<span class="skname">${SKINS.find(x => x[0] === curSkin())[1]}</span></div>`;
