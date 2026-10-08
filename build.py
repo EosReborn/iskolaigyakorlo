@@ -146,6 +146,9 @@ def faq_html(faq, title='Gyakran ismételt kérdések'):
 
 def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws=''):
     url = SITE + path
+    if path.startswith(('/tanaroknak/', '/munkalapok/')): ogimg, ogalt = '/assets/og-tanar.png', 'Iskolai Gyakorló: nyomtatható munkalapok tanároknak, megoldókulccsal'
+    elif path.startswith('/tudastar/'): ogimg, ogalt = '/assets/og-szulo.png', 'Iskolai Gyakorló: Tudástár szülőknek'
+    else: ogimg, ogalt = '/assets/og-main.png', 'Iskolai Gyakorló: ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak'
     ldh = ''.join(f'<script type="application/ld+json">{json.dumps(l, ensure_ascii=False)}</script>\n' for l in lds)
     return f"""<!doctype html>
 <html lang="hu" data-path="1" data-route="{route}"{(' data-ws="' + ws + '"') if ws else ''}>
@@ -158,7 +161,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws
 <link rel="canonical" href="{url}">
 <link rel="alternate" hreflang="hu" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}">
 <meta property="og:type" content="{ogtype}"><meta property="og:locale" content="hu_HU"><meta property="og:site_name" content="{NAME}">
-<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{SITE}/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}">
+<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{SITE}{ogimg}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{e(ogalt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{SITE}{ogimg}"><meta name="twitter:image:alt" content="{e(ogalt)}"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}">
 <meta name="theme-color" content="#2a64d0">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Gyakorló">
@@ -390,6 +393,10 @@ os.makedirs(os.path.join(DIST, 'assets', 'fonts'))
 for f in [x for x in FONT_FILES if not x.startswith('fredoka-latin-ext')]: shutil.copy(os.path.join(SRC, 'fonts', f), os.path.join(DIST, 'assets', 'fonts', f))
 open(os.path.join(DIST, 'assets', 'logo.webp'), 'wb').write(LOGO_WEBP)
 FAV.save(os.path.join(DIST, 'assets', 'favicon.png'), optimize=True); APPLE.save(os.path.join(DIST, 'assets', 'apple-touch-icon.png'), optimize=True); OG.save(os.path.join(DIST, 'assets', 'og.png'), optimize=True)
+for _k, _n in (('main', 'og.png'), ('main', 'og-main.png'), ('tanar', 'og-tanar.png'), ('szulo', 'og-szulo.png')):
+    _p = os.path.join(SRC, 'brand', f'og-{_k}.png')
+    if os.path.exists(_p): shutil.copy(_p, os.path.join(DIST, 'assets', _n))
+    elif _k != 'main': shutil.copy(os.path.join(DIST, 'assets', 'og.png'), os.path.join(DIST, 'assets', _n))
 open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8').write(page(None))
 for m in mods:
     os.makedirs(os.path.join(DIST, m['slug']))
