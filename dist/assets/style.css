@@ -442,3 +442,16 @@ header.site nav a { white-space: nowrap; margin-left: 0; }
 
 .sbbar #sbsum { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 @media (max-width: 640px) { .sbbar { padding: 10px 12px; gap: 8px; } .sbbar > div { flex-basis: 100%; } .sbbar .btn:not(.sm) { flex: 1; } .sbp { padding-bottom: 8px; } }
+/* Mobil fejléc: a logó teljes méretben marad, a menü külön sorba kerül, az érintési felület legalább 44 px magas */
+@media (max-width: 560px) {
+  header.site .wrap { flex-wrap: wrap; row-gap: 2px; }
+  header.site .brand { flex: 0 0 auto; }
+  header.site .brand img { width: 170px; }
+  header.site nav { flex: 1 1 100%; justify-content: space-between; gap: 4px; margin-inline: -6px; }
+  header.site nav a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 6px; }
+}
+.tag.fix { color: color-mix(in srgb, var(--green) 72%, var(--ink)); }
+.chk.sel { flex: 1 1 260px; min-width: 0; }
+.chk.sel select { flex: 1 1 auto; min-width: 0; max-width: 100%; }
+.crumb { display: inline-flex; align-items: center; min-height: 44px; }
+header.site .brand { padding-block: 6px; }
