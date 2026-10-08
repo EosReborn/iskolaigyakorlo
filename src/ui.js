@@ -3,7 +3,6 @@ const N = 10;                 // kérdések száma egy körben
 const SHEET_N = 20;           // kérdések a munkalapon
 const DAILY_GOAL = 20;        // napi cél: helyes válaszok
 const XL = /*XL*/{}/*XL*/;
-const SITE_HOST = /*SH*/'iskolaigyakorlo.hu'/*SH*/;
 const PATHMODE = document.documentElement.dataset.path === '1';
 const href = slug => (PATHMODE ? (slug ? `/${slug}/` : '/') : (slug ? `#${slug}` : '#'));
 const LS = 'iskolai-gyakorlo-v1';
@@ -70,6 +69,7 @@ const FLAME = '<svg class="flame" viewBox="0 0 24 24" aria-hidden="true"><path d
 
 const S = { view: 'home', mod: null, lvl: 0, cur: null, i: 0, score: 0, input: '', done: false, ok: null, pick: null, hist: [], timer: null, sheet: [], run: 0, maxRun: 0, award: null, askReset: false, tm: false, tick: null, tEnd: 0, trec: null };
 S.timed = !!getOpt().timed;
+S.sb = null;
 S.breakOn = getOpt().brk !== false;   // szünet-emlékeztető (alapból be)
 const ICONS = {
   clock: '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="currentColor" stroke-width="4"/><path d="M30 14v17l11 7" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>',
@@ -81,7 +81,6 @@ const glyph = m => (m.icon ? ICONS[m.icon] : m.glyph);
 const SITE_NAME = 'Iskolai Gyakorló';
 const modBySlug = s => MODS.find(m => m.slug === s);
 const gradeTxt = m => `${m.grades[0] === m.grades[1] ? m.grades[0] : m.grades[0] + '–' + m.grades[1]}. osztály`;
-const ansText = q => (q.kind === 'num' ? `${numTxt(q.ans)}${q.unit ? (q.unit === '°' || q.unit === '%' ? '' : ' ') + q.unit : ''}` : q.ansLabel);
 const showIn = s => esc(s.replace('-', '−'));
 const parseIn = s => (/^-?\d+(,\d*)?$/.test(s) ? parseFloat(s.replace(',', '.')) : null);
 
@@ -126,7 +125,7 @@ function homeView() {
   const groups = GROUPS.map(gr => { const ms = list.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
   const nm = getMiss().length, missBox = nm ? `<div class="missbox"><div><b>Hibáim gyakorlása</b><div class="st">${nm} feladat vár javításra. Ha jól válaszolsz, kikerül a listából.</div></div><button class="btn sm" data-act="miss">Gyakorlom</button></div>` : '';
   const note = g ? `<p class="gnote">Csak a(z) ${g}. osztályosoknak való gyakorlókat látod. <button class="linkbtn" data-act="grade" data-g="0">Mutasd az összeset</button></p>` : '';
-  return `<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${playerBar(true)}${skinBar()}${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
+  return `<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><a class="wsban" href="${href('munkalapok')}"><b>Nyomtatható munkalap-készítő</b><span>Válaszd ki, miből hány feladat legyen a lapon, és nyomtasd ki megoldókulccsal.</span></a>${playerBar(true)}${skinBar()}${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
 }
 
 function fbBox(label) {
@@ -213,11 +212,12 @@ function profileView() {
 const modTitle = m => { const [a, z] = m.grades || [0, 0], t = a ? `${m.title} ${a === z ? a : a + '–' + z}. osztály – ${SITE_NAME}` : ''; return t && t.length <= 62 ? t : `${m.title} – ${SITE_NAME}`; };
 function render() {
   applySkin();
+  if (S.view === 'wspage') return;
   const app = $('#app');
-  app.innerHTML = S.view === 'home' ? homeView() : S.view === 'setup' ? setupView() : S.view === 'quiz' ? quizView() : S.view === 'result' ? resultView() : S.view === 'profile' ? profileView() : sheetView();
+  app.innerHTML = S.view === 'home' ? homeView() : S.view === 'setup' ? setupView() : S.view === 'quiz' ? quizView() : S.view === 'result' ? resultView() : S.view === 'profile' ? profileView() : S.view === 'sheets' ? builderView() : S.view === 'sheetx' ? sheetxView() : sheetView();
   if (S.addP && S.view === 'home') { const n = $('#newp'); if (n) n.focus({ preventScroll: true }); }
   if (S.view === 'quiz' && S.done && !S.ok) { const b = $('#nextbtn'); if (b) b.focus({ preventScroll: true }); }
-  document.title = S.view === 'profile' ? `Haladásom és jelvények – ${SITE_NAME}` : S.mod && S.view !== 'home' ? modTitle(S.mod) : `Ingyenes matek és helyesírás gyakorló 1–8. osztály – ${SITE_NAME}`;
+  document.title = S.view === 'sheets' || S.view === 'sheetx' ? `Nyomtatható munkalap-készítő – ${SITE_NAME}` : S.view === 'profile' ? `Haladásom és jelvények – ${SITE_NAME}` : S.mod && S.view !== 'home' ? modTitle(S.mod) : `Ingyenes matek és helyesírás gyakorló 1–8. osztály – ${SITE_NAME}`;
 }
 
 /* ---------- Működés ---------- */
@@ -345,6 +345,17 @@ document.addEventListener('click', e => {
     if (navigator.share) navigator.share({ title: SITE_NAME, text, url }).catch(() => {});
     else { try { navigator.clipboard.writeText(`${text} ${url}`).then(() => done('A link kimásolva, már küldheted is.'), () => done(`Másold ki a linket: ${url}`)); } catch (er) { done(`Másold ki a linket: ${url}`); } }
   }
+  else if (a === 'sbd') sbSetN(t.dataset.slug, ((S.sb.rows[t.dataset.slug] || {}).n || 0) + +t.dataset.d);
+  else if (a === 'sbgrade') { S.sb.grade = +t.dataset.g; saveSB(); render(); }
+  else if (a === 'sbfill') { const g = +t.dataset.g, ms = gradeMods(t.dataset.k, g); S.sb.rows = {}; ms.forEach(m => { S.sb.rows[m.slug] = { sel: 'g', n: 2 }; }); S.sb.grade = g; saveSB(); render(); }
+  else if (a === 'sbpreset') { S.sb.rows = {}; SB_PRESETS[+t.dataset.i][1].forEach(([slug, n]) => { S.sb.rows[slug] = { sel: 'mix', n }; }); S.sb.grade = 0; saveSB(); render(); }
+  else if (a === 'sbclear') { S.sb.rows = {}; saveSB(); render(); }
+  else if (a === 'sbgen') { if (sbTotal()) sbGenerate(); }
+  else if (a === 'sbregen') sbGenerate();
+  else if (a === 'sbback') { S.view = 'sheets'; render(); window.scrollTo(0, 0); }
+  else if (a === 'wsprint') window.print();
+  else if (a === 'wsnew') wsRegen();
+  else if (a === 'wsn') { S.ws.n = +t.dataset.n; document.querySelectorAll('[data-act="wsn"]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.n === S.ws.n))); wsRegen(); }
   else if (a === 'print') window.print();
   else if (a === 'newsheet') makeSheet(S.lvl);
   else if (a === 'sheetn') { S.sheetN = +t.dataset.n; makeSheet(S.lvl); }
@@ -357,6 +368,19 @@ document.addEventListener('click', e => {
   else if (a === 'resetno') { S.askReset = false; render(); }
   else if (a === 'resetyes') { store.set({}); setMiss([]); S.askReset = false; render(); msg('Az adatok törölve.'); }
 });
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.sb) {
+    const k = t.dataset.sb;
+    if (k === 'n') sbSetN(t.dataset.slug, +t.value);
+    else if (k === 'sel') { const r = S.sb.rows[t.dataset.slug] = Object.assign({ sel: 'mix', n: 0 }, S.sb.rows[t.dataset.slug]); r.sel = t.value === 'mix' || t.value === 'g' ? t.value : +t.value; saveSB(); }
+    else if (k === 'title') { S.sb.title = t.value; saveSB(); }
+    else if (k === 'keyp') { S.sb.key = t.checked; saveSB(); const el = $('#sbkey'); if (el) el.classList.toggle('noprint', !t.checked); }
+    else { S.sb[k] = t.checked; saveSB(); }
+  } else if (t.dataset.ws === 'sel') { S.ws.sel = t.value === 'mix' ? 'mix' : +t.value; wsRegen(); }
+  else if (t.dataset.ws === 'key') { const el = $('#wskey'); if (el) el.classList.toggle('noprint', !t.checked); }
+});
+document.addEventListener('input', e => { const t = e.target; if (t.dataset.sb === 'n') { const v = Math.max(0, Math.min(SB_ROW_MAX, +t.value || 0)); const r = S.sb.rows[t.dataset.slug] = Object.assign({ sel: 'mix', n: 0 }, S.sb.rows[t.dataset.slug]); const room = SB_MAX - (sbTotal() - (r.n || 0)); r.n = Math.min(v, room); saveSB(); sbSync(); } });
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.target.id === 'newp' || e.target.id === 'pname')) { e.preventDefault(); const b = $(`[data-act="${e.target.id === 'newp' ? 'addp' : 'rename'}"]`); if (b) b.click(); return; }
   if (e.key === 'Escape' && e.target.id === 'newp' && S.addP) { S.addP = false; render(); return; }
@@ -393,13 +417,61 @@ setInterval(() => {
   if (breakSecs >= BREAK_MIN * 60 && !(S.view === 'quiz' && (S.tm || !S.done))) { breakSecs = 0; showBreak(); }
 }, 1000);
 
+
+/* ---------- Munkalap-készítő: a tanár kiválasztja, miből hány feladat legyen a lapon ---------- */
+const SB_MAX = 60, SB_ROW_MAX = 30;
+const loadSB = () => Object.assign({ grade: 0, rows: {}, title: '', name: true, key: false, two: true }, getOpt().sb || {});
+const saveSB = () => { const o = getOpt(); o.sb = S.sb; setOpt(o); };
+const sbRows = () => MODS.map(m => { const r = S.sb.rows[m.slug] || {}; return { slug: m.slug, sel: r.sel === undefined ? 'mix' : r.sel, n: r.n || 0 }; }).filter(r => r.n > 0);
+const sbTotal = () => sbRows().reduce((a, r) => a + r.n, 0);
+const SB_PRESETS = [
+  ['Szorzás és osztás', [['szorzotabla', 6], ['osztas', 6], ['irasbeli-muveletek', 4]]],
+  ['Összeadás, kivonás, szöveges feladat', [['osszeadas-kivonas', 8], ['szoveges-feladatok', 4], ['szamok-osszehasonlitasa', 4]]],
+  ['Törtek és tizedes törtek', [['tortek', 5], ['tortek-halado', 5], ['tizedes-tortek', 5]]],
+  ['Helyesírás vegyesen', [['j-ly-helyesiras', 5], ['hosszu-rovid-hangok', 5], ['toldalekok-val-vel', 5]]],
+  ['Mértékegység, idő, pénz', [['mertekegysegek', 5], ['ora-leolvasas', 5], ['penz-szamolas', 5]]]
+];
+const sbSummary = () => { const rs = sbRows(); return rs.length ? rs.map(r => `${esc(modBySlug(r.slug).short)} <b>×${r.n}</b>`).join(', ') : 'Még nincs kiválasztva feladat.'; };
+const sbSync = () => { const t = sbTotal(), tot = $('#sbtot'), g = $('#sbgen'), s = $('#sbsum'); if (tot) tot.textContent = `Összesen: ${t} feladat`; if (g) g.disabled = !t; if (s) s.innerHTML = sbSummary();
+  document.querySelectorAll('.sbr').forEach(el => el.classList.toggle('on', ((S.sb.rows[el.dataset.slug] || {}).n || 0) > 0)); };
+const sbSetN = (slug, n) => { const r = S.sb.rows[slug] = Object.assign({ sel: 'mix', n: 0 }, S.sb.rows[slug]), cur = r.n || 0, room = SB_MAX - (sbTotal() - cur);
+  r.n = Math.max(0, Math.min(SB_ROW_MAX, room, Math.round(n) || 0)); const inp = document.querySelector(`input[data-sb="n"][data-slug="${slug}"]`); if (inp) inp.value = r.n; saveSB(); sbSync(); };
+const gradeBar = (kind, label) => `<div class="gchips" role="group" aria-label="${label}"><span class="lab">${label}:</span>${(kind === 'm' ? [1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 5, 6]).map(n => `<button class="chip" data-act="sbfill" data-k="${kind}" data-g="${n}">${n}.</button>`).join('')}</div>`;
+function builderView() {
+  const sb = S.sb, g = sb.grade, list = MODS.filter(m => !g || (m.grades[0] <= g && g <= m.grades[1]));
+  const rows = GROUPS.map(gr => { const ms = list.filter(m => m.group === gr.id); if (!ms.length) return '';
+    return `<h3 class="sbg">${gr.name}</h3>${ms.map(m => { const r = sb.rows[m.slug] || {}, n = r.n || 0, sel = r.sel === undefined ? 'mix' : String(r.sel);
+      const opts = [['mix', 'Vegyes (könnyebbtől a nehezebbig)'], ...(g && m.grades[0] <= g && g <= m.grades[1] ? [['g', `${g}. osztálynak megfelelő szintek`]] : []), ...m.levels.map((l, i) => [String(i), `${i + 1}. ${l.name}`])];
+      return `<div class="sbr${n ? ' on' : ''}" data-slug="${m.slug}"><div class="sbn"><b>${esc(m.short)}</b><small>${gradeTxt(m)}</small></div><select class="tin" data-sb="sel" data-slug="${m.slug}" aria-label="Szint: ${esc(m.short)}">${opts.map(([v, t]) => `<option value="${v}"${v === sel ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select><div class="step"><button class="btn sm sec" data-act="sbd" data-slug="${m.slug}" data-d="-1" aria-label="Kevesebb feladat: ${esc(m.short)}">−</button><input class="tin num" type="number" min="0" max="${SB_ROW_MAX}" inputmode="numeric" data-sb="n" data-slug="${m.slug}" value="${n}" aria-label="Feladatok száma: ${esc(m.short)}"><button class="btn sm sec" data-act="sbd" data-slug="${m.slug}" data-d="1" aria-label="Több feladat: ${esc(m.short)}">+</button></div></div>`; }).join('')}`; }).join('');
+  const gf = `<div class="gchips" role="group" aria-label="Szűrés évfolyamra"><span class="lab">Csak ezt mutasd:</span><button class="chip${g ? '' : ' on'}" data-act="sbgrade" data-g="0">Minden évfolyam</button>${[1, 2, 3, 4, 5, 6, 7, 8].map(n => `<button class="chip${g === n ? ' on' : ''}" data-act="sbgrade" data-g="${n}">${n}.</button>`).join('')}</div>`;
+  const ws = XL.ws ? `<section class="about noprint"><h2>Kész munkalapok témák szerint</h2>${XL.ws.mods.length ? `<ul class="xl">${XL.ws.mods.map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul>` : ''}<h2>Kész munkalapok évfolyamonként</h2><ul class="xl">${XL.ws.grades.map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul></section>` : '';
+  return `<div class="setup sbp"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>Nyomtatható munkalap-készítő</h1><p class="lead">Válaszd ki, miből hány feladat legyen a lapon, és nyomtasd ki. Minden lapon új, véletlenszerű feladatok vannak, és kérhetsz hozzá megoldókulcsot is. Ingyenes, regisztráció nélkül.</p>
+<section class="sbbox"><h2>1. Gyors indítás</h2><p>Egy kattintással összeállít egy vegyes lapot az évfolyamnak. Utána bármit átállíthatsz.</p>${gradeBar('m', 'Matek')}${gradeBar('n', 'Helyesírás')}<div class="gchips" role="group" aria-label="Témák szerint"><span class="lab">Témák:</span>${SB_PRESETS.map((p, i) => `<button class="chip" data-act="sbpreset" data-i="${i}">${esc(p[0])}</button>`).join('')}</div></section>
+<section class="sbbox"><h2>2. Feladatok kiválasztása</h2>${gf}${rows}</section>
+<section class="sbbox"><h2>3. Beállítások</h2><div class="prow"><label for="sbt" class="lab">A munkalap címe (nem kötelező)</label><input id="sbt" class="tin" maxlength="60" data-sb="title" value="${esc(sb.title)}" placeholder="pl. Házi feladat, 3.a"></div><label class="chk"><input type="checkbox" data-sb="name"${sb.name ? ' checked' : ''}> Név és dátum sor</label><label class="chk"><input type="checkbox" data-sb="two"${sb.two ? ' checked' : ''}> Két oszlop</label><label class="chk"><input type="checkbox" data-sb="key"${sb.key ? ' checked' : ''}> Megoldókulcs nyomtatása külön oldalon</label></section>
+<div class="sbbar noprint"><div><span id="sbtot">Összesen: ${sbTotal()} feladat</span><small id="sbsum">${sbSummary()}</small></div><button class="btn sec sm" data-act="sbclear">Törlés</button><button class="btn" id="sbgen" data-act="sbgen"${sbTotal() ? '' : ' disabled'}>Munkalap készítése</button></div>${ws}</div>`;
+}
+const sbSub = () => `Témák: ${[...new Set(S.sbItems.map(i => i.title))].join(', ')}`;
+function sheetxView() {
+  const sb = S.sb, p = sheetParts({ title: sb.title.trim() || 'Munkalap', sub: sbSub(), nameLine: sb.name, cols: sb.two }, S.sbItems);
+  return `<div class="stool noprint"><button class="btn sec sm" data-act="sbback">← Szerkesztés</button><button class="btn sm" data-act="print">Nyomtatás</button><button class="btn sec sm" data-act="sbregen">Új feladatok</button><label class="chk"><input type="checkbox" data-sb="keyp"${sb.key ? ' checked' : ''}> Megoldókulcs nyomtatása</label></div><article class="sheet${p.cols}">${p.sheet}</article><section class="skey${sb.key ? '' : ' noprint'}" id="sbkey">${p.key}</section>`;
+}
+const sbGenerate = () => { S.sbItems = genRows(sbRows(), S.sb.grade); S.view = 'sheetx'; render(); window.scrollTo(0, 0); };
+function wsRegen() {
+  const w = S.ws, b = wsBuild(w.type, w.key, w.sel, w.n), sh = $('#wssheet'), k = $('#wskey'); if (!sh || !k) return;
+  sh.className = 'sheet'; sh.innerHTML = b.sheet; k.innerHTML = b.key;
+}
+
 function route() {
   PR = getProfs();
   clearTimeout(S.timer); clearInterval(S.tick); S.tm = false;
   const slug = PATHMODE ? (document.documentElement.dataset.route || '') : decodeURIComponent(location.hash.replace(/^#/, ''));
   const m = modBySlug(slug);
   S.mod = m || null; S.askReset = false; S.askDel = false; S.addP = false; S.hiba = false;
-  S.view = slug === 'profil' ? 'profile' : m ? 'setup' : 'home'; render();
+  const ws = PATHMODE && document.documentElement.dataset.ws;
+  if (ws) { const [t, k] = ws.split(':'); S.ws = { type: t, key: k, sel: 'mix', n: 20 }; S.view = 'wspage'; render(); return; }
+  S.sb = loadSB();
+  S.view = slug === 'profil' ? 'profile' : slug === 'munkalapok' ? 'sheets' : m ? 'setup' : 'home'; render();
   if (!PATHMODE) window.scrollTo(0, 0);
 }
 if (!PATHMODE) window.addEventListener('hashchange', route);
