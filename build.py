@@ -83,7 +83,7 @@ def prerender(m):
     if not m:
         gl = lambda k, rng: ''.join(f'<li><a href="{g_url(k, n)}">{g_name(k, n)}</a></li>' for n in rng)
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
-        return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}</ul><h2>Szülőknek</h2><ul><li><a href="/tudastar/">Tudástár: cikkek szülőknek</a></li><li><a href="/ujdonsagok/">Újdonságok</a></li></ul>'
+        return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p><ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section><section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{fb_html(m["title"])}</div>'
 
@@ -106,11 +106,9 @@ def mod_links(x):
     gs = [n for n in range(x['grades'][0], x['grades'][1] + 1) if n <= top]
     if len(gs) > 4: gs = [gs[0], gs[len(gs)//3], gs[2*len(gs)//3], gs[-1]]
     out = [[w_url(x), f'{x["short"]} munkalap nyomtatható']] + [[g_url(kind, n), g_name(kind, n)] for n in gs]
-    out += [[a_url(a), a['title']] for a in ARTICLES if x['slug'] in a['mods']][:2]
     return out
 XL = {'mod': {x['slug']: mod_links(x) for x in mods},
       'g': {'m': [g_url('m', n) for n in range(1, 9)], 'n': [g_url('n', n) for n in range(1, 7)]},
-      'art': [[a_url(a), a['title']] for a in ARTICLES[:4]],
       'ws': {'mods': [[w_url(x), f'{x["short"]} munkalap'] for x in mods], 'grades': [[wg_url(k, n), wg_name(k, n)] for k, n in GRADES]}}
 js = js.replace('/*XL*/{}/*XL*/', json.dumps(XL, ensure_ascii=False))
 js = js.replace("/*SH*/'iskolaigyakorlo.hu'/*SH*/", json.dumps(SITE.split('://', 1)[-1]))
@@ -129,10 +127,9 @@ def links_html(items, cls='xl'):
 
 def fnav():
     ch = lambda kind, rng: ''.join(f'<a href="{g_url(kind, n)}">{n}. osztályos {"matek" if kind == "m" else "helyesírás"}</a>' for n in rng)
-    return (f'<nav class="fnav" aria-label="Évfolyamok és tudástár"><div><b>Matek gyakorlók</b>{ch("m", range(1, 9))}</div>'
+    return (f'<nav class="fnav" aria-label="Évfolyamok és munkalapok"><div><b>Matek gyakorlók</b>{ch("m", range(1, 9))}</div>'
             f'<div><b>Helyesírás gyakorlók</b>{ch("n", range(1, 7))}</div>'
-            f'<div><b>Tanároknak</b><a href="/tanaroknak/">Tanároknak: eszközök az órára</a><a href="/munkalapok/">Munkalap-készítő</a><a href="/munkalapok/szorzotabla/">Szorzótábla munkalap</a><a href="/munkalapok/3-osztalyos-matek/">3. osztályos matek munkalap</a></div>'
-            f'<div><b>Szülőknek</b><a href="/tudastar/">Tudástár: cikkek szülőknek</a><a href="/szorzotabla/">Szorzótábla gyakorló</a><a href="/j-ly-helyesiras/">j vagy ly gyakorló</a><a href="/tortek/">Törtek gyakorló</a></div></nav>')
+            f'<div><b>Tanároknak</b><a href="/tanaroknak/">Tanároknak: eszközök az órára</a><a href="/munkalapok/">Munkalap-készítő</a><a href="/munkalapok/szorzotabla/">Szorzótábla munkalap</a><a href="/munkalapok/3-osztalyos-matek/">3. osztályos matek munkalap</a></div></nav>')
 
 def bc_ld(trail):
     return {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": SITE + u} for i, (n, u) in enumerate(trail)]}
@@ -228,7 +225,7 @@ def grade_page(kind, n):
     if kind == 'n': other.append((g_url('m', n), g_name('m', n)))
     arts = [a for a in ARTICLES if n in a['grades'] and (kind == 'm') == any(MODBY[s]['group'] != 'nyelv' for s in a['mods'][:1])][:3]
     if len(arts) < 2: arts = (arts + [a for a in ARTICLES if n in a['grades'] and a not in arts])[:3]
-    arth = (f'<section class="about"><h2>Cikkek szülőknek</h2>{links_html([(a_url(a), a["title"]) for a in arts])}</section>') if arts else ''
+    arth = ''
     trail = [("Kezdőlap", "/"), (name, path)]
     body = (f'<div class="setup gpage">{bc_html(trail)}<h1>{e(name)}</h1><p class="lead">{e(G["intro"])}</p>'
             f'<p class="gstat"><b>{len(ms)}</b> gyakorló · <b>{nl}</b> szint · nyomtatható munkalapok · regisztráció nélkül</p>'
@@ -324,7 +321,7 @@ def ws_mod_page(m):
             f'<section class="about"><h2>Hogyan használd?</h2><ol><li>Válaszd ki a szintet és a feladatok számát (10, 20 vagy 30).</li><li>Nyomtasd ki a lapot a „Nyomtatás” gombbal.</li><li>Ha szeretnéd, kapcsold be a megoldókulcs nyomtatását, ez külön oldalra kerül.</li><li>Új feladatokért kattints az „Új feladatok” gombra.</li></ol></section>'
             f'<section class="about"><h2>Szintek a munkalapon</h2><ul class="xl">{lv}</ul><p>A „Vegyes” beállítás a könnyebb szintektől a nehezebbek felé halad.</p></section>'
             f'<section class="about"><h2>Saját, vegyes munkalap</h2><p>Ha egy lapra többféle feladatot szeretnél, használd a <a href="/munkalapok/">munkalap-készítőt</a>: kiválaszthatod, melyik témából hány feladat legyen.</p></section>'
-            f'<section class="about"><h2>Kapcsolódó oldalak</h2>{links_html([('/' + m['slug'] + '/', m['short'] + ' gyakorló (online)')] + gl + arts)}</section>'
+            f'<section class="about"><h2>Kapcsolódó oldalak</h2>{links_html([('/' + m['slug'] + '/', m['short'] + ' gyakorló (online)')] + gl)}</section>'
             f'{faq_html(WS_FAQ)}{fb_html(m["short"] + " munkalap")}</div></div>')
     lds = [{"@context": "https://schema.org", "@type": "LearningResource", "name": f'{m["short"]} munkalap', "description": desc, "url": SITE + path, "inLanguage": "hu", "isAccessibleForFree": True,
             "learningResourceType": "Worksheet", "educationalLevel": gr, "audience": {"@type": "EducationalAudience", "educationalRole": "student"}, "publisher": {"@type": "Organization", "name": NAME, "url": SITE + "/"}},
@@ -361,8 +358,7 @@ def teacher_page():
            ("Honnan tudjam, melyik szint való az osztálynak?", "Az évfolyam-oldalak és a munkalap-készítő „az évfolyamnak megfelelő szintek” beállítása segít. A tanmenetet természetesen te ismered a legjobban, a szinteket szabadon átállíthatod.")]
     body = (f'<div class="setup gpage">{bc_html(trail)}<h1>Tanároknak: eszközök az órára</h1>'
             f'<p class="lead">Ingyenes, regisztráció nélküli eszközök tanítóknak és tanároknak: állítsd össze a saját munkalapodat, vagy nyomtass ki egy kész feladatlapot megoldókulccsal.</p>'
-            f'<div class="gcards"><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>30 téma · max. 60 feladat</span></a>'
-            f'<a class="gcard" href="/tudastar/"><h3>Tudástár</h3><p>Rövid cikkek arról, hogyan magyarázd el és gyakoroltasd a legfontosabb témákat.</p><span>{len(ARTICLES)} cikk</span></a></div>'
+            f'<div class="gcards"><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>30 téma · max. 60 feladat</span></a></div>'
             f'<section class="about"><h2>Kész matek munkalapok évfolyamonként</h2><ul class="xl">{gl("m", range(1, 9))}</ul>'
             f'<h2>Kész helyesírás munkalapok évfolyamonként</h2><ul class="xl">{gl("n", range(1, 7))}</ul></section>'
             f'<section class="about"><h2>Kész munkalapok témák szerint</h2><ul class="xl">{ws_m}</ul></section>'

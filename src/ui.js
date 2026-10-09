@@ -137,7 +137,7 @@ function fbBox(label) {
 function homeLinks() {
   if (!PATHMODE || !XL.g) return '';
   const a = (u, t) => `<a href="${u}">${t}</a>`;
-  return `<section class="grp"><h2>Gyakorlók évfolyamonként</h2><nav class="rel" aria-label="Évfolyamok">${XL.g.m.map((u, i) => a(u, `${i + 1}. osztályos matek`)).join('')}${XL.g.n.map((u, i) => a(u, `${i + 1}. osztályos helyesírás`)).join('')}</nav></section><section class="grp"><h2>Szülőknek</h2><nav class="rel" aria-label="Tudástár">${XL.art.map(x => a(x[0], x[1])).join('')}${a('/tudastar/', 'Minden cikk →')}${a('/ujdonsagok/', 'Újdonságok')}</nav></section>`;
+  return `<section class="grp"><h2>Gyakorlók évfolyamonként</h2><nav class="rel" aria-label="Évfolyamok">${XL.g.m.map((u, i) => a(u, `${i + 1}. osztályos matek`)).join('')}${XL.g.n.map((u, i) => a(u, `${i + 1}. osztályos helyesírás`)).join('')}</nav></section>`;
 }
 
 function setupView() {
