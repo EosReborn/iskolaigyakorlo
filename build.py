@@ -123,6 +123,7 @@ def fb_html(label):
     no = mt('javaslat', 'Mi nem volt jó, mi hiányzik, vagy hol találtál hibát?\n\n\n(Kérjük, ne írj le a gyerek nevét vagy más személyes adatot.)')
     return f'<section class="fb"><h2>Hasznos volt ez az oldal?</h2><p>Írd meg, mi segített, mi hiányzik, vagy hol találtál hibát. Így fejlődik az oldal.</p><p class="fbb"><a class="btn sm" href="{ok}">Hasznos volt</a><a class="btn sm sec" href="{no}">Hibát találtam / hiányzik valami</a></p></section>'
 
+FB_URL = 'https://www.facebook.com/share/1MHYDxiciR/'
 def links_html(items, cls='xl'):
     return f'<ul class="{cls}">' + ''.join(f'<li><a href="{u}">{e(t)}</a></li>' for u, t in items) + '</ul>'
 
@@ -173,7 +174,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws
 <body>
 <header class="site"><div class="wrap"><a class="brand" href="/">{logo_img("/assets/logo.webp")}</a><nav><a href="/tanaroknak/">Tanároknak</a><a href="/">Minden gyakorló</a></nav></div></header>
 <main class="wrap"><div id="app">{body}</div></main>
-<footer class="site"><div class="wrap">{fnav()}<p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p><p><a href="/ujdonsagok/">Újdonságok</a> · <a href="mailto:info@kochdigitalstudio.hu?subject=Iskolai%20Gyakorl%C3%B3%20visszajelz%C3%A9s">Visszajelzés küldése</a> · <a href="/adatvedelem/">Adatvédelmi tájékoztató</a></p>{credit("/assets/kds.png")}</div></footer>
+<footer class="site"><div class="wrap">{fnav()}<p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p><p><a href="/ujdonsagok/">Újdonságok</a> · <a href="{FB_URL}" target="_blank" rel="noopener">Facebook</a> · <a href="mailto:info@kochdigitalstudio.hu?subject=Iskolai%20Gyakorl%C3%B3%20visszajelz%C3%A9s">Visszajelzés küldése</a> · <a href="/adatvedelem/">Adatvédelmi tájékoztató</a></p>{credit("/assets/kds.png")}</div></footer>
 {'<script src="/assets/app.js?v=' + ver + '" defer></script>' if app else ''}
 </body>
 </html>
@@ -202,7 +203,7 @@ def page(m):
     lds = [ld]
     if not m:
         lds += [{"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "url": SITE + "/", "inLanguage": "hu"},
-                {"@context": "https://schema.org", "@type": "Organization", "name": NAME, "url": SITE + "/", "logo": SITE + "/assets/icon-512.png", "parentOrganization": ORG}]
+                {"@context": "https://schema.org", "@type": "Organization", "name": NAME, "url": SITE + "/", "logo": SITE + "/assets/icon-512.png", "sameAs": [FB_URL], "parentOrganization": ORG}]
     else:
         lds.append(bc_ld([("Kezdőlap", "/"), (m['title'], path)]))
     return shell(title, desc, path, prerender(m), lds, slug)
