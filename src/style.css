@@ -586,3 +586,16 @@ header.site nav { display: flex; gap: 16px; align-items: center; }
 @media (prefers-reduced-motion: reduce) { .fl { animation: none; transform: rotate(var(--r)); } .burst { display: none; } }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pcell .pbar { background: rgba(0, 0, 0, .3); } }
 :root[data-theme="dark"] .pcell .pbar { background: rgba(0, 0, 0, .3); }
+
+/* Képes feladatok (olvasás nélkül) */
+.cnts { display: grid; gap: 4px; justify-items: center; font-size: 2.6rem; line-height: 1.25; letter-spacing: 2px; }
+.cnts > div { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.big.num { font-size: 5rem; line-height: 1; }
+.big.pat { font-size: min(2.2rem, 8.5vw); line-height: 1.2; }
+.seq { display: flex; gap: 6px; justify-content: center; flex-wrap: nowrap; }
+.seq i { font-style: normal; }
+.opts.pics .opt .mini { font-size: 1.45rem; line-height: 1.25; letter-spacing: 0; display: block; text-align: center; }
+.mini > span { display: block; white-space: nowrap; }
+.opt .shp { font-size: 2.6rem; line-height: 1.2; }
+.opts.pics .opt:has(.shp) { min-height: 96px; }
+.slist .big.num { font-size: 2rem; } .slist .cnts { font-size: 1.6rem; justify-items: start; }

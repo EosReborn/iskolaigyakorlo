@@ -2,6 +2,7 @@
 """Újdonságok: (dátum, [(címke, szöveg), ...]) – legújabb felül. Címke: Új / Javítva."""
 CHANGES = [
 ("2026-10-10", [
+ ("Új", "Képes feladatok elsősöknek: olvasás nélkül is játszható gyakorló képekkel és emojikkal. Számlálás, szám és mennyiség, több és kevesebb, formák, minták, párosítás és kakukktojás, hang nélkül."),
  ("Új", "Megújult kinézet: színes kezdőlap, színes haladás-csempék és évfolyamgombok, összecsukható beállítások, számozott és színes szintlista, látványosabb gyakorlás hang nélküli jutalom-animációval."),
  ("Új", "Betűrakó szójáték: képről vagy rövid magyarázatból kell kitalálni a szót, és a hiányzó betűkockákat a helyükre rakni. Hat szint a képes szavaktól a nehéz betűkig (j, ly, ékezetek) és az ünnepi szavakig, hang nélkül, büntetés nélkül."),
  ("Új", "Ünnepi munkalapok a tanároknak: Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró. Mindegyikből négyféle lap készíthető évfolyam szerint (szöveges feladatok, titkosírás-rejtvény, szókereső, hiányzó betűk), megoldókulccsal."),
