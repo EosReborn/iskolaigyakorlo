@@ -44,7 +44,16 @@
       ]
     },
     {
-      "source": "/assets/(logo\\.webp|kds\\.png|favicon\\.png|apple-touch-icon\\.png|og\\.png|icon-192\\.png|icon-512\\.png|icon-maskable\\.png)",
+      "source": "/assets/(logo\\.webp|kds\\.png|favicon\\.png|favicon-48\\.png|favicon-96\\.png|og-main\\.png|og-tanar\\.png|og-szulo\\.png|apple-touch-icon\\.png|og\\.png|icon-192\\.png|icon-512\\.png|icon-maskable\\.png)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
+    },
+    {
+      "source": "/favicon.ico",
       "headers": [
         {
           "key": "Cache-Control",
