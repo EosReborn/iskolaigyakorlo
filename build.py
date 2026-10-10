@@ -21,7 +21,7 @@ rd = lambda p: open(os.path.join(SRC, p), encoding='utf-8').read()
 meta = json.loads(subprocess.check_output(['node', os.path.join(ROOT, 'meta.js')], cwd=ROOT))
 mods, groups = meta['mods'], meta['groups']
 
-js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'mods3.js', 'mods4.js', 'mods5.js', 'mods6.js', 'mods7.js', 'mods8.js', 'sheet.js', 'themes.js', 'ui.js']) + '\n})();\n'
+js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'mods3.js', 'mods4.js', 'mods5.js', 'mods6.js', 'mods7.js', 'mods8.js', 'mods9.js', 'sheet.js', 'themes.js', 'ui.js']) + '\n})();\n'
 css = rd('style.css')
 FONT_FILES = sorted(f for f in os.listdir(os.path.join(SRC, 'fonts')) if f.endswith('.woff2'))
 UR = {'latin': 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD',
@@ -91,14 +91,14 @@ def prerender(m):
 
 TODAY = datetime.date.today().isoformat()
 MODBY = {x['slug']: x for x in mods}
-def kind_of(x): return 'n' if x['group'] == 'nyelv' else 't' if x['group'] == 'termeszet' else 'm'
-TOP = {'m': 8, 'n': 6, 't': 6}
-SUBJ_SLUG = lambda kind, n: {'m': 'matek', 'n': 'helyesiras', 't': 'kornyezetismeret' if n <= 4 else 'termeszetismeret'}[kind]
-SUBJ = lambda kind, n: {'m': 'matek', 'n': 'helyesírás', 't': 'környezetismeret' if n <= 4 else 'természetismeret'}[kind]
+def kind_of(x): return 'n' if x['group'] == 'nyelv' else 't' if x['group'] in ('termeszet', 'kemia') else 'm'
+TOP = {'m': 8, 'n': 6, 't': 8}
+SUBJ_SLUG = lambda kind, n: {'m': 'matek', 'n': 'helyesiras', 't': 'kornyezetismeret' if n <= 4 else 'termeszetismeret' if n <= 6 else 'kemia'}[kind]
+SUBJ = lambda kind, n: {'m': 'matek', 'n': 'helyesírás', 't': 'környezetismeret' if n <= 4 else 'természetismeret' if n <= 6 else 'kémia'}[kind]
 def g_url(kind, n): return f'/{n}-osztalyos-{SUBJ_SLUG(kind, n)}-gyakorlo/'
 def g_name(kind, n): return f'{n}. osztályos {SUBJ(kind, n)} gyakorló'
 def g_mods(kind, n): return [x for x in mods if kind_of(x) == kind and x['grades'][0] <= n <= x['grades'][1]]
-GRADES = [('m', n) for n in range(1, 9)] + [('n', n) for n in range(1, 7)] + [('t', n) for n in range(1, 7)]
+GRADES = [('m', n) for n in range(1, 9)] + [('n', n) for n in range(1, 7)] + [('t', n) for n in range(1, 9)]
 THEMES = meta['themes']
 def th_url(t): return f'/munkalapok/{t["id"]}/'
 def w_url(x): return f'/munkalapok/{x["slug"]}/'
@@ -116,7 +116,7 @@ def mod_links(x):
     out = [[w_url(x), f'{x["short"]} munkalap nyomtatható']] + [[g_url(kind, n), g_name(kind, n)] for n in gs]
     return out
 XL = {'mod': {x['slug']: mod_links(x) for x in mods},
-      'g': {'m': [g_url('m', n) for n in range(1, 9)], 'n': [g_url('n', n) for n in range(1, 7)], 't': [g_url('t', n) for n in range(1, 7)]},
+      'g': {'m': [g_url('m', n) for n in range(1, 9)], 'n': [g_url('n', n) for n in range(1, 7)], 't': [g_url('t', n) for n in range(1, 9)]},
       'ws': {'mods': [[w_url(x), f'{x["short"]} munkalap'] for x in mods], 'grades': [[wg_url(k, n), wg_name(k, n)] for k, n in GRADES], 'themes': [[th_url(t), f'{t["name"]} munkalap'] for t in THEMES]}}
 js = js.replace('/*XL*/{}/*XL*/', json.dumps(XL, ensure_ascii=False))
 js = js.replace("/*SH*/'iskolaigyakorlo.hu'/*SH*/", json.dumps(SITE.split('://', 1)[-1]))
@@ -138,7 +138,7 @@ def fnav():
     grp = lambda title, links: f'<details><summary>{title}</summary><div class="fl">{links}</div></details>'
     teach = ('<a href="/tanaroknak/">Tanároknak: eszközök az órára</a><a href="/munkalapok/">Munkalap-készítő</a><a href="/munkalapok/unnepi/">Ünnepi munkalapok</a><a href="/munkalapok/szorzotabla/">Szorzótábla munkalap</a><a href="/munkalapok/3-osztalyos-matek/">3. osztályos matek munkalap</a>')
     # A linkek a HTML-ben vannak (a keresők látják), a lenyíló csak a megjelenítést rendezi.
-    return (f'<nav class="fnav" aria-label="Évfolyamok és munkalapok">{grp("Matek gyakorlók", ch("m", range(1, 9)))}{grp("Helyesírás gyakorlók", ch("n", range(1, 7)))}{grp("Környezet- és természetismeret", ch("t", range(1, 7)))}{grp("Tanároknak", teach)}</nav>')
+    return (f'<nav class="fnav" aria-label="Évfolyamok és munkalapok">{grp("Matek gyakorlók", ch("m", range(1, 9)))}{grp("Helyesírás gyakorlók", ch("n", range(1, 7)))}{grp("Környezet- és természetismeret, kémia", ch("t", range(1, 9)))}{grp("Tanároknak", teach)}</nav>')
 
 def bc_ld(trail):
     return {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": SITE + u} for i, (n, u) in enumerate(trail)]}
@@ -155,7 +155,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws
     url = SITE + path
     if path.startswith(('/tanaroknak/', '/munkalapok/')): ogimg, ogalt = '/assets/og-tanar.png', 'Iskolai Gyakorló: nyomtatható munkalapok tanároknak, megoldókulccsal'
     elif path.startswith('/tudastar/'): ogimg, ogalt = '/assets/og-szulo.png', 'Iskolai Gyakorló: Tudástár szülőknek'
-    else: ogimg, ogalt = '/assets/og-main.png', 'Iskolai Gyakorló: ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak'
+    else: ogimg, ogalt = '/assets/og-main.png', 'Iskolai Gyakorló: játékos tanulás, ingyenes fejlődés 1–8. osztályosoknak'
     ldh = ''.join(f'<script type="application/ld+json">{json.dumps(l, ensure_ascii=False)}</script>\n' for l in lds)
     return f"""<!doctype html>
 <html lang="hu" data-path="1" data-route="{route}"{(' data-ws="' + ws + '"') if ws else ''}>
@@ -373,7 +373,7 @@ def teacher_page():
             f'<div class="gcards"><a class="gcard" href="/munkalapok/unnepi/"><h3>Ünnepi munkalapok</h3><p>Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró: szöveges feladatok, titkosírás, szókereső, hiányzó betűk.</p><span>6 ünnep · 4 évfolyamszint</span></a><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>30 téma · max. 60 feladat</span></a></div>'
             f'<section class="about"><h2>Kész matek munkalapok évfolyamonként</h2><ul class="xl">{gl("m", range(1, 9))}</ul>'
             f'<h2>Kész helyesírás munkalapok évfolyamonként</h2><ul class="xl">{gl("n", range(1, 7))}</ul>'
-            f'<h2>Kész környezetismeret és természetismeret munkalapok évfolyamonként</h2><ul class="xl">{gl("t", range(1, 7))}</ul></section>'
+            f'<h2>Kész környezetismeret, természetismeret és kémia munkalapok évfolyamonként</h2><ul class="xl">{gl("t", range(1, 9))}</ul></section>'
             f'<section class="about"><h2>Kész munkalapok témák szerint</h2><ul class="xl">{ws_m}</ul></section>'
             f'<section class="about"><h2>Hogyan használd az órán?</h2><ol><li><b>Bemelegítés:</b> nyomtass ki egy rövid, 10 feladatos lapot az óra elejére.</li><li><b>Differenciálás:</b> a munkalap-készítőben ugyanabból a témából különböző szintű lapokat is összeállíthatsz.</li><li><b>Házi feladat:</b> adj címet a lapnak, és kérj külön megoldókulcsot a javításhoz.</li><li><b>Verseny:</b> az online gyakorlók „Időre megy” módjával 60 másodperces csapatverseny szervezhető.</li></ol></section>'
             f'{faq_html(faq)}{fb_html("Tanároknak")}</div>')

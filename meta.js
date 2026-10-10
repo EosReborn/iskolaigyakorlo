@@ -1,11 +1,11 @@
 const fs=require('fs');
-const src=['core','mods1','mods2','mods3','mods4','mods5','mods6','mods7','mods8','sheet','themes'].map(f=>fs.readFileSync(`src/${f}.js`,'utf8')).join('\n');
+const src=['core','mods1','mods2','mods3','mods4','mods5','mods6','mods7','mods8','mods9','sheet','themes'].map(f=>fs.readFileSync(`src/${f}.js`,'utf8')).join('\n');
 const {MODS,GROUPS,wsBuild,THEMES,THEME_ORDER,themeBuild}=new Function(src+'\nreturn {MODS,GROUPS,wsBuild,THEMES,THEME_ORDER,themeBuild};')();
 const ws={};
 for(const m of MODS) ws['mod:'+m.slug]=wsBuild('mod',m.slug,'mix',20);
 for(let g=1;g<=8;g++) ws['grade:m'+g]=wsBuild('grade','m'+g,'g',20);
 for(let g=1;g<=6;g++) ws['grade:n'+g]=wsBuild('grade','n'+g,'g',20);
-for(let g=1;g<=6;g++) ws['grade:t'+g]=wsBuild('grade','t'+g,'g',20);
+for(let g=1;g<=8;g++) ws['grade:t'+g]=wsBuild('grade','t'+g,'g',20);
 for(const id of THEME_ORDER) ws['theme:'+id]=themeBuild(id,'2','feladat');
 const themes=THEME_ORDER.map(id=>({id,name:THEMES[id].name,title:THEMES[id].title,accent:THEMES[id].accent,words:THEMES[id].words}));
 console.log(JSON.stringify({groups:GROUPS,ws,themes,mods:MODS.map(m=>({slug:m.slug,title:m.title,short:m.short,group:m.group,grades:m.grades,desc:m.desc,seo:m.seo,levels:m.levels.map(l=>l.name)}))}));

@@ -10,7 +10,7 @@ const fonts = [face('Fredoka', 600, 'fredoka-latin-600-normal.woff2', UR.latin),
   face('Nunito', 800, 'nunito-latin-800-normal.woff2', UR.latin), face('Nunito', 800, 'nunito-latin-ext-800-normal.woff2', UR.ext),
   face('Nunito', 700, 'nunito-latin-700-normal.woff2', UR.latin), face('Nunito', 700, 'nunito-latin-ext-700-normal.woff2', UR.ext)].join('');
 const VARIANTS = {
-  main: { h: 'Ingyenes matek és helyesírás gyakorló', s: '1–8. osztályosoknak · regisztráció nélkül', chips: ['szorzótábla', 'törtek', 'j vagy ly', 'százalék'], accent: '#7aa5ff' },
+  main: { h: '<span>Játékos tanulás,</span><br>ingyenes fejlődés', s: '1–8. osztályosoknak · regisztráció nélkül', chips: ['játékos feladatok', 'sikerélmény', 'bővülő tartalom'], accent: '#7aa5ff' },
   tanar: { h: 'Nyomtatható munkalapok tanároknak', s: 'Válaszd ki, miből hány feladat legyen · megoldókulccsal', chips: ['matek', 'helyesírás', 'megoldókulcs', 'ingyenes'], accent: '#ffc857' },
   szulo: { h: 'Tudástár szülőknek', s: 'Hogyan segíts otthon a tanulásban, ingyenes gyakorlókkal', chips: ['szorzótábla', 'törtek', 'j vagy ly', 'napi gyakorlás'], accent: '#6fd48a' }
 };
@@ -26,7 +26,7 @@ h1 span{color:${v.accent}}
 .chips{display:flex;gap:14px;margin-top:auto;flex-wrap:nowrap}
 .chips b{font:700 28px Nunito,sans-serif;padding:8px 22px;border-radius:99px;border:3px solid ${v.accent};color:#fff}
 .url{position:absolute;right:72px;top:92px;font:800 32px Nunito,sans-serif;color:${v.accent}}
-</style><div class="grid"></div><div class="glow"></div><div class="wrap"><img class="logo" src="${LOGO}"><h1>${v.h.replace(/^(\S+ \S+)/, '<span>$1</span>')}</h1><div class="sub">${v.s}</div><div class="chips">${v.chips.map(c => `<b>${c}</b>`).join('')}</div></div><div class="url">iskolaigyakorlo.hu</div>`;
+</style><div class="grid"></div><div class="glow"></div><div class="wrap"><img class="logo" src="${LOGO}"><h1>${v.h.includes('<span>') ? v.h : v.h.replace(/^(\S+ \S+)/, '<span>$1</span>')}</h1><div class="sub">${v.s}</div><div class="chips">${v.chips.map(c => `<b>${c}</b>`).join('')}</div></div><div class="url">iskolaigyakorlo.hu</div>`;
 (async () => {
   const b = await chromium.launch(), pg = await b.newPage({ viewport: { width: 1200, height: 630 } });
   for (const [k, v] of Object.entries(VARIANTS)) {

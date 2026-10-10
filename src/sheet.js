@@ -46,8 +46,8 @@ const wsTitle = (type, key, sel) => {
   if (type === 'mod') { const m = MODS.find(x => x.slug === key); return { title: `${m.short} munkalap`, sub: sel === 'mix' ? 'Vegyes szintek: könnyebbtől a nehezebbig' : `${+sel + 1}. szint: ${m.levels[+sel].name}` }; }
   const g = +key.slice(1); return { title: `${g}. osztályos ${subjOf(key[0], g)} munkalap`, sub: 'Vegyes feladatok az évfolyam anyagából' };
 };
-const kindOf = m => (m.group === 'nyelv' ? 'n' : m.group === 'termeszet' ? 't' : 'm');
-const subjOf = (kind, g) => (kind === 'm' ? 'matek' : kind === 'n' ? 'helyesírás' : g <= 4 ? 'környezetismeret' : 'természetismeret');
+const kindOf = m => (m.group === 'nyelv' ? 'n' : m.group === 'termeszet' || m.group === 'kemia' ? 't' : 'm');
+const subjOf = (kind, g) => (kind === 'm' ? 'matek' : kind === 'n' ? 'helyesírás' : g <= 4 ? 'környezetismeret' : g <= 6 ? 'természetismeret' : 'kémia');
 const gradeMods = (kind, g) => MODS.filter(m => kindOf(m) === kind && m.grades[0] <= g && g <= m.grades[1]);
 const wsRows = (type, key, sel, n) => {
   if (type === 'mod') return [{ slug: key, sel, n }];
