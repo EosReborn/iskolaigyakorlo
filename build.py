@@ -163,7 +163,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws
 <meta name="theme-color" content="#2a64d0">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Gyakorló">
-<link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png"><link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png"><link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/nunito-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css?v={ver}">
 <script>try{{var p=JSON.parse(localStorage.getItem("iskolai-gyakorlo-players")),c=p.list.filter(function(x){{return x.id===p.cur}})[0];if(c&&c.skin&&c.skin!=="fuzet")document.documentElement.setAttribute("data-skin",c.skin)}}catch(e){{}}</script>
@@ -390,6 +390,12 @@ os.makedirs(os.path.join(DIST, 'assets', 'fonts'))
 for f in [x for x in FONT_FILES if not x.startswith('fredoka-latin-ext')]: shutil.copy(os.path.join(SRC, 'fonts', f), os.path.join(DIST, 'assets', 'fonts', f))
 open(os.path.join(DIST, 'assets', 'logo.webp'), 'wb').write(LOGO_WEBP)
 FAV.save(os.path.join(DIST, 'assets', 'favicon.png'), optimize=True); APPLE.save(os.path.join(DIST, 'assets', 'apple-touch-icon.png'), optimize=True); OG.save(os.path.join(DIST, 'assets', 'og.png'), optimize=True)
+def _sq_icon():
+    ic0 = Image.open(os.path.join(SRC, 'brand', 'favicon-original.png')).convert('RGBA'); ib = ic0.getchannel('A').point(lambda v: 255 if v > 10 else 0).getbbox(); ic0 = ic0.crop(ib)
+    side = max(ic0.size); sq = Image.new('RGBA', (side, side), (0, 0, 0, 0)); sq.paste(ic0, ((side - ic0.width) // 2, (side - ic0.height) // 2)); return sq
+_sq = _sq_icon()
+for _n in (48, 96): _sq.resize((_n, _n), Image.LANCZOS).save(os.path.join(DIST, 'assets', f'favicon-{_n}.png'), optimize=True)
+_sq.resize((256, 256), Image.LANCZOS).save(os.path.join(DIST, 'favicon.ico'), format='ICO', sizes=[(16, 16), (32, 32), (48, 48)])
 for _k, _n in (('main', 'og.png'), ('main', 'og-main.png'), ('tanar', 'og-tanar.png'), ('szulo', 'og-szulo.png')):
     _p = os.path.join(SRC, 'brand', f'og-{_k}.png')
     if os.path.exists(_p): shutil.copy(_p, os.path.join(DIST, 'assets', _n))
