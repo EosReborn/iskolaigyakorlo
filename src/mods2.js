@@ -47,7 +47,7 @@ const sumQ = pool => () => { const n = rnd(2, 5); const items = Array.from({ len
   return NUM(Q(tray(items), 'Mennyi pénz van összesen?'), s, { unit: 'Ft', hint: `${items.map(fmt).join(' + ')} = ${fmt(s)} Ft.` }); };
 const SHOP = [['füzet', 120], ['toll', 90], ['radír', 60], ['ceruza', 80], ['matrica', 50], ['tábla csoki', 350], ['szendvics', 450], ['alma', 70], ['limonádé', 300], ['jégkrém', 400], ['kifli', 60]];
 mod({
-  slug: 'penz-szamolas', title: 'Pénz számolás gyakorló', short: 'Pénz számolás', group: 'meres', glyph: '', hue: 4, icon: 'coin',
+  slug: 'penz-szamolas', title: 'Pénzszámolás gyakorló', short: 'Pénzszámolás', group: 'meres', glyph: '', hue: 4, icon: 'coin',
   desc: 'Forintérmék és bankjegyek összeadása, vásárlás és visszajáró számolása.',
   seo: 'A pénzzel való számolás hétköznapi készség. A gyakorló forintérméket és bankjegyeket mutat, ezek összegét kell kiszámolni. Később vásárlási és visszajáró feladatok is jönnek. A bankjegyek ábrái csak szemléltetésre szolgálnak.',
   levels: [

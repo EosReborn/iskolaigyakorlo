@@ -532,7 +532,7 @@ header.site nav { display: flex; gap: 16px; align-items: center; }
 .ha { display: flex; gap: 8px; justify-content: center; margin-top: 8px; }
 .ha i { font: normal 700 1.2rem var(--f-display); min-width: 52px; padding: 6px 4px; border: 2px solid var(--ink); border-radius: 12px; box-shadow: 0 3px 0 var(--line); }
 .ha i.ok { background: var(--green-soft); border-color: var(--green); color: var(--green); }
-.fl { position: absolute; width: 58px; height: 58px; display: grid; place-items: center; border-radius: 16px; font: 700 1.8rem var(--f-display); box-shadow: 0 5px 0 rgba(0, 0, 0, .12); animation: flt 5s ease-in-out infinite; }
+.hfl { position: absolute; width: 58px; height: 58px; display: grid; place-items: center; border-radius: 16px; font: 700 1.8rem var(--f-display); box-shadow: 0 5px 0 rgba(0, 0, 0, .12); animation: flt 5s ease-in-out infinite; }
 .f1 { left: 4%; top: 14px; background: var(--red-soft); color: var(--red); --r: -10deg; }
 .f2 { right: 2%; top: 0; background: var(--green-soft); color: var(--green); --r: 9deg; animation-delay: -1.5s; }
 .f3 { left: 0; bottom: 20px; background: var(--amber-soft); color: var(--amber); --r: 8deg; animation-delay: -3s; }
@@ -583,7 +583,7 @@ header.site nav { display: flex; gap: 16px; align-items: center; }
 .burst i { position: absolute; font-style: normal; font-size: 1.4rem; opacity: 0; animation: pop 1s ease-out forwards; }
 .burst i:nth-child(1) { left: 12%; } .burst i:nth-child(2) { left: 36%; animation-delay: .08s; } .burst i:nth-child(3) { right: 34%; animation-delay: .04s; } .burst i:nth-child(4) { right: 10%; animation-delay: .12s; }
 @keyframes pop { 0% { opacity: 0; transform: translateY(14px) scale(.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-34px) scale(1.2) rotate(18deg); } }
-@media (prefers-reduced-motion: reduce) { .fl { animation: none; transform: rotate(var(--r)); } .burst { display: none; } }
+@media (prefers-reduced-motion: reduce) { .hfl { animation: none; transform: rotate(var(--r)); } .burst { display: none; } }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pcell .pbar { background: rgba(0, 0, 0, .3); } }
 :root[data-theme="dark"] .pcell .pbar { background: rgba(0, 0, 0, .3); }
 
@@ -607,3 +607,22 @@ header.site nav { display: flex; gap: 16px; align-items: center; }
 .big .fm { font-size: 1.3em; }
 sub, sup { font-size: .6em; line-height: 0; }
 .opt sub, .opt sup, .big sub, .big sup { font-size: .6em; }
+.pstrip { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.pcell { min-width: 0; overflow: hidden; }
+.pcell b { flex-wrap: wrap; font-size: clamp(1.3rem, 4.4vw, 1.7rem); }
+.pcell b .tt { min-width: 0; overflow-wrap: anywhere; }
+.pcell b.lg { font-size: clamp(1.15rem, 3.8vw, 1.45rem); }
+@media (max-width: 700px) { .pstrip { grid-template-columns: 1fr 1fr; } .pcell { padding: 12px; } }
+.kc { white-space: normal; }
+.sbr > * { min-width: 0; }
+.sbbox, .sbp { min-width: 0; }
+@media (max-width: 400px) { .sbr { grid-template-columns: 1fr; } .sbr .stepper, .sbr .step { justify-self: start; } .sbp .sbbox { padding: 12px; } }
+
+/* Évfolyam-mátrix a kezdőlapon */
+.gmatrix { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.gm { display: flex; align-items: center; gap: 12px; background: var(--paper); border: 2px solid var(--line); border-radius: 20px; padding: 10px 12px; box-shadow: 0 2px 0 var(--line); position: relative; overflow: hidden; }
+.gm::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--gc); }
+.gmn { flex: none; width: 52px; height: 52px; margin-left: 4px; border-radius: 16px; background: var(--gc); color: #fff; display: grid; place-items: center; font: 700 1.6rem var(--f-display); box-shadow: 0 3px 0 rgba(0, 0, 0, .18); }
+.gml { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.gml a { text-decoration: none; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 99px; padding: 4px 12px; min-height: 36px; display: inline-flex; align-items: center; font-weight: 800; font-size: .92rem; }
+.gml a:hover, .gml a:focus-visible { border-color: var(--gc); color: var(--gc); }
