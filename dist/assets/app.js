@@ -2000,7 +2000,7 @@ const gradeLvBox = m => {
 const modFaq = m => {
   const gr = m.grades[0] !== m.grades[1] ? `${m.grades[0]}–${m.grades[1]}. osztály` : `${m.grades[0]}. osztály`;
   const faq = (((XL.ms || {})[m.slug] || {}).faq || []).concat([[`Melyik évfolyamnak ajánlott: ${m.title}?`, `Ajánlott évfolyam: ${gr}. A szintek az évfolyamokon belül nehezednek, így a gyerek a saját szintjén kezdhet, és fokozatosan haladhat tovább.`], ['Van hozzá nyomtatható munkalap?', `Igen, a munkalap-készítőben a ${m.short} témából is készíthető nyomtatható feladatlap megoldókulccsal.`], ['Ingyenes, és kell hozzá regisztráció?', 'Az oldal teljesen ingyenes, regisztráció és bejelentkezés nélkül használható. A haladást csak a gyerek böngészője őrzi, nem kerül szerverre.']]);
-  return `<section class="faq"><h2>Gyakran ismételt kérdések</h2>${faq.map(([q, an]) => `<h3>${esc(q)}</h3><p>${esc(an)}</p>`).join('')}</section>`;
+  return `<section class="faq"><h2>Gyakran ismételt kérdések</h2>${faq.map(([q, an]) => `<details><summary>${esc(q)}</summary><p>${esc(an)}</p></details>`).join('')}</section>`;
 };
 function setupView() {
   const m = S.mod;

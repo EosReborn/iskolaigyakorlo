@@ -636,3 +636,13 @@ sub, sup { font-size: .6em; line-height: 0; }
 .gml { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
 .gml a { text-decoration: none; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 99px; padding: 4px 12px; min-height: 36px; display: inline-flex; align-items: center; font-weight: 800; font-size: .92rem; }
 .gml a:hover, .gml a:focus-visible { border-color: var(--gc); color: var(--gc); }
+
+/* GYIK: lenyíló kérdések */
+.faq details { background: var(--paper); border: 2px solid var(--line); border-radius: 16px; margin: 8px 0; }
+.faq details[open] { border-color: var(--blue); }
+.faq summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; min-height: 48px; font: 700 1.02rem var(--f-display); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; flex: none; width: 10px; height: 10px; border-right: 3px solid var(--muted); border-bottom: 3px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform .15s; }
+.faq details[open] summary::after { transform: rotate(-135deg) translateY(-2px); }
+.faq summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 14px; }
+.faq details p { margin: 0; padding: 0 16px 14px; }
