@@ -2,6 +2,7 @@
 """Újdonságok: (dátum, [(címke, szöveg), ...]) – legújabb felül. Címke: Új / Javítva."""
 CHANGES = [
 ("2026-10-10", [
+ ("Új", "Megújult kinézet: színes kezdőlap, színes haladás-csempék és évfolyamgombok, összecsukható beállítások, számozott és színes szintlista, látványosabb gyakorlás hang nélküli jutalom-animációval."),
  ("Új", "Betűrakó szójáték: képről vagy rövid magyarázatból kell kitalálni a szót, és a hiányzó betűkockákat a helyükre rakni. Hat szint a képes szavaktól a nehéz betűkig (j, ly, ékezetek) és az ünnepi szavakig, hang nélkül, büntetés nélkül."),
  ("Új", "Ünnepi munkalapok a tanároknak: Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró. Mindegyikből négyféle lap készíthető évfolyam szerint (szöveges feladatok, titkosírás-rejtvény, szókereső, hiányzó betűk), megoldókulccsal."),
  ("Új", "Környezetismeret és természetismeret 1–6. osztályosoknak: 7 új gyakorló 42 szinttel (évszakok, hónapok és napok, állatok, növények, az emberi test, anyagok és halmazállapotok, időjárás és a víz körforgása, élőhelyek és táplálékláncok). Hozzájuk évfolyam-oldalak és nyomtatható munkalapok is készültek."),
