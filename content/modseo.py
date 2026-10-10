@@ -4,25 +4,25 @@ A többi gyakorlóhoz a build általános kérdéseket generál."""
 MODSEO = {
 "elemek-vegyjelek": {
  "text": ["A kémia első lépése az elemek és vegyjeleik megtanulása. Ez a gyakorló az első húsz elemmel kezdődik (a hidrogéntől a kalciumig), majd kiterjed a gyakori fémekre és a latin eredetű jelekre (Na, K, Fe, Cu, Ag, Au, Hg, Pb, Sn) is.",
-          "Rövid, azonnali visszajelzéssel segít abban, hogy a vegyjelek magától előjöjjenek. Napi 5–10 perc elég, a hibásan megválaszolt elemeket a Hibáim gyakorlása funkció később újra felteszi."],
+          "Rövid, azonnali visszajelzéssel segít abban, hogy a vegyjelek maguktól előjöjjenek. Napi 5–10 perc elég, a hibásan megválaszolt elemeket a Hibáim gyakorlása funkció később újra felteszi."],
  "faq": [("Melyik osztályban tanulják az elemek vegyjeleit?", "A magyar iskolákban a kémia általában hetedik osztályban kezdődik, ekkor tanulják meg az első elemek nevét és vegyjelét. A pontos beosztás iskolánként és tankönyvenként eltérhet."),
          ("Miért latin eredetű néhány vegyjel?", "Egyes elemek jelét a latin nevükből képezték, ezért nem egyezik a magyar névvel: a nátrium Na (natrium), a kálium K (kalium), a vas Fe (ferrum), a réz Cu (cuprum), az ezüst Ag (argentum), az arany Au (aurum), a higany Hg (hydrargyrum), az ólom Pb (plumbum), az ón Sn (stannum)."),
          ("Hogyan lehet könnyen megtanulni a vegyjeleket?", "Érdemes kis csoportokban, tíz elemenként haladni, és a nehezebb, latin eredetű jeleket külön ismételni. A gyakorló szintjei ezt a sorrendet követik.")]},
 "atom-felepitese": {
  "text": ["Az atom három részecskéből áll: pozitív töltésű protonból és semleges neutronból az atommagban, valamint negatív töltésű elektronból az elektronburokban. A gyakorló a részecskék töltésével és helyével kezdődik, majd a rendszám és a tömegszám segítségével számolásra is visszavezeti az anyagot.",
-          "Megtanulhatod, hogyan lehet kiszámolni egy atom protonjainak, elektronjainak és neutronjainak számát, és hogyan változik az elektronszám az ionokban."],
+          "Itt megtanulható, hogyan lehet kiszámolni egy atom protonjainak, elektronjainak és neutronjainak számát, és hogyan változik az elektronszám az ionokban."],
  "faq": [("Hogyan számoljuk ki a neutronok számát?", "A neutronok száma a tömegszám és a rendszám különbsége. Például a szén tömegszáma 12, rendszáma 6, ezért 12 − 6 = 6 neutronja van."),
          ("Mit mutat meg a rendszám?", "A rendszám a protonok száma az atommagban. A semleges atomban ugyanennyi az elektron is."),
          ("Hány elektronja van egy ionnak?", "Pozitív ionnál az atom elektronokat adott le, ezért a rendszámnál kevesebb az elektron (Na⁺: 11 − 1 = 10). Negatív ionnál elektronokat vett fel, ezért több (Cl⁻: 17 + 1 = 18).")]},
 "kepletek-egyenletek": {
- "text": ["A kémiai képlet megmutatja, mely elemek hány atomja alkot egy molekulát: a H₂O két hidrogén- és egy oxigénatomot jelent. A gyakorló a képletek olvasásával kezdődik, majd a leggyakoribb vegyületek nevét és képletét, az elemek és vegyületek megkülönböztetését gyakoroltatja.",
+ "text": ["A kémiai képlet megmutatja, mely elemek hány atomja alkot egy molekulát: a H₂O két hidrogén- és egy oxigénatomot jelent. A gyakorló a képletek olvasásával indul, majd a leggyakoribb vegyületek nevét és képletét, az elemek és vegyületek megkülönböztetését gyakoroltatja.",
           "A későbbi szinteken a reakcióegyenletek rendezése következik: a cél, hogy a nyíl mindkét oldalán ugyanannyi atom legyen minden elemből."],
  "faq": [("Mit jelent az alsó index a képletben?", "Az alsó index azt mutatja meg, hogy az előtte álló elemből hány atom van a molekulában. A CO₂-ben egy szén- és két oxigénatom van."),
          ("Mi a különbség az index és az együttható között?", "Az alsó index a molekulán belüli atomszámot adja meg, az együttható (a képlet előtti szám) pedig azt, hogy hány molekula vesz részt a reakcióban. A 2 H₂O két vízmolekulát jelent, összesen négy hidrogén- és két oxigénatommal."),
          ("Hogyan rendezzünk egy reakcióegyenletet?", "Számold meg minden elem atomjait a nyíl két oldalán, majd az együtthatók változtatásával (a képleteket nem módosítva) egyenlítsd ki őket. A végén ellenőrizd újra minden elemet.")]},
 "beturako": {
- "text": ["A Betűrakó kis betűkockákból építi fel a szavakat: a hiányzó betűket kell a helyükre rakni. A feladványok képről, rövid magyarázatból vagy mondatból derülnek ki, a nehezebb szinteken a j–ly, az ékezetek és a hosszú szavak a téma.",
-          "A magyar kétjegyű betűk (cs, sz, gy, ly, ny, ty, zs, dz, dzs) egy kockát alkotnak, ezért a helyesírás is jól gyakorolható. Nincs időkorlát, nincs büntetés, és hang sincs: ha elrontod, megmutatjuk a helyes szót."],
+ "text": ["A Betűrakó kis betűkockákból építi fel a szavakat: a hiányzó betűket kell a helyükre rakni. A megfejtendő szó képről, rövid magyarázatból vagy mondatból derül ki, a nehezebb szinteken a j–ly, az ékezetek és a hosszú szavak a téma.",
+          "A magyar kétjegyű és háromjegyű betűk (cs, sz, gy, ly, ny, ty, zs, dz, dzs) egy kockát alkotnak, ezért a helyesírás is jól gyakorolható. Nincs időkorlát, nincs büntetés, és hang sincs: ha elrontod, megmutatjuk a helyes szót."],
  "faq": [("Kinek való a Betűrakó?", "Elsőtől hatodik osztályig szól: az elsősök képes szavakkal és egy-két hiányzó betűvel kezdhetnek, a nagyobbak a j–ly, az ékezetek és a hosszú szavak szintjén gyakorolhatnak."),
          ("Mit gyakorol a gyerek a Betűrakóval?", "A szavak helyes leírását, a szókincset és a magyar hangok betűjeleit, például a j–ly különbséget és a hosszú-rövid magánhangzókat."),
          ("Van büntetés, ha rosszul válaszol?", "Nincs. Hibás válasz után az oldal megmutatja a helyes szót, és a feladat a Hibáim gyakorlása részbe kerül, hogy később újra próbálkozhasson."),

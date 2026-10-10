@@ -36,7 +36,7 @@ MATH = {
     faq=[("Mit kell tudnia egy harmadikosnak szorzótáblából?", "A tantervek harmadik osztály végére általában a teljes 10-es szorzótáblát várják, a szorzatokat gyors, biztos felidézéssel, az osztással együtt. A pontos elvárásokat a tanító adja meg."),
          ("Mi az a maradékos osztás?", "Az az osztás, amelynél az osztandó nem osztható maradék nélkül az osztóval, például 23 : 4 = 5, maradék 3. A maradék mindig kisebb, mint az osztó."),]),
 4: dict(
-    intro="Negyedikben a gyerekek az alsó tagozat utolsó évét járják: a számok 10 000-ig, majd tovább bővülnek, az írásbeli szorzás és osztás is előkerül, és (tankönyvtől függően) megjelennek a tizedes törtek. Ez az év alapozza meg az ötödikes felső tagozatot, ezért érdemes a hiányosságokat most pótolni. A gyakorlók az egész évi anyagot lefedik, nyomtatható munkalappal is.",
+    intro="Negyedikben a gyerekek az alsó tagozat utolsó évét járják: a számkör 10 000-ig, majd tovább bővül, az írásbeli szorzás és osztás is előkerül, és (tankönyvtől függően) megjelennek a tizedes törtek. Ez az év alapozza meg az ötödikes felső tagozatot, ezért érdemes a hiányosságokat most pótolni. A gyakorlók az egész évi anyagot lefedik, nyomtatható munkalappal is.",
     learn=["számok 10 000-ig és tovább, kerekítés tízesre, százasra és ezresre",
            "írásbeli szorzás és osztás egy- és kétjegyű számokkal",
            "törtek összehasonlítása, összeadás és kivonás azonos nevezővel",
@@ -55,7 +55,7 @@ MATH = {
            "szögek fajtái, háromszög szögei",
            "kerület, terület, mértékegységek"],
     tips="Ötödikben jó szokás, ha a gyerek kisebb tételekre bontva tanul: egy nap egy téma, tíz-tizenöt percben. Ha egy téma nem megy, nem érdemes halogatni, mert a következő tananyag arra épül. A negatív számok és az oszthatóság külön gyakorlóban szerepel, szintenként nehezedő feladatokkal.",
-    faq=[("Mit tanul az ötödikes matekból?", "Általában egész számokat, törteket és tizedes törteket, oszthatóságot, szögeket és a kerület-terület számítását. A tananyag tankönyvenként változhat."),
+    faq=[("Mit tanul az ötödikes matekból?", "Általában egész számokat, törteket és tizedes törteket, oszthatóságot, szögeket és a kerület és a terület számítását. A tananyag tankönyvenként változhat."),
          ("Miért nehéz az ötödik osztályos matek?", "Mert az alsó tagozathoz képest több az absztrakt fogalom, és a tanulóktól nagyobb önállóságot várnak. A rendszeres, rövid gyakorlás sokat segít."),]),
 6: dict(
     intro="Hatodikban a törtek és a tizedes törtek műveletei, a százalékszámítás kezdete, a negatív számokkal való számolás és a kör kerülete és területe kerülnek előtérbe. A hatodikos matek sok gyereknek azért nehéz, mert több témát kell párhuzamosan tartani. A gyakorlók évfolyamra szabott szinteken haladnak, a nyomtatható munkalap pedig a dolgozat előtti ismétlést segíti.",
@@ -65,7 +65,7 @@ MATH = {
            "százalékszámítás alapjai",
            "kör kerülete és területe, a kocka és a téglatest",
            "szöveges feladatok, egyenletek kezdetei"],
-    tips="Hatodikban a legtöbb hiba apró számolási tévedésből ered: elfelejtett előjel, rosszul bővített tört. Érdemes a hibákat külön tanulni: a gyakorló a rossz válaszokat elmenti, és a „Hibáim gyakorlása” körben újra elővezeti őket. Dolgozat előtt egy-két munkalap kinyomtatva jó próbaanyag.",
+    tips="Hatodikban a legtöbb hiba apró számolási tévedésből ered: elfelejtett előjel, rosszul bővített tört. Érdemes a hibákat külön tanulni: a gyakorló a rossz válaszokat elmenti, és a „Hibáim gyakorlása” körben újra felteszi őket. Dolgozat előtt egy-két munkalap kinyomtatva jó próbaanyag.",
     faq=[("Mikor kezdődik a százalékszámítás?", "A százalék fogalma általában hatodikban jelenik meg, a részletesebb számítás hetedikben és nyolcadikban. Az iskolák tantervei eltérhetnek."),
          ("Hogyan lehet gyakorolni a törteket?", "Érdemes az ábrázolástól indulni (pizza, szakasz), aztán a bővítésre, egyszerűsítésre, végül az összeadásra és kivonásra áttérni. A törtek haladó gyakorlója ebben a sorrendben vezet végig."),]),
 7: dict(
@@ -89,7 +89,7 @@ MATH = {
            "számelmélet: prímek, LNKO, LKKT"],
     tips="Nyolcadikban érdemes a hiányokat célzottan keresni: ha egy témában gyakran hibázik a gyerek, azt külön szinten érdemes gyakorolni. A munkalapok kinyomtatva a felvételi előtti időszakban jó próbafeladatok. Az időre menő mód a gyorsaságot fejleszti, és a nyomás kezelését is gyakorolja.",
     faq=[("Mit érdemes ismételni a felvételi előtt?", "A felvételi feladatsorokban gyakran szerepelnek egyenletek, százalékszámítás, geometriai számítások és szöveges feladatok. A szaktanár vagy az iskola tájékoztatása a pontos követelményeket mutatja."),
-         ("Hogyan lehet gyorsítani a számolást?", "A szorzótábla, az előjelszabályok és a törtek alapműveletei automatizálása a legtöbbet segít. Ehhez rövid, napi ismétlés vagy az időre menő mód használható."),]),
+         ("Hogyan lehet gyorsítani a számolást?", "A szorzótábla, az előjelszabályok és a törtek alapműveleteinek automatizálása a legtöbbet segít. Ehhez rövid, napi ismétlés vagy az időre menő mód használható."),]),
 }
 
 # Helyesírás és nyelvtan: évfolyamonként
@@ -105,11 +105,11 @@ NYELV = {
     faq=[("Mikor tanulják a hosszú és rövid magánhangzókat?", "Az olvasás-írás tanulásával együtt, az első osztály során. A helyesírás gyakorlása aztán végigkíséri az alsó tagozatot."),
          ("Hogyan számoljuk a szótagokat?", "A magyarban minden magánhangzó egy szótagot ad, ezért elég megszámolni a szó magánhangzóit. Például a „csillag” két szótagú (csil-lag), a „repülőgép” négy (re-pü-lő-gép)."),]),
 2: dict(
-    intro="Másodikban a helyesírás egyik legismertebb nehézsége, a j és ly megkülönböztetése jelenik meg először. A gyerekek a mondatfajtákat is megismerik, és tovább gyakorolják a hosszú és rövid magánhangzókat, a szótagolást és az ábécé-sorrendet. Az itt található gyakorlók rövid, játékos feladatokkal vezetnek végig ezeken a témákon.",
+    intro="Másodikban a helyesírás egyik legismertebb nehézsége, a j és ly megkülönböztetése jelenik meg először. A gyerekek a mondatfajtákat is megismerik, és tovább gyakorolják a hosszú és rövid magánhangzókat, a szótagolást és az ábécésorrendet. Az itt található gyakorlók rövid, játékos feladatokkal vezetnek végig ezeken a témákon.",
     learn=["j vagy ly: a leggyakoribb szavak megtanulása",
            "hosszú és rövid magánhangzók",
            "kijelentő, kérdő és felkiáltó mondatok",
-           "szótagolás, elválasztás, ábécé-sorrend",
+           "szótagolás, elválasztás, ábécésorrend",
            "szavak és mondatok másolása, diktálás"],
     tips="A j és az ly szavanként tanulható. Hasznos, ha a gyerek a gyakori ly-os szavakat külön listába gyűjti (hely, folyó, király, golyó), mert az ly-os szavak kevesebben vannak, mint a j-sek. Rövid, napi gyakorlás többet ér, mint egy hosszú hétvégi tanulás.",
     faq=[("Hogyan tanulja meg a gyerek a j és az ly helyesírását?", "Szavanként, ismétléssel. Az ly-os szavak kisebb csoportot alkotnak, ezért érdemes azokat külön megtanulni, a többi szó nagy részét pedig j-vel írjuk. A gyakorló gyakori szavakkal dolgozik."),
@@ -120,10 +120,10 @@ NYELV = {
            "szófajok: főnév, melléknév, ige, számnév",
            "mondatfajták: kijelentő, kérdő, felkiáltó, felszólító, óhajtó",
            "toldalékok: a -val és -vel rag hasonulása (kézzel, tollal)",
-           "szótagolás, ábécé-sorrend szavakkal"],
+           "szótagolás, ábécésorrend szavakkal"],
     tips="A szófajok felismerésében segít a kérdezés: a főnév „ki? mi?”, a melléknév „milyen?”, az ige „mit csinál?”. Érdemes a gyerekkel együtt kitalálni néhány mondatot, aztán megkeresni bennük a szófajokat. A rövid gyakorló körök ezt játékossá teszik.",
     faq=[("Mik a szófajok, amiket harmadikban tanulnak?", "Általában a főnevet, a melléknevet, az igét és a számnevet. A kérdések: ki? mi? (főnév), milyen? (melléknév), mit csinál? (ige), hány? (számnév)."),
-         ("Hogyan írjuk a -val, -vel ragot?", "Magánhangzó után a v megmarad (tűvel, almával). Mássalhangzó után hasonul: kéz + vel = kézzel, toll + val = tollal. A magánhangzót a szó utolsó magánhangzója szabja meg: mély (-val) vagy magas (-vel)."),]),
+         ("Hogyan írjuk a -val, -vel ragot?", "Magánhangzó után a v megmarad (tűvel, almával). Mássalhangzó után hasonul: kéz + vel = kézzel, toll + val = tollal. A rag alakját a szó utolsó magánhangzója szabja meg: mély hangrendű szó után -val, magas hangrendű után -vel."),]),
 4: dict(
     intro="Negyedikben a helyesírási és nyelvtani ismeretek összeállnak: a j és ly, a szófajok, a mondatfajták és a toldalékok mind visszatérnek, magasabb szinten. Ez az utolsó alsós év, ezért sok iskola év végi felmérésen is ellenőrzi ezeket. A gyakorlók az év egész anyagát lefedik, rövid körökben.",
     learn=["j és ly: bővülő szólista, szócsaládok",
@@ -131,7 +131,7 @@ NYELV = {
            "mondatfajták és a mondatvégi írásjelek",
            "toldalékok helyesírása",
            "hosszú és rövid magánhangzók"],
-    tips="Negyedikben a gyerekek már önállóbban dolgoznak, de a diktálás és a másolás továbbra is fontos. Ha egy gyakori hiba visszatér, érdemes külön gyakorolni: a gyakorló a rossz válaszokat elmenti, és a „Hibáim gyakorlása” körben újra elővezeti őket.",
+    tips="Negyedikben a gyerekek már önállóbban dolgoznak, de a diktálás és a másolás továbbra is fontos. Ha egy gyakori hiba visszatér, érdemes külön gyakorolni: a gyakorló a rossz válaszokat elmenti, és a „Hibáim gyakorlása” körben újra felteszi őket.",
     faq=[("Mit kell tudnia a negyedikesnek helyesírásból?", "A tanterv szerint a gyakori szavak helyesírását (j-ly, hosszú-rövid hangok), a toldalékos alakokat és a mondatfajták jelölését. A pontos elvárásokat az iskola adja meg."),
          ("Hogyan készüljön a gyerek az ötödik osztályra?", "A j-ly szavak ismétlése, a szófajok felismerése és a toldalékok helyes használata a legfontosabb. Napi 10 perc gyakorlás elég."),]),
 5: dict(
@@ -157,12 +157,12 @@ NYELV = {
 
 # ---- Környezetismeret (1–4. osztály) és természetismeret (5–6. osztály) ----
 TERM = {
- 1: {'intro': 'Az első osztályban a környezetismeret a gyerek közvetlen környezetével ismerteti meg: az évszakokkal, a hét napjaival és a hónapokkal, a testünkkel és az érzékszerveinkkel, a háziállatokkal és a növényekkel. Az itt található gyakorlók rövid, játékos kérdésekkel segítenek ezeken a témákon.',
+ 1: {'intro': 'Az első osztályban a környezetismeret a gyereket a közvetlen környezetével ismerteti meg: az évszakokkal, a hét napjaival és a hónapokkal, a testünkkel és az érzékszerveinkkel, a háziállatokkal és a növényekkel. Az itt található gyakorlók rövid, játékos kérdésekkel segítenek ezeken a témákon.',
      'learn': ['a hét napjai, a hónapok és az évszakok sorrendje', 'az évszakok jellemzői, az időjárás', 'a testünk részei és az érzékszerveink (szem, fül, orr, nyelv, bőr)', 'háziállatok és vadon élő állatok, kicsinyeik és hangjuk', 'gyümölcsök, zöldségek, fák és virágok megismerése'],
-     'tips': 'Elsősnek a séta és a megfigyelés a legjobb tanító. Mutassatok rá az évszakok jeleire, nevezzétek meg közösen az állatokat és a növényeket, és utána a gyakorlóval játékosan felelevenítheti, amit látott. Napi 5–10 perc elég.',
+     'tips': 'Elsősnek a séta és a megfigyelés a legjobb tanító. Mutassatok rá az évszakok jeleire, nevezzétek meg közösen az állatokat és a növényeket, és utána a gyerek a gyakorlóval játékosan felelevenítheti, amit látott. Napi 5–10 perc elég.',
      'faq': [('Mit tanul a gyerek környezetismeretből első osztályban?', 'Az első osztályban a közvetlen környezettel ismerkedik: az évszakokkal, a napokkal és hónapokkal, a testével, az érzékszervekkel, az állatokkal és a növényekkel. A pontos tananyag iskolánként eltérhet.'), ('Hogyan gyakoroltassam otthon a környezetismeretet?', 'Beszélgessetek a megfigyeléseiről séta közben, és használjátok a rövid kvízfeladatokat. A gyerek így játékosan ismétli át az évszakokat, az állatokat és a növényeket.')]},
  2: {'intro': 'Másodikban a gyerekek tovább mélyítik a természet megismerését: az évszakok és az időjárás kapcsolatát, az állatok élőhelyét és táplálkozását, a növényeket, valamint az egészséges életmód alapjait tanulják. A gyakorlók ezeket a témákat veszik végig rövid kérdésekkel.',
-     'learn': ['az évszakok, a hónapok hossza és az ünnepek', 'az időjárás elemei és az öltözködés az időjáráshoz', 'állatok élőhelye, táplálkozása, kicsinyei', 'gyümölcsök, zöldségek, fák és bokrok', 'az egészséges életmód: mozgás, étkezés, alvás, tisztálkodás'],
+     'learn': ['az évszakok, a hónapok hossza és az ünnepek', 'az időjárás elemei és az időjárásnak megfelelő öltözködés', 'állatok élőhelye, táplálkozása, kicsinyei', 'gyümölcsök, zöldségek, fák és bokrok', 'az egészséges életmód: mozgás, étkezés, alvás, tisztálkodás'],
      'tips': 'Másodikosnál működik, ha a tanultakat a mindennapokhoz kötjük: reggel megnézitek az időjárást, kiválasztjátok a megfelelő ruhát, és megbeszélitek, mit esznek az állatok. Rövid, rendszeres gyakorlás többet ér, mint az egyszeri hosszú tanulás.',
      'faq': [('Mi az időjárás és hogyan mérjük?', 'Az időjárás a levegő pillanatnyi állapota: hőmérséklet, csapadék, szél és felhőzet. A hőmérsékletet hőmérővel, a csapadék mennyiségét esőmérővel mérjük.'), ('Miben segít a gyakorló?', 'Rövid kérdésekkel gyakoroltatja az állatok, növények, évszakok és az emberi test alapjait, így a gyerek játékosan ismétli át a tananyagot.')]},
  3: {'intro': 'Harmadik osztályban a gyerekek már rendszerezik a természet jelenségeit: az anyagokat és tulajdonságaikat, a víz állapotait, az időjárást és a víz körforgását, az állatok csoportjait és az emberi testet. A gyakorlók a legfontosabb fogalmakat gyakoroltatják.',
@@ -171,8 +171,8 @@ TERM = {
      'faq': [('Mik a halmazállapotok?', 'Az anyagok lehetnek szilárdak (például kő, fa), folyékonyak (például víz, olaj) és légneműek (például levegő). A víz mindhárom állapotban előfordul: jég, víz és vízgőz.'), ('Hogyan készüljön a gyerek egy környezetismeret-felelésre?', 'Érdemes a fogalmakat saját szavaival elmondatni, példákat gyűjteni, és rövid kvízekkel ellenőrizni a tudását.')]},
  4: {'intro': 'Negyedikben a környezetismeret az életközösségek és az anyagok világa felé nyit: a gyerekek megismerik az élőhelyeket, a táplálékláncok alapjait, az anyagok tulajdonságait, valamint az emberi test működését. A gyakorlók ezeket az összefüggéseket gyakoroltatják.',
      'learn': ['élőhelyek: erdő, rét, tó, tenger, sivatag', 'egyszerű táplálékláncok', 'az anyagok tulajdonságai: mágnesesség, oldódás, úszás', 'halmazállapot-változások', 'a szervrendszerek és az egészséges életmód'],
-     'tips': 'Negyedikben nagy segítség, ha a gyerek maga rajzol táplálékláncot, vagy gyűjti, melyik állat hol él. Ez segít megérteni az összefüggéseket, nem csak bemagolni a szavakat.',
-     'faq': [('Mi az a tápláléklánc?', 'A tápláléklánc megmutatja, ki kit eszik meg. Az elején mindig a növény áll, mert ő maga készíti a táplálékát, utána jönnek az állatok, például fű, nyúl, róka.'), ('Mit jelent a halmazállapot-változás?', 'Például az olvadás (szilárdból folyékony), a fagyás (folyékonyból szilárd), a párolgás (folyékonyból légnemű) és a lecsapódás (légneműből folyékony).')]},
+     'tips': 'Negyedikben nagy segítség, ha a gyerek maga rajzol táplálékláncot, vagy gyűjti, melyik állat hol él. Ez segít megérteni az összefüggéseket, ahelyett hogy a gyerek csak bemagolná a szavakat.',
+     'faq': [('Mi az a tápláléklánc?', 'A tápláléklánc megmutatja, ki kit eszik meg. Az elején mindig a növény áll, mert ő maga készíti a táplálékát, utána jönnek az állatok, például a fűt megeszi a nyúl, a nyulat pedig a róka.'), ('Mit jelent a halmazállapot-változás?', 'Például az olvadás (szilárdból folyékony), a fagyás (folyékonyból szilárd), a párolgás (folyékonyból légnemű) és a lecsapódás (légneműből folyékony).')]},
  5: {'intro': 'Ötödik osztálytól a tantárgy neve természetismeret. A gyerekek az élő és élettelen természet kapcsolatait vizsgálják: az anyagok halmazállapotát, a vizet és a levegőt, az élőhelyeket, valamint a növények, állatok és az emberi test működését. A gyakorlók ehhez adnak gyors ismétlési lehetőséget.',
      'learn': ['az anyagok halmazállapota és változásai, a víz fagyás- és forráspontja', 'az időjárás elemei és a víz körforgása', 'élőhelyek és táplálékláncok', 'a növények és állatok életműködése, állatcsoportok', 'az emberi test szervrendszerei'],
      'tips': 'A természetismeretnél a fogalmak értése többet számít, mint a magolás. Kérd meg a gyereket, hogy a saját szavaival magyarázza el, például hogyan működik a víz körforgása, és ezután gyakorolja a pontos kifejezéseket kvízkérdésekkel.',

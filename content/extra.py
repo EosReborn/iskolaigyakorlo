@@ -8,7 +8,7 @@ EXTRA = {
 """,
 "j-vagy-ly-hogyan-tanuljuk": """
 <h2>Egyszerű heti terv</h2>
-<p>A j–ly helyesírás hosszú távú munka, ezért érdemes kis lépésekben haladni. Hetente válasszatok 8–10 új szót, amelyeket a gyerek sokszor elír. Hétfőn olvassátok el és magyarázzátok el őket, kedden írja le őket másolva, szerdán diktálás következik, csütörtökön a hibás szavakat külön gyakoroljátok, pénteken pedig mondatot alkot mindegyikkel. Ez heti 10 perc naponta, mégis hónapok alatt érezhető a különbség.</p>
+<p>A j–ly helyesírás hosszú távú munka, ezért érdemes kis lépésekben haladni. Hetente válasszatok 8–10 új szót, amelyeket a gyerek sokszor elír. Hétfőn olvassátok el és magyarázzátok el őket, kedden írja le őket másolva, szerdán diktálás következik, csütörtökön a hibás szavakat külön gyakoroljátok, pénteken pedig mondatot alkot mindegyikkel. Ez naponta mindössze 10 perc, mégis hónapok alatt érezhető a különbség.</p>
 <p>Fontos, hogy a szavakat mindig szövegben is lássa: egy mondatba ágyazott szó sokkal jobban rögzül, mint egy kiragadott listaelem. Ha a gyerek olvas, a helyesírása is javul, mert sokszor látja a helyes alakot. A gyakorló „Hibáim gyakorlása” funkciója abban segít, hogy a ténylegesen elrontott szavak vissza-visszatérjenek, a már biztos szavakra pedig ne vesszen el az idő.</p>
 """,
 "mennyit-gyakoroljon-a-gyerek-naponta": """
@@ -16,7 +16,7 @@ EXTRA = {
 <p>Az alábbiak irányszámok, nem szabályok, hiszen minden gyerek más. Elsős-másodikos korban napi 5–10 perc elég, és fontosabb a játékosság, mint a mennyiség. Harmadik-negyedik osztályban napi 10–15 perc rendszeres gyakorlással jól tartható a szint. Felső tagozatban 15–20 perc is belefér, de érdemes tantárgyakra bontani: egyik nap matek, másik nap helyesírás vagy nyelvtan.</p>
 <p>A legjobb jel, hogy a gyakorlás végén a gyerek még bírná tovább is. Ha fáradtan, elnyűtten fejezi be, a következő alkalommal nehezebb lesz ráállítani. Inkább hagyjuk abba korábban, mint hogy megutáltassuk vele a tanulást.</p>
 <h2>Mit mérjünk a perc helyett?</h2>
-<p>A gyakorlás hatékonyságát nem csak az idő mutatja. Figyeljük meg inkább, hogy a hibák száma csökken-e, gyorsabb-e a gyerek, és magabiztosabban válaszol-e. A gyakorló szintjei és a csillagok ebben segítenek: ha egy szinten stabilan három csillagot kap, jöhet a következő.</p>
+<p>A gyakorlás hatékonyságát nemcsak az idő mutatja. Figyeljük meg inkább, hogy a hibák száma csökken-e, gyorsabb-e a gyerek, és magabiztosabban válaszol-e. A gyakorló szintjei és a csillagok ebben segítenek: ha egy szinten stabilan három csillagot kap, jöhet a következő.</p>
 """,
 "irasbeli-osztas-lepesrol-lepesre": """
 <h2>Segítő rutin az osztáshoz</h2>
@@ -25,7 +25,7 @@ EXTRA = {
 """,
 "hogyan-tanitsuk-az-ora-leolvasasat": """
 <h2>Játékos ötletek otthonra</h2>
-<p>Az óra leolvasása akkor rögzül, ha a gyerek a mindennapokban is használja. Kérdezzétek meg naponta párszor, hogy hány óra van, és hagyjátok, hogy ő olvassa le a falióráról vagy a karórájáról. Készíthettek papírórát is, amelyen a mutatók mozgathatók: ti mondotok egy időpontot, ő beállítja, aztán cserélhettek.</p>
+<p>Az óra leolvasása akkor rögzül, ha a gyerek a mindennapokban is használja. Kérdezzétek meg naponta párszor, hogy hány óra van, és hagyjátok, hogy ő olvassa le a falióráról vagy a karórájáról. Készíthettek papírórát is, amelyen a mutatók mozgathatók: ti mondtok egy időpontot, ő beállítja, aztán cserélhettek.</p>
 <p>A napirend is jó gyakorlóterep. Beszéljétek meg, hogy mikor kel, mikor indul az iskolába, mikor kezdődik az edzés, és ezeket jelölje meg az órán. Így az idő nem elvont fogalom lesz, hanem a saját napja. Amikor a pontos időpontok már mennek, jöhet az eltelt idő számolása: ha fél 4-kor indul és negyed 5-kor ér oda, mennyi ideig utazott?</p>
 """,
 "kerekites-szabalya-peldakkal": """

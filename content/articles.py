@@ -10,16 +10,16 @@ dict(
  lead="A szorzótábla a második-harmadik osztály legnagyobb tanulnivalója, és az osztás, a törtek, később az egyenletek is erre épülnek. A jó hír, hogy nem kell 100 szorzatot megtanulni: a felcserélhetőség miatt a 2–9-es táblákban mindössze 36 különböző szorzat van.",
  body="""
 <h2>1. Előbb értse meg, aztán tanulja meg</h2>
-<p>A szorzás ismételt összeadás: a 4 × 3 azt jelenti, hogy 3-at négyszer adunk össze. Ha a gyerek érti, mit csinál, ha egy szorzatot elfelejt, ki tudja számolni. Kezdetben használhattok valódi tárgyakat (gombokat, kockákat), amelyeket csoportokba raktok.</p>
+<p>A szorzás ismételt összeadás: a 4 × 3 azt jelenti, hogy 3-at négyszer adunk össze. Ha a gyerek érti, mit csinál, akkor – ha egy szorzatot elfelejt – ki tudja számolni. Kezdetben használhattok valódi tárgyakat (gombokat, kockákat), amelyeket csoportokba rakhattok.</p>
 <h2>2. Jó sorrendben haladjatok</h2>
 <p>Ne a táblákat ábécésorban tanuljátok. A legtöbb gyereknek ez a sorrend működik: 10-es, 2-es, 5-ös, majd a 3-as és a 4-es, utána a 9-es, végül a nehezebb 6-os, 7-es és 8-as. Mire a nehezebbekhez érnek, a szorzatok fele már ismert.</p>
 <h2>3. Használjátok ki a felcserélhetőséget</h2>
-<p>A 3 × 7 és a 7 × 3 ugyanannyi. Aki ezt tudja, a feladatok felét megspórolja. Hasznos megmutatni egy 10 × 10-es táblázaton, hogy az átlóra tükrös a minta. A szorzótábla gyakorlóban ezt a gyerek úgy is észreveszi, hogy minden megoldás után megmutatjuk a fordított alakot.</p>
+<p>A 3 × 7 és a 7 × 3 ugyanannyi. Aki ezt tudja, a feladatok felét megspórolja. Hasznos megmutatni egy 10 × 10-es táblázaton, hogy az átlóra nézve szimmetrikus a minta. A szorzótábla gyakorlóban ezt a gyerek úgy is észreveszi, hogy minden megoldás után megmutatjuk a fordított alakot.</p>
 <h2>4. Tanuljatok trükköket</h2>
 <ul>
 <li><b>5-ös tábla:</b> a szorzat 0-ra vagy 5-re végződik, és a 10-es tábla fele.</li>
 <li><b>4-es tábla:</b> a 2-es tábla duplája (4 × 6 = 2 × 6 × 2).</li>
-<li><b>9-es tábla:</b> a szorzat tízes helyén álló számjegy eggyel kisebb a szorzónál, a számjegyek összege 9 (9 × 7 = 63, mert 6 + 3 = 9 és 6 = 7 − 1).</li>
+<li><b>9-es tábla:</b> a szorzat tízes helyén álló számjegy eggyel kisebb, mint a szorzó; a számjegyek összege 9 (9 × 7 = 63, mert 6 + 3 = 9 és 6 = 7 − 1).</li>
 <li><b>6-os tábla:</b> az 5-ös tábla plusz még egyszer a szorzó (6 × 7 = 5 × 7 + 7).</li>
 </ul>
 <h2>5. Gyakoroljatok röviden, de naponta</h2>
@@ -41,10 +41,10 @@ dict(
  title="Mikor kezdődik a törttanítás, és hogyan segíthetünk otthon?",
  seo_title="Mikor kezdődik a törttanítás? Segítség szülőknek",
  desc="Mikor tanulnak a gyerekek törteket, és hogyan segíthet a szülő? Tippek a törtek tanulásához évfolyamonként, gyakori hibák, ingyenes online gyakorló.",
- lead="A törtek az alsó és a felső tagozat közötti egyik legfontosabb híd. Sok gyereknek ez az első téma, ahol a szám már nem csak „darab”, hanem arány is, ezért gyakran okoz nehézséget. Érdemes tudni, mikor milyen szinten várható, és hogyan lehet otthon támogatni.",
+ lead="A törtek az alsó és a felső tagozat közötti egyik legfontosabb híd. Sok gyereknek ez az első téma, ahol a szám már nemcsak „darab”, hanem arány is, ezért gyakran okoz nehézséget. Érdemes tudni, mikor milyen szinten várható, és hogyan lehet otthon támogatni.",
  body="""
 <h2>Mikor találkoznak a gyerekek a törtekkel?</h2>
-<p>Az első találkozás általában a második-harmadik osztályban van: a fele, a harmada és a negyede fogalma, ábrák és valós tárgyak (alma, pizza) segítségével. A törtek rendszeres tanítása harmadikban-negyedikben kezdődik: tört felismerése, törtrész kiszámítása, azonos nevezőjű törtek összehasonlítása, összeadása és kivonása. Az ötödik-hatodik osztályban jön a bővítés, az egyszerűsítés és a közös nevező. A pontos sorrend tankönyvenként eltérhet.</p>
+<p>Az első találkozás általában a második-harmadik osztályban van: a fél, a harmad és a negyed fogalma, ábrák és valós tárgyak (alma, pizza) segítségével. A törtek rendszeres tanítása harmadikban-negyedikben kezdődik: tört felismerése, törtrész kiszámítása, azonos nevezőjű törtek összehasonlítása, összeadása és kivonása. Az ötödik-hatodik osztályban jön a bővítés, az egyszerűsítés és a közös nevező. A pontos sorrend tankönyvenként eltérhet.</p>
 <h2>A három legfontosabb fogalom</h2>
 <ul>
 <li><b>Nevező:</b> azt mutatja, hány egyenlő részre osztottuk az egészet.</li>
@@ -53,9 +53,9 @@ dict(
 </ul>
 <h2>Hogyan segíthetünk otthon?</h2>
 <h3>Kezdjük a konyhában</h3>
-<p>A pizza, a csokoládé, a torta természetes példa. „Ha 8 szeletre vágjuk, és te 3-at eszel meg, a pizza hányad részét ette meg?” A gyerek így a törtet nem szabályként, hanem helyzetként tanulja.</p>
+<p>A pizza, a csokoládé, a torta természetes példa. „Ha 8 szeletre vágjuk, és te 3-at eszel meg, a pizza hányadrészét ettél meg?” A gyerek így a törtet nem szabályként, hanem helyzetként tanulja.</p>
 <h3>Használjunk számegyenest</h3>
-<p>A tört nem csak rész, hanem szám is: a ½ a 0 és az 1 között félúton van. Rajzoljatok egy számegyenest, és tegyétek rá az ¼-et, a ½-et, a ¾-et.</p>
+<p>A tört nemcsak rész, hanem szám is: a ½ a 0 és az 1 között félúton van. Rajzoljatok egy számegyenest, és tegyétek rá az ¼-et, a ½-et, a ¾-et.</p>
 <h3>Hasonlítsunk össze törteket</h3>
 <p>A leggyakoribb tévedés: „az ⅓ nagyobb, mint az ½, mert a 3 nagyobb, mint a 2”. Ilyenkor érdemes megmutatni, hogy ha az egészet 3 részre osztjuk, a részek kisebbek, mint ha csak 2 részre osztjuk. Azonos számlálónál a kisebb nevezőjű tört a nagyobb.</p>
 <h3>Törtrész kiszámítása</h3>
@@ -82,16 +82,16 @@ dict(
  lead="A j és az ly ugyanazt a hangot jelöli, ezért a helyesírását nem lehet fülre megtanulni. Nincs egyetlen szabály, amely mindent lefed, de van néhány bevált módszer, amellyel a gyerekek sokkal biztosabbá válnak.",
  body="""
 <h2>Miért nehéz a j és az ly?</h2>
-<p>A mai magyarban a két betű kiejtése megegyezik (a „ly” is j-nek hangzik). Ezért a helyesírás a szóképre, vagyis arra épül, hogy a gyerek lássa és megjegyezze, hogyan néz ki a szó. Ez a szemléletes memória rendszeres olvasással és ismétléssel erősödik.</p>
+<p>A mai magyarban a két betű kiejtése megegyezik (a „ly” is j-nek hangzik). Ezért a helyesírás a szóképre, vagyis arra épül, hogy a gyerek lássa és megjegyezze, hogyan néz ki a szó. Ez a vizuális memória rendszeres olvasással és ismétléssel erősödik.</p>
 <h2>Az ly-os szavak a kisebb csoport</h2>
 <p>Az ly-os szavak összességében kevesebben vannak, mint a j-sek. Ezért az a gyakorlati stratégia, hogy a gyerek a gyakori ly-os szavakat külön megtanulja, és ha egy szóról nem tudja, hogy ly-os-e, többnyire a j a valószínűbb. Ez nem szabály, csak támpont, ezért a bizonytalan szavakat érdemes ellenőrizni (szótárban vagy a tanítótól). A leggyakoribb ly-os szavak közé tartozik: <b>hely, folyó, golyó, király, bagoly, lyuk, olyan, milyen, ilyen, mely, tengely, selyem, kehely, pehely, hólyag, mályva, gólya</b>.</p>
 <h2>Szócsaládok és toldalékok</h2>
 <p>A j és az ly a toldalékolt és az összetett szavakban is megmarad. A folyik, a folyó, a folyam és a folyosó egy családba tartoznak, és mind ly-nal írjuk. Hasonlóan a lyuk, lyukas, lyuggat. A j-s szavaknál ugyanez igaz: fej, fejes, fejlődik; haj, hajnal.</p>
-<h2>Gyakori j-s szavak, amelyeket gyakran elírnak</h2>
+<h2>Gyakori j-s szavak, amelyeket sokan elírnak</h2>
 <p>Ezeket nem egyszerű kitalálni, érdemes külön megtanulni: <b>ajtó, ajándék, hajó, majom, bajusz, rajz, tojás, tej, fájdalom, nyájas</b>.</p>
 <h2>Hogyan gyakoroljunk?</h2>
 <ol>
-<li><b>Olvassunk sokat.</b> A szemléletes memória ettől erősödik.</li>
+<li><b>Olvassunk sokat.</b> A vizuális memória ettől erősödik.</li>
 <li><b>Gyűjtsünk listát.</b> A gyerek kézzel írja le a saját „makacs” szavait.</li>
 <li><b>Játékos gyakorlás.</b> A <a href="/j-ly-helyesiras/">J vagy LY gyakorló</a> gyakori szavakkal dolgozik, három szinten: hiányzó betű pótlása, két írásmód közül választás, vegyes kör.</li>
 <li><b>Ismételjünk napi rendszerességgel.</b> Napi 5–10 perc bőven elég.</li>
@@ -174,7 +174,7 @@ dict(
 <h2>Mielőtt írásbeli osztásra térnétek</h2>
 <p>Az osztás alapja a szorzótábla. Ha a gyerek a szorzatokat nem tudja gyorsan, az írásbeli osztás is lassú és hibás lesz. Érdemes előbb a <a href="/szorzotabla/">szorzótáblát</a> és az <a href="/osztas/">egyszerű osztást</a> megerősíteni.</p>
 """,
- faq=[("Melyik osztályban tanulják az írásbeli osztást?","Általában harmadikban-negyedikben kezdődik: egyjegyű osztóval harmadikban-negyedikben, kétjegyű osztóval negyedikben-ötödikben. Ez tankönyvenként eltérhet."),
+ faq=[("Melyik osztályban tanulják az írásbeli osztást?","Az egyjegyű osztóval végzett írásbeli osztás általában harmadikban-negyedikben kezdődik, a kétjegyű osztóval végzett negyedikben-ötödikben. Ez tankönyvenként eltérhet."),
       ("Hogyan ellenőrizhető az osztás eredménye?","Szorzással: a hányadost megszorozzuk az osztóval, és hozzáadjuk a maradékot. Ha ez az osztandót adja, az eredmény helyes."),
       ("Mit tegyek, ha a gyerek nem érti az írásbeli osztást?","Menj vissza a szorzótáblához és az egyszerű, maradék nélküli osztáshoz. Az írásbeli osztás ezekre épül.")],
  mods=["irasbeli-muveletek","osztas","szorzotabla"], related=["maradekos-osztas-magyarazat","hogyan-tanuljuk-meg-a-szorzotablat"], grades=[3,4,5]),
@@ -189,11 +189,11 @@ dict(
 <h2>1. Ismerjék meg a két mutatót</h2>
 <p>A <b>rövid mutató az órát</b>, a <b>hosszú mutató a percet</b> jelzi. Kezdetben csak az egész órákkal foglalkozzatok: ilyenkor a hosszú mutató a 12-esen áll, a rövid mutató megmutatja az órát. Ezt érdemes valódi órával, kézbe véve gyakorolni.</p>
 <h2>2. Fél, negyed és háromnegyed</h2>
-<p>Ezek a magyarban sajátosak. A <b>fél 8</b> azt jelenti, hogy fél óra múlva lesz 8, vagyis 7:30. Hasonlóan: a <b>negyed 8</b> 7:15, a <b>háromnegyed 8</b> pedig 7:45. A gyerekeknek külön meg kell tanulniuk, hogy a magyar a következő órához viszonyít. A digitális alak (7:30) mellé mindig mondjuk a szöveges alakot is.</p>
+<p>Ezek a magyarban sajátosak. A <b>fél 8</b> azt jelenti, hogy fél óra múlva lesz 8, vagyis 7:30. Hasonlóan: a <b>negyed 8</b> 7:15, a <b>háromnegyed 8</b> pedig 7:45. A gyerekeknek külön meg kell tanulniuk, hogy a magyarban a következő órához viszonyítjuk az időt. A digitális alak (7:30) mellé mindig mondjuk a szöveges alakot is.</p>
 <h2>3. A percek leolvasása</h2>
 <p>A számlap számai 5 percenként követik egymást: az 1-es 5 percet, a 2-es 10 percet, a 3-as 15 percet jelent, és így tovább a 12-esig. A gyerek előbb ötösével számol, aztán az egyes percekkel finomít.</p>
 <h2>4. Idő és mértékegységek</h2>
-<p>Az óra leolvasása után jön az idő mértékegységeinek átváltása: 1 óra = 60 perc, 1 nap = 24 óra, 1 hét = 7 nap. Az <a href="/mertekegysegek/">mértékegységek gyakorlóban</a> az idő külön szint.</p>
+<p>Az óra leolvasása után jön az idő mértékegységeinek átváltása: 1 óra = 60 perc, 1 nap = 24 óra, 1 hét = 7 nap. A <a href="/mertekegysegek/">mértékegységek gyakorlóban</a> az idő külön szint.</p>
 <h2>Gyakori hibák</h2>
 <ul>
 <li>Összekeverik a két mutatót.</li>
@@ -202,7 +202,7 @@ dict(
 <li>A fél és negyed kifejezésnél az előző órát mondják.</li>
 </ul>
 <h2>Gyakorlás otthon</h2>
-<p>Használjatok valódi órát: kérdezzétek meg naponta kétszer, hány óra van. A gyakorló szintekre bontva halad: egész órák, fél órák, negyedek, öt perces lépések, végül a percre pontos olvasás. A hatodik szinten fordítva kell dolgozni: a digitális időhöz kell kiválasztani az órát.</p>
+<p>Használjatok valódi órát: kérdezzétek meg naponta kétszer, hány óra van. A gyakorló szintekre bontva halad: egész órák, fél órák, negyedek, ötperces lépések, végül a percre pontos olvasás. A hatodik szinten fordítva kell dolgozni: a digitális időhöz kell kiválasztani az órát.</p>
 """,
  faq=[("Melyik osztályban tanulják az óra leolvasását?","Az egész órák és a fél óra általában elsőben-másodikban jelennek meg, a percre pontos leolvasás másodikban-harmadikban. Ez az iskolától függ."),
       ("Mit jelent a negyed 8?","A magyarban a „negyed 8” 7:15-öt jelent: a 8. órának az első negyede telt el. A „fél 8” 7:30, a „háromnegyed 8” 7:45."),
@@ -217,7 +217,7 @@ dict(
  lead="A kerekítés a becslés és a gyors fejszámolás alapja. A szabály egyszerű, de a gyerekek gyakran azt nem tudják, melyik számjegyet kell nézni. Az alábbi magyarázat rövid példákkal mutatja a lépéseket.",
  body="""
 <h2>A szabály</h2>
-<p>Ha egy számot adott helyiértékre akarunk kerekíteni, az <b>eggyel utána következő helyiértéken</b> álló számjegyet nézzük:</p>
+<p>Ha egy számot adott helyiértékre akarunk kerekíteni, a <b>nála eggyel kisebb helyiértéken</b> (tőle jobbra) álló számjegyet nézzük:</p>
 <ul>
 <li>ha ez <b>5 vagy több</b>, akkor <b>felfelé</b> kerekítünk,</li>
 <li>ha <b>4 vagy kevesebb</b>, akkor <b>lefelé</b>.</li>
@@ -304,20 +304,20 @@ dict(
  title="Miért érdemes a hibákat külön gyakorolni? A hibáim gyakorlása",
  seo_title="Miért érdemes a hibákat külön gyakorolni?",
  desc="Hogyan tanulhat a gyerek a hibáiból? Miért hatékonyabb a hibák célzott gyakorlása, és hogyan működik a Hibáim gyakorlása az Iskolai Gyakorlóban.",
- lead="A legtöbb gyerek ugyanazokat a hibákat követi el újra és újra: ugyanazt a szorzatot téveszti el, ugyanazt a szót írja rosszul. A hibák tehát nem véletlenek, hanem jelzik, hol van a tudás résnyi. Ha ezeket célzottan gyakoroljuk, a haladás sokkal gyorsabb.",
+ lead="A legtöbb gyerek ugyanazokat a hibákat követi el újra és újra: ugyanazt a szorzatot téveszti el, ugyanazt a szót írja rosszul. A hibák tehát nem véletlenek, hanem jelzik, hol vannak rések a tudásban. Ha ezeket célzottan gyakoroljuk, a haladás sokkal gyorsabb.",
  body="""
 <h2>Miért nem elég ismételni mindent?</h2>
 <p>Ha a gyerek 100 feladatból 90-et jól megold, a gyakorlási idő nagy része olyan dologra megy el, amit már tud. A maradék 10 az, ami fejlődést hoz. A hibák külön gyakorlásával ugyanennyi idő alatt jóval többet lehet elérni.</p>
 <h2>A hiba nem kudarc, hanem információ</h2>
 <p>Egy rossz válasz azt mutatja meg, melyik ismeret hiányzik vagy bizonytalan. A gyerek számára fontos üzenet: a hiba normális, és javítható. Ezért a hibákat nem büntetjük, hanem megbeszéljük.</p>
 <h2>Hogyan működik a „Hibáim gyakorlása”?</h2>
-<p>Az Iskolai Gyakorlóban a rosszul megoldott feladatok automatikusan elmentődnek a böngészőben. A főoldalon megjelenik a „Hibáim gyakorlása” gomb, amely ezekből állít össze egy új kört (legfeljebb 10 feladatot). Ha a gyerek jól megoldja, a feladat kikerül a listából.</p>
+<p>Az Iskolai Gyakorlóban a böngésző automatikusan elmenti a rosszul megoldott feladatokat. A főoldalon megjelenik a „Hibáim gyakorlása” gomb, amely ezekből állít össze egy új kört (legfeljebb 10 feladatot). Ha a gyerek jól megoldja, a feladat kikerül a listából.</p>
 <ul>
 <li>A hibák csak a gyerek böngészőjében vannak, nem kerülnek szerverre.</li>
 <li>Nem kell hozzá regisztráció.</li>
 <li>A lista legfeljebb 40 feladatot tárol.</li>
 </ul>
-<h2>Hogyan használjuk a szülőkkel?</h2>
+<h2>Hogyan használhatják a szülők?</h2>
 <ol>
 <li><b>Rövid körök.</b> Egy hibakör kb. 3–5 perc.</li>
 <li><b>Beszéljünk a hibáról.</b> Ne a jó választ mondjuk meg, hanem kérdezzük meg: „Hogyan gondolkodtál?”</li>
@@ -340,7 +340,7 @@ dict(
  lead="A törtek bővítése és egyszerűsítése az ötödik-hatodik osztály egyik kulcsfogalma, mert a különböző nevezőjű törtek összeadása és kivonása erre épül. A szabály ugyanaz minden esetben: a számlálót és a nevezőt ugyanazzal a számmal szorozzuk vagy osztjuk.",
  body="""
 <h2>Mit jelent az, hogy egy tört ugyanannyit ér?</h2>
-<p>A ½, a 2/4 és a 4/8 ugyanazt a mennyiséget jelenti: egy fél pizzát. A törtek tehát többféleképpen is leírhatók. A bővítés és az egyszerűsítés azt mutatja meg, hogyan lehet az egyik alakból a másikba eljutni.</p>
+<p>A ½, a 2/4 és a 4/8 ugyanazt a mennyiséget jelentik: egy fél pizzát. A törtek tehát többféleképpen is leírhatók. A bővítés és az egyszerűsítés azt mutatja meg, hogyan lehet az egyik alakból a másikba eljutni.</p>
 <h2>Bővítés</h2>
 <p>Bővítéskor a számlálót és a nevezőt <b>ugyanazzal a számmal szorozzuk</b>.</p>
 <p><b>Példa:</b> bővítsük 2/3-ot 2-vel: 2/3 = (2 × 2)/(3 × 2) = <b>4/6</b>.<br>Bővítsük 5/6-ot 4-gyel: 5/6 = 20/24.</p>
