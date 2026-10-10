@@ -85,7 +85,7 @@ def prerender(m):
     if not m:
         gl = lambda k, rng: ''.join(f'<li><a href="{g_url(k, n)}">{g_name(k, n)}</a></li>' for n in rng)
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
-        return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}{gl("t", range(1, 7))}</ul>'
+        return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes gyakorló általános iskolásoknak: matek, helyesírás, környezetismeret és kémia 1–8. osztályig</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Gyerekeknek, szülőknek és tanároknak, regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}{gl("t", range(1, 7))}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p>{read_note(m)}<ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section><section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{fb_html(m["title"])}</div>'
 
@@ -186,7 +186,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws
 </html>
 """
 
-HOME_TITLE = f'Ingyenes matek és helyesírás gyakorló 1–8. osztály – {NAME}'
+HOME_TITLE = f'Ingyenes matek, helyesírás gyakorló általános iskolásoknak – {NAME}'
 def mod_title(m):
     a, z = m['grades']; t = f'{m["title"]} {a}–{z}. osztály – {NAME}' if a != z else f'{m["title"]} {a}. osztály – {NAME}'
     return t if len(t) <= 62 else f'{m["title"]} – {NAME}'
@@ -199,7 +199,7 @@ def mod_desc(m):
 def page(m):
     slug = m['slug'] if m else ''
     title = mod_title(m) if m else HOME_TITLE
-    desc = mod_desc(m) if m else 'Ingyenes, regisztráció nélküli matek, helyesírás és környezetismeret gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, j–ly, állatok, növények. Nyomtatható munkalapokkal.'
+    desc = mod_desc(m) if m else 'Ingyenes gyakorló általános iskolásoknak, szülőknek és tanároknak: matek, helyesírás, környezetismeret és kémia 1–8. osztályig. Regisztráció nélkül, nyomtatható munkalapokkal.'
     path = f'/{slug + "/" if slug else ""}'
     url = SITE + path
     ld = {"@context": "https://schema.org", "@type": "WebApplication", "name": m['title'] if m else NAME, "url": url, "description": desc,
