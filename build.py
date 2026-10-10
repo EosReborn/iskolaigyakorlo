@@ -94,7 +94,7 @@ def grade_levels_html(m):
         lo, hi = grade_lv(m, g)
         names = ', '.join(e(m['levels'][i]) for i in range(lo, hi + 1))
         rows += f'<li><b>{g}. osztály:</b> {lo + 1}–{hi + 1}. szint ({names})</li>' if hi > lo else f'<li><b>{g}. osztály:</b> {lo + 1}. szint ({names})</li>'
-    return f'<section class="about"><h2>Melyik szint melyik évfolyamnak való?</h2><p>A gyakorló szintjei az évfolyamokon belül nehezednek. Ha a kezdőlapon kiválasztod az évfolyamot, csak az adott osztály szintjeit látod.</p><ul class="xl">{rows}</ul></section>'
+    return f'<section class="about fold"><details><summary><h2>Melyik szint melyik évfolyamnak való?</h2></summary><p>A gyakorló szintjei az évfolyamokon belül nehezednek. Ha a kezdőlapon kiválasztod az évfolyamot, csak az adott osztály szintjeit látod.</p><ul class="xl">{rows}</ul></details></section>'
 def mod_faq(m):
     gr = f'{m["grades"][0]}–{m["grades"][1]}. osztály' if m['grades'][0] != m['grades'][1] else f'{m["grades"][0]}. osztály'
     base = [(f'Melyik évfolyamnak ajánlott: {m["title"]}?', f'Ajánlott évfolyam: {gr}. A szintek az évfolyamokon belül nehezednek, így a gyerek a saját szintjén kezdhet, és fokozatosan haladhat tovább.'),
@@ -108,7 +108,7 @@ def prerender(m):
         return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes gyakorló általános iskolásoknak: matek, helyesírás, környezetismeret és kémia 1–8. osztályig</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Gyerekeknek, szülőknek és tanároknak, regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}{gl("t", range(1, 7))}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     extra = ''.join(f'<p>{e(t)}</p>' for t in MODSEO.get(m['slug'], {}).get('text', []))
-    return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p>{read_note(m)}<ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p>{extra}</section>{grade_levels_html(m)}<section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{faq_html(mod_faq(m), "Gyakran ismételt kérdések")}{fb_html(m["title"])}</div>'
+    return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p>{read_note(m)}<ul>{lv}</ul><section class="about fold"><details><summary><h2>Mire jó ez a gyakorló?</h2></summary>{extra or f'<p>{e(m["seo"])}</p>'}</details></section>{grade_levels_html(m)}<section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{faq_html(mod_faq(m), "Gyakran ismételt kérdések")}{fb_html(m["title"])}</div>'
 
 TODAY = datetime.date.today().isoformat()
 MODBY = {x['slug']: x for x in mods}
