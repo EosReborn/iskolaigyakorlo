@@ -489,3 +489,19 @@ header.site nav { display: flex; gap: 16px; align-items: center; }
 .cc b { font-size: 1.15rem; } .cc i { width: 2.4em; height: 1.9em; } .cmsg { gap: 18px 30px; margin-top: 28px; }
 .blist { gap: 20px; } .blist li { display: grid; grid-template-columns: 17em 1fr; align-items: end; gap: 12px; } .bw { min-width: 0; letter-spacing: .06em; } .blank.long { width: 100%; }
 @media (max-width: 640px) { .blist li { grid-template-columns: 1fr; gap: 2px; } }
+
+/* ---------- Betűrakó ---------- */
+.big.emo { font-size: clamp(4rem, 18vw, 6.5rem); line-height: 1.1; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+.wbox { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 14px 8px; border: 3px solid var(--blue); border-radius: 18px; background: var(--paper); min-height: 90px; align-items: center; margin-bottom: 12px; }
+.wbox.ok { border-color: var(--green); background: var(--green-soft); } .wbox.bad { border-color: var(--red); background: var(--red-soft); }
+.wl { display: inline-flex; align-items: center; justify-content: center; min-width: 1.5em; height: 1.9em; padding-inline: .2em; font: 600 clamp(1.8rem, 8vw, 2.6rem) var(--f-display); color: var(--ink); border-bottom: 4px solid var(--line); }
+.wl.slot { border: 3px dashed var(--muted); border-radius: 10px; background: var(--bg); min-width: 1.6em; }
+.wl.slot.f { border-style: solid; border-color: var(--blue); background: var(--blue-soft); color: var(--blue); }
+.wl.slot.cur { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+.wbox.ok .wl.slot { border-color: var(--green); background: #fff; color: var(--green); } .wbox.bad .wl.slot { border-color: var(--red); background: #fff; color: var(--red); }
+.lbank { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 10px; }
+.key.lt { min-height: 58px; min-width: 58px; flex: 0 0 auto; padding: 0 12px; font-size: 1.6rem; text-transform: lowercase; }
+.key.lt:disabled { opacity: .3; box-shadow: none; }
+.lctrl { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; } .lctrl .key { min-height: 58px; } .lctrl .key:disabled { opacity: .45; }
+.wmask b { font: 700 1.5rem var(--f-display); letter-spacing: .08em; }
+@media (max-width: 480px) { .wbox { gap: 5px; padding: 12px 6px; } .wl { font-size: clamp(1.4rem, 6.4vw, 2.1rem); min-width: 1.25em; padding-inline: .1em; } .wl.slot { min-width: 1.35em; } .key.lt { min-height: 54px; min-width: 52px; padding: 0 8px; font-size: 1.45rem; } }

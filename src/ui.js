@@ -86,6 +86,7 @@ const parseIn = s => (/^-?\d+(,\d*)?$/.test(s) ? parseFloat(s.replace(',', '.'))
 
 /* ---------- Kérdések ---------- */
 function newQ(seen = [], lv = S.lvl) {
+  S.fill = [];
   if (S.hiba) return Object.assign({}, S.pool[S.i]);
   const L = S.mod.levels[lv]; let q, k = 0;
   const used = new Set(seen.map(x => x.q));
@@ -152,8 +153,17 @@ function setupView() {
   return `<div class="setup"><a class="crumb" href="${href('')}">← Minden gyakorló</a><h1>${m.title}</h1><p class="lead">${m.desc}</p>${readNote(m)}<p class="grline">Ajánlott évfolyam: ${gradeTxt(m)}</p>${roller}<div class="tmode"><div><b>Időre megy</b><small>${TIME_SEC} másodperc alatt annyi feladatot oldj meg, amennyit csak tudsz. Bármikor kikapcsolhatod.</small></div><button class="sw" role="switch" aria-checked="${S.timed}" aria-label="Időre menő mód" data-act="timed"><i></i></button></div><h2 class="sr">Szintek</h2><div class="levels">${rows}</div>${m.levels.length > 1 ? `<div class="lv mixrow"><div><div class="nm">Vegyes munkalap</div><div class="st">Minden szintről, könnyebbtől a nehezebbig. A darabszámot a munkalapon állíthatod (10, 20 vagy 30).</div></div><div class="acts"><button class="btn sm sec" data-act="sheet" data-l="-1">Vegyes munkalap</button></div></div>` : ''}<section class="about"><h2>Mire jó ez a gyakorló?</h2><p>${m.seo}</p></section>${PATHMODE && XL.mod && XL.mod[m.slug] ? `<section class="about"><h2>Kapcsolódó oldalak</h2><ul class="xl">${XL.mod[m.slug].map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul></section>` : ''}${PATHMODE ? fbBox(m.title) : ''}<nav class="rel" aria-label="További gyakorlók">${rel}</nav></div>`;
 }
 
+const BKSP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M13 9l4 6M17 9l-4 6"/></svg>';
+function wordInner() {
+  const q = S.cur, fill = S.fill || [], cls = S.done ? (S.ok ? 'ok' : 'bad') : '';
+  const slots = q.tokens.map((t, i) => { const h = q.hidden.indexOf(i); if (h < 0) return `<span class="wl">${esc(t)}</span>`; const v = fill[h] !== undefined ? q.bank[fill[h]] : ''; return `<span class="wl slot${v ? ' f' : ''}${!S.done && h === fill.length ? ' cur' : ''}">${esc(v)}</span>`; }).join('');
+  const bank = S.done ? '' : `<div class="lbank" role="group" aria-label="Betűk">${q.bank.map((l, i) => `<button class="key lt" data-act="lt" data-i="${i}" ${fill.includes(i) ? 'disabled' : ''} aria-label="${esc(l)}">${esc(l)}</button>`).join('')}</div><div class="lctrl"><button class="key" data-act="ltdel" aria-label="Törlés">${BKSP}</button><button class="key go" data-act="ltok" ${fill.length === q.hidden.length ? '' : 'disabled'}>Kész</button></div>`;
+  return `<div class="wbox ${cls}" id="abox" aria-live="polite">${slots}</div>${bank}`;
+}
+const wordRefresh = () => { const w = $('#wordarea'); if (w) w.innerHTML = wordInner(); };
 function answerArea() {
   const q = S.cur;
+  if (q.kind === 'word') return `<div id="wordarea">${wordInner()}</div>`;
   if (q.kind === 'num') {
     const cls = S.done ? (S.ok ? 'ok' : 'bad') : '';
     const keys = [7, 8, 9, 4, 5, 6, 1, 2, 3].map(k => `<button class="key" data-act="key" data-k="${k}" aria-label="${k}">${k}</button>`).join('');
@@ -194,7 +204,7 @@ function resultView() {
 }
 function sheetView() {
   const m = S.mod, L = m.levels[Math.max(0, S.lvl)];
-  const items = S.sheet.map(q => `<li><div class="sq">${q.q}</div>${q.kind === 'num' ? `<div class="sline">Válasz: <span class="blank"></span> ${q.unit || ''}</div>` : `<div class="sopts">${q.choices.map((c, i) => `<span>${'ABCD'[i]}) ${c.h}</span>`).join('')}</div>`}</li>`).join('');
+  const items = S.sheet.map(q => `<li><div class="sq">${q.q}</div>${q.kind === 'word' ? `<div class="sline wmask"><b>${esc(q.mask)}</b> <span class="blank long"></span></div>` : q.kind === 'num' ? `<div class="sline">Válasz: <span class="blank"></span> ${q.unit || ''}</div>` : `<div class="sopts">${q.choices.map((c, i) => `<span>${'ABCD'[i]}) ${c.h}</span>`).join('')}</div>`}</li>`).join('');
   return `<div class="stool noprint"><a class="btn sec sm" href="#" data-act="quit">← Vissza</a><button class="btn sm" data-act="print">Nyomtatás</button><button class="btn sec sm" data-act="newsheet">Új munkalap</button><span class="cnt">Feladatok: ${[10, 20, 30].map(n => `<button class="btn sm ${(S.sheetN || SHEET_N) === n ? '' : 'sec'}" data-act="sheetn" data-n="${n}" aria-pressed="${(S.sheetN || SHEET_N) === n}">${n}</button>`).join('')}</span></div><article class="sheet"><div class="shead"><h1>${m.title}</h1><div>Név: ____________________ Dátum: ____________</div><div class="lvn">${S.mix ? 'Vegyes szintek: könnyebbtől a nehezebbig' : `${S.lvl + 1}. szint: ${L.name}`}</div></div><ol class="slist">${items}</ol><div class="sfoot">Készült az ${SITE_HOST} oldalon: ingyenes gyakorlók és nyomtatható munkalapok 1–8. osztályosoknak.</div></article>`;
 }
 function playersBox() {
@@ -250,7 +260,8 @@ function endTimed() {
 }
 function answer(val) {
   if (S.done) return; const q = S.cur; let ok;
-  if (q.kind === 'num') { const v = parseIn(S.input); if (v === null) return; ok = Math.abs(v - q.ans) < 1e-6; } else { S.pick = val; ok = val === q.ans; }
+  if (q.kind === 'word') { if ((S.fill || []).length < q.hidden.length) return; ok = q.tokens.map((t, i) => { const h = q.hidden.indexOf(i); return h < 0 ? t : q.bank[S.fill[h]]; }).join('') === q.word; }
+  else if (q.kind === 'num') { const v = parseIn(S.input); if (v === null) return; ok = Math.abs(v - q.ans) < 1e-6; } else { S.pick = val; ok = val === q.ans; }
   S.done = true; S.ok = ok; if (ok) { S.score++; S.run++; S.maxRun = Math.max(S.maxRun, S.run); } else S.run = 0;
   S.hist.push({ q, ok });
   const miss = getMiss().filter(x => missKey(x) !== missKey(q));
@@ -322,6 +333,9 @@ document.addEventListener('click', e => {
   else if (a === 'sheet') makeSheet(+t.dataset.l);
   else if (a === 'key') keyPress(t.dataset.k);
   else if (a === 'opt') answer(t.dataset.v);
+  else if (a === 'lt') { const q = S.cur, i = +t.dataset.i; if (!S.done && q && q.kind === 'word' && !S.fill.includes(i) && S.fill.length < q.hidden.length) { S.fill.push(i); wordRefresh(); } }
+  else if (a === 'ltdel') { if (!S.done) { S.fill.pop(); wordRefresh(); } }
+  else if (a === 'ltok') answer();
   else if (a === 'next') next();
   else if (a === 'again') (S.hiba ? startMiss() : startQuiz(S.lvl));
   else if (a === 'miss') startMiss();
@@ -388,8 +402,13 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && e.target.id === 'newp' && S.addP) { S.addP = false; render(); return; }
   if (S.view !== 'quiz' || e.ctrlKey || e.metaKey || e.altKey) return;
   const q = S.cur;
-  if (e.key === 'Enter') { e.preventDefault(); if (S.done) next(); else if (q.kind === 'num') answer(); return; }
+  if (e.key === 'Enter') { e.preventDefault(); if (S.done) next(); else if (q.kind === 'num' || q.kind === 'word') answer(); return; }
   if (S.done) return;
+  if (q.kind === 'word') {
+    if (e.key === 'Backspace') { e.preventDefault(); S.fill.pop(); wordRefresh(); }
+    else if (e.key.length === 1 && S.fill.length < q.hidden.length) { const i = q.bank.findIndex((l, k) => l === e.key.toLowerCase() && !S.fill.includes(k)); if (i >= 0) { S.fill.push(i); wordRefresh(); } }
+    return;
+  }
   if (q.kind === 'num') {
     if (/^[0-9]$/.test(e.key)) keyPress(e.key);
     else if (e.key === 'Backspace') { e.preventDefault(); keyPress('del'); }
