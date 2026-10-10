@@ -171,7 +171,7 @@ addLv('dobokocka',
     const v = [pick([1, 6]), pick([2, 5]), pick([3, 4])], sum = v[0] + v[1] + v[2];
     return NUM(Q(`Egy dobókockán három oldal látszik: ${v.join(', ')} pötty. Hány pötty van összesen a három eltakart oldalon?`, 'Az összes oldal pöttyeinek összege 21.'), 21 - sum, { hint: `21 − (${v.join(' + ')}) = ${21 - sum}` }); } },
   { name: 'Hányféleképpen?', gen: () => { const s = rnd(2, 12), n = 6 - Math.abs(s - 7), combos = []; for (let i = 1; i <= 6; i++) for (let j = 1; j <= 6; j++) if (i + j === s) combos.push(`${i}+${j}`);
-    return NUM(Q(`Két dobókockával hányféleképpen kaphatunk ${s} összeget?`, 'A két kocka különbözik: az 1 és 2 más, mint a 2 és 1.'), n, { hint: `Lehetőségek: ${combos.join(', ')}. Ez ${n} féleképpen lehet.` }); } },
+    return NUM(Q(`Két dobókockával hányféleképpen lehet a dobott számok összege ${s}?`, 'A két kocka különbözik: az 1 és 2 más, mint a 2 és 1.'), n, { hint: `Lehetőségek: ${combos.join(', ')}. Ez ${n} féleképpen lehet.` }); } },
   { name: 'Melyik nem dobható?', gen: () => { const bad = pick([1, 13, 14, 15]), ok = shuffle([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]).slice(0, 3);
     return CH(Q('Melyik szám NEM lehet két dobókocka összege?'), String(bad), ok.map(String), { hint: 'Két kockával legalább 2, legfeljebb 12 az összeg.' }); } });
 

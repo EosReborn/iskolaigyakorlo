@@ -82,6 +82,8 @@ def credit(src):
 
 READ_NOTE = '<p class="rnote">Elsősöknek: ez a gyakorló olvasást igényel, ezért a szülő vagy egy idősebb testvér felolvashatja a kérdéseket.</p>'
 def read_note(m): return READ_NOTE if m['grades'][0] <= 1 and (m['group'] in ('nyelv', 'termeszet') or m['slug'] == 'szoveges-feladatok') else ''
+def az_w(w): return 'az' if w[:1].lower() in 'aáeéiíoóöőuúüű' else 'a'
+def az_ord(n): return 'az' if n in (1, 5) else 'a'
 def grade_lv(m, g):
     a, z = m['grades']; nl = len(m['levels']); span = z - a + 1
     lo = (g - a) * nl // span; hi = max(lo, -(-(g - a + 1) * nl // span) - 1)
@@ -98,14 +100,14 @@ def grade_levels_html(m):
 def mod_faq(m):
     gr = f'{m["grades"][0]}–{m["grades"][1]}. osztály' if m['grades'][0] != m['grades'][1] else f'{m["grades"][0]}. osztály'
     base = [(f'Melyik évfolyamnak ajánlott: {m["title"]}?', f'Ajánlott évfolyam: {gr}. A szintek az évfolyamokon belül nehezednek, így a gyerek a saját szintjén kezdhet, és fokozatosan haladhat tovább.'),
-            ('Van hozzá nyomtatható munkalap?', f'Igen, a munkalap-készítőben a(z) {m["short"]} témából is készíthető nyomtatható feladatlap megoldókulccsal.'.replace('a(z) ', '')),
+            ('Van hozzá nyomtatható munkalap?', f'Igen, a munkalap-készítőben „{m["short"]}” témában is készíthető nyomtatható feladatlap megoldókulccsal.'),
             ('Ingyenes, és kell hozzá regisztráció?', 'Az oldal teljesen ingyenes, regisztráció és bejelentkezés nélkül használható. A haladást csak a gyerek böngészője őrzi, nem kerül szerverre.')]
     return MODSEO.get(m['slug'], {}).get('faq', []) + base
 def prerender(m):
     if not m:
         gl = lambda k, rng: ''.join(f'<li><a href="{g_url(k, n)}">{g_name(k, n)}</a></li>' for n in rng)
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
-        return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes gyakorló általános iskolásoknak: matek, helyesírás, környezetismeret és kémia 1–8. osztályig</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Gyerekeknek, szülőknek és tanároknak, regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}{gl("t", range(1, 7))}</ul>'
+        return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes gyakorló általános iskolásoknak: matek, helyesírás, környezetismeret és kémia 1–8. osztályig</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Gyerekeknek, szülőknek és tanároknak, regisztráció nélkül, telefonon, táblagépen és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}{gl("t", range(1, 7))}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     extra = ''.join(f'<p>{e(t)}</p>' for t in MODSEO.get(m['slug'], {}).get('text', []))
     return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p>{read_note(m)}<ul>{lv}</ul><section class="about fold"><details><summary><h2>Mire jó ez a gyakorló?</h2></summary>{extra or f'<p>{e(m["seo"])}</p>'}</details></section>{grade_levels_html(m)}<section class="about fold"><details><summary><h2>Kapcsolódó oldalak</h2></summary>{links_html(XL["mod"][m["slug"]])}</details></section>{faq_html(mod_faq(m), "Gyakran ismételt kérdések")}{fb_html(m["title"])}</div>'
@@ -201,7 +203,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws
 <body>
 <header class="site"><div class="wrap"><a class="brand" href="/">{logo_img("/assets/logo.webp")}</a><nav><a href="/tanaroknak/">Tanároknak</a></nav></div></header>
 <main class="wrap"><div id="app">{body}</div></main>
-<footer class="site"><div class="wrap">{fnav()}<p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p><p><a href="/ujdonsagok/">Újdonságok</a> · <a href="{FB_URL}" target="_blank" rel="noopener">Facebook</a> · <a href="mailto:info@kochdigitalstudio.hu?subject=Iskolai%20Gyakorl%C3%B3%20visszajelz%C3%A9s">Visszajelzés küldése</a> · <a href="/adatvedelem/">Adatvédelmi tájékoztató</a></p>{credit("/assets/kds.png")}</div></footer>
+<footer class="site"><div class="wrap">{fnav()}<p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak, regisztráció nélkül. A haladásodat csak a saját böngésződ tárolja.</p><p><a href="/ujdonsagok/">Újdonságok</a> · <a href="{FB_URL}" target="_blank" rel="noopener">Facebook</a> · <a href="mailto:info@kochdigitalstudio.hu?subject=Iskolai%20Gyakorl%C3%B3%20visszajelz%C3%A9s">Visszajelzés küldése</a> · <a href="/adatvedelem/">Adatvédelmi tájékoztató</a></p>{credit("/assets/kds.png")}</div></footer>
 {'<script src="/assets/app.js?v=' + ver + '" defer></script>' if app else ''}
 </body>
 </html>
@@ -264,7 +266,7 @@ def grade_page(kind, n):
             f'{GRADE1_NOTE.get(kind, "") if n == 1 else ""}'
             f'<p class="gstat"><b>{len(ms)}</b> gyakorló · <b>{nl}</b> szint · nyomtatható munkalapok · regisztráció nélkül</p>'
             f'<h2>Gyakorlók {n}. osztályosoknak</h2><div class="gcards">{cards}</div>'
-            f'<section class="about"><h2>Mit tanul a gyerek {n}. osztályban { {"m": "matekból", "n": "helyesírásból és nyelvtanból", "t": SUBJ("t", n) + "ből"}[kind] }?</h2><ul class="xl">{learn}</ul>'
+            f'<section class="about"><h2>Mit tanul a gyerek {n}. osztályban { {"m": "matekból", "n": "helyesírásból és nyelvtanból", "t": ("kémiából" if n >= 7 else SUBJ("t", n) + "ből")}[kind] }?</h2><ul class="xl">{learn}</ul>'
             f'<p class="note">Az elvárások iskolánként és tankönyvenként eltérhetnek, mindig a tanító útmutatása az irányadó.</p></section>'
             f'<section class="about"><h2>Tippek a gyakorláshoz</h2><p>{e(G["tips"])}</p></section>'
             f'{faq_html(G["faq"])}{arth}'
@@ -288,7 +290,7 @@ def article_page(a):
     body = (f'<article class="setup article">{bc_html(trail)}<h1>{e(a["title"])}</h1><p class="lead">{e(a["lead"])}</p>'
             f'<p class="meta2">Frissítve: {TODAY.replace("-", ". ")}. · Olvasási idő: {read_min(a)} perc</p>'
             f'{a["body"]}'
-            f'<aside class="cta"><h2>Gyakoroljatok most, ingyen</h2><p>Regisztráció nélkül, telefonon, tableten és számítógépen is. Minden gyakorlóhoz nyomtatható munkalap is tartozik.</p><div class="gcards">{cta}</div></aside>'
+            f'<aside class="cta"><h2>Gyakoroljatok most, ingyen</h2><p>Regisztráció nélkül, telefonon, táblagépen és számítógépen is. Minden gyakorlóhoz nyomtatható munkalap is tartozik.</p><div class="gcards">{cta}</div></aside>'
             f'{faq_html(a["faq"], "Gyakori kérdések")}'
             f'<section class="about"><h2>Olvass tovább</h2>{links_html([(a_url(r), r["title"]) for r in rel])}</section>'
             f'<section class="about"><h2>Gyakorlók évfolyamonként</h2>{links_html(gl)}</section>'
@@ -349,7 +351,7 @@ def ws_mod_page(m):
     trail = [("Kezdőlap", "/"), ("Tanároknak", "/tanaroknak/"), ("Munkalapok", "/munkalapok/"), (f'{m["short"]} munkalap', path)]
     arts = [(a_url(x), x['title']) for x in ARTICLES if m['slug'] in x['mods']][:2]
     body = (f'<div class="setup wspage"><div class="noprint">{bc_html(trail)}<h1>{e(m["short"])} munkalap, nyomtatható feladatlap</h1>'
-            f'<p class="lead">Nyomtasd ki ingyen: {d["count"]} véletlenszerű feladat a(z) „{e(m["title"].replace(" gyakorló", ""))}” témában, megoldókulccsal. Az „Új feladatok” gombbal annyi különböző munkalapot készíthetsz, amennyit csak szeretnél.</p></div>'
+            f'<p class="lead">Nyomtasd ki ingyen: {d["count"]} véletlenszerű feladat {az_w(m["title"])} „{e(m["title"].replace(" gyakorló", ""))}” témában, megoldókulccsal. Az „Új feladatok” gombbal annyi különböző munkalapot készíthetsz, amennyit csak szeretnél.</p></div>'
             f'{ws_tools(m)}{ws_sheet(d)}'
             f'<div class="noprint"><section class="about"><h2>Mire jó ez a munkalap?</h2><p>{e(m["seo"])}</p></section>'
             f'<section class="about"><h2>Hogyan használd?</h2><ol><li>Válaszd ki a szintet és a feladatok számát (10, 20 vagy 30).</li><li>Nyomtasd ki a lapot a „Nyomtatás” gombbal.</li><li>Ha szeretnéd, kapcsold be a megoldókulcs nyomtatását, ez külön oldalra kerül.</li><li>Új feladatokért kattints az „Új feladatok” gombra.</li></ol></section>'
@@ -371,7 +373,7 @@ def ws_grade_page(kind, n):
     body = (f'<div class="setup wspage"><div class="noprint">{bc_html(trail)}<h1>{e(name)}, nyomtatható feladatlap</h1>'
             f'<p class="lead">Nyomtasd ki ingyen: {d["count"]} vegyes feladat az {n}. osztályos {subj} anyagából, megoldókulccsal. Minden kattintásra új feladatok készülnek.</p></div>'
             f'{ws_tools()}{ws_sheet(d)}'
-            f'<div class="noprint"><section class="about"><h2>Miből állnak össze a feladatok?</h2><p>A munkalap a(z) {n}. osztályos anyaghoz illő szintekből válogat. Témánként külön is kérhetsz munkalapot:</p><ul class="xl">{top}</ul></section>'
+            f'<div class="noprint"><section class="about"><h2>Miből állnak össze a feladatok?</h2><p>A munkalap {az_ord(n)} {n}. osztályos anyaghoz illő szintekből válogat. Témánként külön is kérhetsz munkalapot:</p><ul class="xl">{top}</ul></section>'
             f'<section class="about"><h2>Saját, vegyes munkalap</h2><p>Ha te szeretnéd összeállítani, hogy miből hány feladat legyen, használd a <a href="/munkalapok/">munkalap-készítőt</a>.</p></section>'
             f'<section class="about fold"><details><summary><h2>Kapcsolódó oldalak</h2></summary>{links_html([(g_url(kind, n), g_name(kind, n) + " (online)")] + other)}</details></section>'
             f'{faq_html(WS_FAQ)}{fb_html(name)}</div></div>')
@@ -388,11 +390,11 @@ def teacher_page():
     ws_m_ = ws_m
     gl = lambda kind, rng: ''.join(f'<li><a href="{wg_url(kind, n)}">{wg_name(kind, n)}</a></li>' for n in rng)
     faq = [("Szükség van regisztrációra?", "Nem. Minden eszköz regisztráció és bejelentkezés nélkül használható, a diákok adatait sem kérjük."),
-           ("Használhatom az órán, kivetítőn vagy a diákok telefonján?", "Igen. A gyakorlók böngészőben futnak, tableten, telefonon és számítógépen is. Az „Időre megy” mód jó tanórai versenyhez."),
+           ("Használhatom az órán, kivetítőn vagy a diákok telefonján?", "Igen. A gyakorlók böngészőben futnak, táblagépen, telefonon és számítógépen is. Az „Időre megy” mód jó tanórai versenyhez."),
            ("Honnan tudjam, melyik szint való az osztálynak?", "Az évfolyam-oldalak és a munkalap-készítő „az évfolyamnak megfelelő szintek” beállítása segít. A tanmenetet természetesen te ismered a legjobban, a szinteket szabadon átállíthatod.")]
     body = (f'<div class="setup gpage">{bc_html(trail)}<h1>Tanároknak: eszközök az órára</h1>'
             f'<p class="lead">Ingyenes, regisztráció nélküli eszközök tanítóknak és tanároknak: állítsd össze a saját munkalapodat, vagy nyomtass ki egy kész feladatlapot megoldókulccsal.</p>'
-            f'<div class="gcards"><a class="gcard" href="/munkalapok/unnepi/"><h3>Ünnepi munkalapok</h3><p>Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró: szöveges feladatok, titkosírás, szókereső, hiányzó betűk.</p><span>6 ünnep · 4 évfolyamszint</span></a><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>30 téma · max. 60 feladat</span></a></div>'
+            f'<div class="gcards"><a class="gcard" href="/munkalapok/unnepi/"><h3>Ünnepi munkalapok</h3><p>Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró: szöveges feladatok, titkosírás, szókereső, hiányzó betűk.</p><span>6 ünnep · 4 évfolyamszint</span></a><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>30 téma · legfeljebb 60 feladat</span></a></div>'
             f'<section class="about"><h2>Kész matek munkalapok évfolyamonként</h2><ul class="xl">{gl("m", range(1, 9))}</ul>'
             f'<h2>Kész helyesírás munkalapok évfolyamonként</h2><ul class="xl">{gl("n", range(1, 7))}</ul>'
             f'<h2>Kész környezetismeret, természetismeret és kémia munkalapok évfolyamonként</h2><ul class="xl">{gl("t", range(1, 9))}</ul></section>'
@@ -407,7 +409,7 @@ def teacher_page():
 # ---- Ünnepi munkalapok ----
 TH_INFO = {
  'mikulas': {'kw': 'Mikulás munkalap nyomtatható – matek és rejtvény', 'when': 'november vége – december 6.', 'adj': 'Mikulás',
-   'intro': 'A Mikulás napja (december 6.) a gyerekek egyik kedvenc ünnepe. Ezekkel a nyomtatható Mikulás-munkalapokkal játékosan lehet számolni, helyesírni és szavakat keresni a Mikulás-várás hetében.'},
+   'intro': 'A Mikulás napja (december 6.) a gyerekek egyik kedvenc ünnepe. Ezekkel a nyomtatható Mikulás-munkalapokkal játékosan lehet számolni, helyesen írni és szavakat keresni a Mikulás-várás hetében.'},
  'karacsony': {'kw': 'Karácsonyi munkalap nyomtatható – matek és rejtvény', 'when': 'advent – december 24.', 'adj': 'karácsonyi',
    'intro': 'Az adventi időszakban jól jön egy-egy játékos lap a tanórára vagy otthonra. A karácsonyi munkalapokon díszgömbök, szaloncukrok és mézeskalácsok szerepelnek a feladatokban, a rejtvényekből pedig ünnepi üzenet olvasható ki.'},
  'farsang': {'kw': 'Farsangi munkalap nyomtatható – matek és rejtvény', 'when': 'január vége – február', 'adj': 'farsangi',
@@ -440,7 +442,7 @@ def ws_theme_page(t):
     body = (f'<div class="setup wspage"><div class="noprint">{bc_html(trail)}<h1>{e(t["title"])}, nyomtatható feladatlap</h1><p class="lead">{e(inf["intro"])}</p></div>'
             f'{ws_theme_tools()}<article class="sheet" id="wssheet">{d["sheet"]}</article><section class="skey noprint" id="wskey">{d["key"]}</section>'
             f'<div class="noprint"><section class="about"><h2>Négyféle lap, évfolyam szerint</h2><ul class="xl">{tt}</ul><p>Az évfolyamot és a lap típusát a gombok fölött választhatod ki, az „Új lap” gomb pedig minden alkalommal újat készít.</p></section>'
-            f'<section class="about"><h2>Mikor használd?</h2><p>A(z) {e(inf["adj"])} munkalapok legjobban a(z) <b>{e(inf["when"])}</b> időszakban jönnek jól, de bármikor használhatók, ha egy játékos, ünnepi hangulatú lapra van szükség.</p></section>'
+            f'<section class="about"><h2>Mikor használd?</h2><p>{az_w(inf["adj"]).capitalize()} {e(inf["adj"])}{"-" if inf["adj"][:1].isupper() else " "}munkalapok leginkább ekkor jönnek jól: <b>{e(inf["when"])}</b>. Bármikor használhatók, ha egy játékos, ünnepi hangulatú lapra van szükség.</p></section>'
             f'<section class="about"><h2>Saját munkalap</h2><p>Ha egyszerre többféle témából szeretnél feladatokat, használd a <a href="/munkalapok/">munkalap-készítőt</a>.</p></section>'
             f'<section class="about"><h2>További ünnepi munkalapok</h2>{links_html(others + [("/munkalapok/unnepi/", "Minden ünnepi munkalap")])}</section>'
             f'{faq_html(TH_FAQ)}{fb_html(t["title"])}</div></div>')
