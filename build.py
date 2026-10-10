@@ -129,9 +129,8 @@ def fnav():
     ch = lambda kind, rng: ''.join(f'<a href="{g_url(kind, n)}">{n}. osztályos {"matek" if kind == "m" else "helyesírás"}</a>' for n in rng)
     grp = lambda title, links: f'<details><summary>{title}</summary><div class="fl">{links}</div></details>'
     teach = ('<a href="/tanaroknak/">Tanároknak: eszközök az órára</a><a href="/munkalapok/">Munkalap-készítő</a><a href="/munkalapok/szorzotabla/">Szorzótábla munkalap</a><a href="/munkalapok/3-osztalyos-matek/">3. osztályos matek munkalap</a>')
-    # A linkek a HTML-ben vannak (a keresők látják), a lenyíló csak a megjelenítést rendezi. Széles képernyőn alapból nyitva marad.
-    return (f'<nav class="fnav" aria-label="Évfolyamok és munkalapok">{grp("Matek gyakorlók", ch("m", range(1, 9)))}{grp("Helyesírás gyakorlók", ch("n", range(1, 7)))}{grp("Tanároknak", teach)}</nav>'
-            '<script>if(window.matchMedia&&matchMedia("(min-width:900px)").matches)document.querySelectorAll(".fnav details").forEach(function(d){d.open=true})</script>')
+    # A linkek a HTML-ben vannak (a keresők látják), a lenyíló csak a megjelenítést rendezi.
+    return (f'<nav class="fnav" aria-label="Évfolyamok és munkalapok">{grp("Matek gyakorlók", ch("m", range(1, 9)))}{grp("Helyesírás gyakorlók", ch("n", range(1, 7)))}{grp("Tanároknak", teach)}</nav>')
 
 def bc_ld(trail):
     return {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": SITE + u} for i, (n, u) in enumerate(trail)]}
