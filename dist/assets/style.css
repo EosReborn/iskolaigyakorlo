@@ -355,12 +355,18 @@ main { padding-block: 8px 24px; }
 .cta { margin-top: 34px; background: var(--blue-soft, #e6efff); border: 2px solid var(--blue); border-radius: 22px; padding: 16px 18px 20px; }
 .cta h2 { margin-top: 0 !important; }
 .cta p { margin: .3rem 0 0; }
-.fnav { display: grid; gap: 10px; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 2px solid var(--line); }
-.fnav div { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
-.fnav b { color: var(--ink); width: 100%; }
-.fnav a { color: var(--blue); text-decoration: none; font-weight: 600; font-size: .95rem; }
+.fnav { display: grid; gap: 8px; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 2px solid var(--line); }
+.fnav details { border: 2px solid var(--line); border-radius: 14px; background: var(--paper); }
+.fnav summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 48px; padding: 6px 16px; font-weight: 800; color: var(--ink); cursor: pointer; list-style: none; border-radius: 12px; }
+.fnav summary::-webkit-details-marker { display: none; }
+.fnav summary::after { content: ""; width: 10px; height: 10px; border-right: 3px solid var(--muted); border-bottom: 3px solid var(--muted); transform: rotate(45deg); margin-top: -4px; transition: transform .15s; flex: none; }
+.fnav details[open] summary::after { transform: rotate(-135deg); margin-top: 4px; }
+.fnav summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.fnav .fl { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 4px 16px 14px; }
+.fnav a { color: var(--blue); text-decoration: none; font-weight: 600; font-size: .95rem; padding-block: 3px; }
 .fnav a:hover { text-decoration: underline; }
-header.site nav { display: flex; gap: 16px; align-items: center; }
+@media (min-width: 900px) { .fnav { grid-template-columns: repeat(3, 1fr); align-items: start; } }
+@media (prefers-reduced-motion: reduce) { .fnav summary::after { transition: none; } }
 @media print { .fnav { display: none !important; } }
 
 .fb { margin-top: 32px; max-width: 66ch; background: var(--paper); border: 2px dashed var(--line); border-radius: 18px; padding: 14px 16px; }
