@@ -5,7 +5,7 @@ from PIL import Image
 from urllib.parse import quote
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'content'))
-from grades import MATH as G_MATH, NYELV as G_NYELV
+from grades import MATH as G_MATH, NYELV as G_NYELV, TERM as G_TERM
 from articles import ARTICLES
 from extra import EXTRA
 from changelog import CHANGES
@@ -21,7 +21,7 @@ rd = lambda p: open(os.path.join(SRC, p), encoding='utf-8').read()
 meta = json.loads(subprocess.check_output(['node', os.path.join(ROOT, 'meta.js')], cwd=ROOT))
 mods, groups = meta['mods'], meta['groups']
 
-js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'mods3.js', 'mods4.js', 'mods5.js', 'sheet.js', 'ui.js']) + '\n})();\n'
+js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'mods3.js', 'mods4.js', 'mods5.js', 'mods6.js', 'sheet.js', 'ui.js']) + '\n})();\n'
 css = rd('style.css')
 FONT_FILES = sorted(f for f in os.listdir(os.path.join(SRC, 'fonts')) if f.endswith('.woff2'))
 UR = {'latin': 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD',
@@ -83,32 +83,36 @@ def prerender(m):
     if not m:
         gl = lambda k, rng: ''.join(f'<li><a href="{g_url(k, n)}">{g_name(k, n)}</a></li>' for n in rng)
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
-        return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}</ul>'
+        return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}{gl("t", range(1, 7))}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p><ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section><section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{fb_html(m["title"])}</div>'
 
 TODAY = datetime.date.today().isoformat()
 MODBY = {x['slug']: x for x in mods}
-def g_url(kind, n): return f'/{n}-osztalyos-{"matek" if kind == "m" else "helyesiras"}-gyakorlo/'
-def g_name(kind, n): return f'{n}. osztályos {"matek" if kind == "m" else "helyesírás"} gyakorló'
-def g_mods(kind, n): return [x for x in mods if (x['group'] == 'nyelv') == (kind == 'n') and x['grades'][0] <= n <= x['grades'][1]]
-GRADES = [('m', n) for n in range(1, 9)] + [('n', n) for n in range(1, 7)]
+def kind_of(x): return 'n' if x['group'] == 'nyelv' else 't' if x['group'] == 'termeszet' else 'm'
+TOP = {'m': 8, 'n': 6, 't': 6}
+SUBJ_SLUG = lambda kind, n: {'m': 'matek', 'n': 'helyesiras', 't': 'kornyezetismeret' if n <= 4 else 'termeszetismeret'}[kind]
+SUBJ = lambda kind, n: {'m': 'matek', 'n': 'helyesírás', 't': 'környezetismeret' if n <= 4 else 'természetismeret'}[kind]
+def g_url(kind, n): return f'/{n}-osztalyos-{SUBJ_SLUG(kind, n)}-gyakorlo/'
+def g_name(kind, n): return f'{n}. osztályos {SUBJ(kind, n)} gyakorló'
+def g_mods(kind, n): return [x for x in mods if kind_of(x) == kind and x['grades'][0] <= n <= x['grades'][1]]
+GRADES = [('m', n) for n in range(1, 9)] + [('n', n) for n in range(1, 7)] + [('t', n) for n in range(1, 7)]
 def w_url(x): return f'/munkalapok/{x["slug"]}/'
-def wg_url(kind, n): return f'/munkalapok/{n}-osztalyos-{"matek" if kind == "m" else "helyesiras"}/'
-def wg_name(kind, n): return f'{n}. osztályos {"matek" if kind == "m" else "helyesírás"} munkalap'
+def wg_url(kind, n): return f'/munkalapok/{n}-osztalyos-{SUBJ_SLUG(kind, n)}/'
+def wg_name(kind, n): return f'{n}. osztályos {SUBJ(kind, n)} munkalap'
 ART = {a['slug']: a for a in ARTICLES}
 def a_url(a): return f'/tudastar/{a["slug"]}/'
 
 def mod_links(x):
     """A modul oldalához tartozó belső linkek (évfolyam-oldalak és cikkek)."""
-    kind = 'n' if x['group'] == 'nyelv' else 'm'
-    top = 6 if kind == 'n' else 8
+    kind = kind_of(x)
+    top = TOP[kind]
     gs = [n for n in range(x['grades'][0], x['grades'][1] + 1) if n <= top]
     if len(gs) > 4: gs = [gs[0], gs[len(gs)//3], gs[2*len(gs)//3], gs[-1]]
     out = [[w_url(x), f'{x["short"]} munkalap nyomtatható']] + [[g_url(kind, n), g_name(kind, n)] for n in gs]
     return out
 XL = {'mod': {x['slug']: mod_links(x) for x in mods},
-      'g': {'m': [g_url('m', n) for n in range(1, 9)], 'n': [g_url('n', n) for n in range(1, 7)]},
+      'g': {'m': [g_url('m', n) for n in range(1, 9)], 'n': [g_url('n', n) for n in range(1, 7)], 't': [g_url('t', n) for n in range(1, 7)]},
       'ws': {'mods': [[w_url(x), f'{x["short"]} munkalap'] for x in mods], 'grades': [[wg_url(k, n), wg_name(k, n)] for k, n in GRADES]}}
 js = js.replace('/*XL*/{}/*XL*/', json.dumps(XL, ensure_ascii=False))
 js = js.replace("/*SH*/'iskolaigyakorlo.hu'/*SH*/", json.dumps(SITE.split('://', 1)[-1]))
@@ -126,11 +130,11 @@ def links_html(items, cls='xl'):
     return f'<ul class="{cls}">' + ''.join(f'<li><a href="{u}">{e(t)}</a></li>' for u, t in items) + '</ul>'
 
 def fnav():
-    ch = lambda kind, rng: ''.join(f'<a href="{g_url(kind, n)}">{n}. osztályos {"matek" if kind == "m" else "helyesírás"}</a>' for n in rng)
+    ch = lambda kind, rng: ''.join(f'<a href="{g_url(kind, n)}">{n}. osztályos {SUBJ(kind, n)}</a>' for n in rng)
     grp = lambda title, links: f'<details><summary>{title}</summary><div class="fl">{links}</div></details>'
     teach = ('<a href="/tanaroknak/">Tanároknak: eszközök az órára</a><a href="/munkalapok/">Munkalap-készítő</a><a href="/munkalapok/szorzotabla/">Szorzótábla munkalap</a><a href="/munkalapok/3-osztalyos-matek/">3. osztályos matek munkalap</a>')
     # A linkek a HTML-ben vannak (a keresők látják), a lenyíló csak a megjelenítést rendezi.
-    return (f'<nav class="fnav" aria-label="Évfolyamok és munkalapok">{grp("Matek gyakorlók", ch("m", range(1, 9)))}{grp("Helyesírás gyakorlók", ch("n", range(1, 7)))}{grp("Tanároknak", teach)}</nav>')
+    return (f'<nav class="fnav" aria-label="Évfolyamok és munkalapok">{grp("Matek gyakorlók", ch("m", range(1, 9)))}{grp("Helyesírás gyakorlók", ch("n", range(1, 7)))}{grp("Környezet- és természetismeret", ch("t", range(1, 7)))}{grp("Tanároknak", teach)}</nav>')
 
 def bc_ld(trail):
     return {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": SITE + u} for i, (n, u) in enumerate(trail)]}
@@ -191,7 +195,7 @@ def mod_desc(m):
 def page(m):
     slug = m['slug'] if m else ''
     title = mod_title(m) if m else HOME_TITLE
-    desc = mod_desc(m) if m else 'Ingyenes, regisztráció nélküli matematika és helyesírás gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, egyenletek, j–ly, óra, pénz, geometria. Nyomtatható munkalapokkal.'
+    desc = mod_desc(m) if m else 'Ingyenes, regisztráció nélküli matek, helyesírás és környezetismeret gyakorlók 1–8. osztályosoknak: szorzótábla, törtek, százalék, j–ly, állatok, növények. Nyomtatható munkalapokkal.'
     path = f'/{slug + "/" if slug else ""}'
     url = SITE + path
     ld = {"@context": "https://schema.org", "@type": "WebApplication", "name": m['title'] if m else NAME, "url": url, "description": desc,
@@ -208,10 +212,10 @@ def page(m):
 
 # ---- Évfolyam-oldalak ----
 def grade_page(kind, n):
-    G = (G_MATH if kind == 'm' else G_NYELV)[n]
+    G = {'m': G_MATH, 'n': G_NYELV, 't': G_TERM}[kind][n]
     ms = g_mods(kind, n); name = g_name(kind, n)
     nl = sum(len(x['levels']) for x in ms)
-    subj = 'matek' if kind == 'm' else 'helyesírás'
+    subj = SUBJ(kind, n)
     path = g_url(kind, n)
     title = f'{name} – ingyenes | {NAME}'
     names = ', '.join(x['short'].lower() if i else x['short'] for i, x in enumerate(ms[:3]))
@@ -221,9 +225,8 @@ def grade_page(kind, n):
     learn = ''.join(f'<li>{e(t)}</li>' for t in G['learn'])
     other = []
     if n > 1: other.append((g_url(kind, n - 1), g_name(kind, n - 1)))
-    if n < (8 if kind == 'm' else 6): other.append((g_url(kind, n + 1), g_name(kind, n + 1)))
-    if kind == 'm' and n <= 6: other.append((g_url('n', n), g_name('n', n)))
-    if kind == 'n': other.append((g_url('m', n), g_name('m', n)))
+    if n < TOP[kind]: other.append((g_url(kind, n + 1), g_name(kind, n + 1)))
+    other += [(g_url(k2, n), g_name(k2, n)) for k2 in ('m', 'n', 't') if k2 != kind and n <= TOP[k2]]
     arts = [a for a in ARTICLES if n in a['grades'] and (kind == 'm') == any(MODBY[s]['group'] != 'nyelv' for s in a['mods'][:1])][:3]
     if len(arts) < 2: arts = (arts + [a for a in ARTICLES if n in a['grades'] and a not in arts])[:3]
     arth = ''
@@ -231,7 +234,7 @@ def grade_page(kind, n):
     body = (f'<div class="setup gpage">{bc_html(trail)}<h1>{e(name)}</h1><p class="lead">{e(G["intro"])}</p>'
             f'<p class="gstat"><b>{len(ms)}</b> gyakorló · <b>{nl}</b> szint · nyomtatható munkalapok · regisztráció nélkül</p>'
             f'<h2>Gyakorlók {n}. osztályosoknak</h2><div class="gcards">{cards}</div>'
-            f'<section class="about"><h2>Mit tanul a gyerek {n}. osztályban {"matekból" if kind == "m" else "helyesírásból és nyelvtanból"}?</h2><ul class="xl">{learn}</ul>'
+            f'<section class="about"><h2>Mit tanul a gyerek {n}. osztályban { {"m": "matekból", "n": "helyesírásból és nyelvtanból", "t": SUBJ("t", n) + "ből"}[kind] }?</h2><ul class="xl">{learn}</ul>'
             f'<p class="note">Az elvárások iskolánként és tankönyvenként eltérhetnek, mindig a tanító útmutatása az irányadó.</p></section>'
             f'<section class="about"><h2>Tippek a gyakorláshoz</h2><p>{e(G["tips"])}</p></section>'
             f'{faq_html(G["faq"])}{arth}'
@@ -310,7 +313,7 @@ def ws_mod_page(m):
     if len(title) > 68: title = f'{m["short"]} munkalap nyomtatható | {NAME}'
     desc = f'Ingyenes, nyomtatható {m["short"].lower()} munkalap {gr}osoknak: {d["count"]} feladat megoldókulccsal, új feladatok egy kattintással. Regisztráció nélkül.'.replace('osztályosoknak', 'osztályosoknak')
     desc = f'Ingyenes, nyomtatható {m["short"].lower()} munkalap ({gr}): {d["count"]} feladat megoldókulccsal, új feladatok egy kattintással. Regisztráció nélkül.'
-    kind = 'n' if m['group'] == 'nyelv' else 'm'; top = 6 if kind == 'n' else 8
+    kind = kind_of(m); top = TOP[kind]
     gl = [(wg_url(kind, n), wg_name(kind, n)) for n in range(a, z + 1) if n <= top]
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     trail = [("Kezdőlap", "/"), ("Tanároknak", "/tanaroknak/"), ("Munkalapok", "/munkalapok/"), (f'{m["short"]} munkalap', path)]
@@ -329,11 +332,11 @@ def ws_mod_page(m):
            bc_ld(trail), faq_ld(WS_FAQ)]
     return path, shell(title, desc, path, body, lds, '', ws='mod:' + m['slug'])
 def ws_grade_page(kind, n):
-    d = WS[f'grade:{kind}{n}']; ms = g_mods(kind, n); path = wg_url(kind, n); name = wg_name(kind, n); subj = 'matek' if kind == 'm' else 'helyesírás'
+    d = WS[f'grade:{kind}{n}']; ms = g_mods(kind, n); path = wg_url(kind, n); name = wg_name(kind, n); subj = SUBJ(kind, n)
     title = f'{n}. osztályos {subj} munkalap nyomtatható | {NAME}'
     desc = f'Ingyenes, nyomtatható {n}. osztályos {subj} munkalap: {d["count"]} vegyes feladat megoldókulccsal, új feladatok egy kattintással. Regisztráció nélkül.'
     top = ''.join(f'<li><a href="{w_url(x)}">{e(x["short"])} munkalap</a></li>' for x in ms)
-    other = [(wg_url(kind, k), wg_name(kind, k)) for k in (n - 1, n + 1) if 1 <= k <= (8 if kind == 'm' else 6)]
+    other = [(wg_url(kind, k), wg_name(kind, k)) for k in (n - 1, n + 1) if 1 <= k <= TOP[kind]]
     trail = [("Kezdőlap", "/"), ("Tanároknak", "/tanaroknak/"), ("Munkalapok", "/munkalapok/"), (name, path)]
     body = (f'<div class="setup wspage"><div class="noprint">{bc_html(trail)}<h1>{e(name)}, nyomtatható feladatlap</h1>'
             f'<p class="lead">Nyomtasd ki ingyen: {d["count"]} vegyes feladat az {n}. osztályos {subj} anyagából, megoldókulccsal. Minden kattintásra új feladatok készülnek.</p></div>'
@@ -361,7 +364,8 @@ def teacher_page():
             f'<p class="lead">Ingyenes, regisztráció nélküli eszközök tanítóknak és tanároknak: állítsd össze a saját munkalapodat, vagy nyomtass ki egy kész feladatlapot megoldókulccsal.</p>'
             f'<div class="gcards"><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>30 téma · max. 60 feladat</span></a></div>'
             f'<section class="about"><h2>Kész matek munkalapok évfolyamonként</h2><ul class="xl">{gl("m", range(1, 9))}</ul>'
-            f'<h2>Kész helyesírás munkalapok évfolyamonként</h2><ul class="xl">{gl("n", range(1, 7))}</ul></section>'
+            f'<h2>Kész helyesírás munkalapok évfolyamonként</h2><ul class="xl">{gl("n", range(1, 7))}</ul>'
+            f'<h2>Kész környezetismeret és természetismeret munkalapok évfolyamonként</h2><ul class="xl">{gl("t", range(1, 7))}</ul></section>'
             f'<section class="about"><h2>Kész munkalapok témák szerint</h2><ul class="xl">{ws_m}</ul></section>'
             f'<section class="about"><h2>Hogyan használd az órán?</h2><ol><li><b>Bemelegítés:</b> nyomtass ki egy rövid, 10 feladatos lapot az óra elejére.</li><li><b>Differenciálás:</b> a munkalap-készítőben ugyanabból a témából különböző szintű lapokat is összeállíthatsz.</li><li><b>Házi feladat:</b> adj címet a lapnak, és kérj külön megoldókulcsot a javításhoz.</li><li><b>Verseny:</b> az online gyakorlók „Időre megy” módjával 60 másodperces csapatverseny szervezhető.</li></ol></section>'
             f'{faq_html(faq)}{fb_html("Tanároknak")}</div>')

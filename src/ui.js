@@ -125,7 +125,7 @@ function homeView() {
   const groups = GROUPS.map(gr => { const ms = list.filter(m => m.group === gr.id); return ms.length ? `<section class="grp"><h2>${gr.name}</h2><div class="cards">${ms.map(card).join('')}</div></section>` : ''; }).join('');
   const nm = getMiss().length, missBox = nm ? `<div class="missbox"><div><b>Hibáim gyakorlása</b><div class="st">${nm} feladat vár javításra. Ha jól válaszolsz, kikerül a listából.</div></div><button class="btn sm" data-act="miss">Gyakorlom</button></div>` : '';
   const note = g ? `<p class="gnote">Csak a(z) ${g}. osztályosoknak való gyakorlókat látod. <button class="linkbtn" data-act="grade" data-g="0">Mutasd az összeset</button></p>` : '';
-  return `<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${playerBar(true)}${skinBar()}${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
+  return `<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div>${playerBar(true)}${skinBar()}${pstrip()}${missBox}${gradePicker()}${note}${groups}${homeLinks()}`;
 }
 
 function fbBox(label) {
@@ -137,7 +137,7 @@ function fbBox(label) {
 function homeLinks() {
   if (!PATHMODE || !XL.g) return '';
   const a = (u, t) => `<a href="${u}">${t}</a>`;
-  return `<section class="grp"><h2>Gyakorlók évfolyamonként</h2><nav class="rel" aria-label="Évfolyamok">${XL.g.m.map((u, i) => a(u, `${i + 1}. osztályos matek`)).join('')}${XL.g.n.map((u, i) => a(u, `${i + 1}. osztályos helyesírás`)).join('')}</nav></section>`;
+  return `<section class="grp"><h2>Gyakorlók évfolyamonként</h2><nav class="rel" aria-label="Évfolyamok">${XL.g.m.map((u, i) => a(u, `${i + 1}. osztályos matek`)).join('')}${XL.g.n.map((u, i) => a(u, `${i + 1}. osztályos helyesírás`)).join('')}${XL.g.t.map((u, i) => a(u, `${i + 1}. osztályos ${i < 4 ? 'környezetismeret' : 'természetismeret'}`)).join('')}</nav></section>`;
 }
 
 function setupView() {
@@ -429,6 +429,7 @@ const SB_PRESETS = [
   ['Összeadás, kivonás, szöveges feladat', [['osszeadas-kivonas', 8], ['szoveges-feladatok', 4], ['szamok-osszehasonlitasa', 4]]],
   ['Törtek és tizedes törtek', [['tortek', 5], ['tortek-halado', 5], ['tizedes-tortek', 5]]],
   ['Helyesírás vegyesen', [['j-ly-helyesiras', 5], ['hosszu-rovid-hangok', 5], ['toldalekok-val-vel', 5]]],
+  ['Állatok, növények, emberi test', [['allatok', 5], ['novenyek', 5], ['emberi-test', 5]]],
   ['Mértékegység, idő, pénz', [['mertekegysegek', 5], ['ora-leolvasas', 5], ['penz-szamolas', 5]]]
 ];
 const sbSummary = () => { const rs = sbRows(); return rs.length ? rs.map(r => `${esc(modBySlug(r.slug).short)} <b>×${r.n}</b>`).join(', ') : 'Még nincs kiválasztva feladat.'; };
@@ -446,7 +447,7 @@ function builderView() {
   const gf = `<div class="gchips" role="group" aria-label="Szűrés évfolyamra"><span class="lab">Csak ezt mutasd:</span><button class="chip${g ? '' : ' on'}" data-act="sbgrade" data-g="0">Minden évfolyam</button>${[1, 2, 3, 4, 5, 6, 7, 8].map(n => `<button class="chip${g === n ? ' on' : ''}" data-act="sbgrade" data-g="${n}">${n}.</button>`).join('')}</div>`;
   const ws = XL.ws ? `<section class="about noprint"><h2>Kész munkalapok témák szerint</h2>${XL.ws.mods.length ? `<ul class="xl">${XL.ws.mods.map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul>` : ''}<h2>Kész munkalapok évfolyamonként</h2><ul class="xl">${XL.ws.grades.map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul></section>` : '';
   return `<div class="setup sbp"><a class="crumb" href="${PATHMODE ? '/tanaroknak/' : href('')}">← Tanároknak</a><h1>Nyomtatható munkalap-készítő</h1><p class="lead">Válaszd ki, miből hány feladat legyen a lapon, és nyomtasd ki. Minden lapon új, véletlenszerű feladatok vannak, és kérhetsz hozzá megoldókulcsot is. Ingyenes, regisztráció nélkül.</p>
-<section class="sbbox"><h2>1. Gyors indítás</h2><p>Egy kattintással összeállít egy vegyes lapot az évfolyamnak. Utána bármit átállíthatsz.</p>${gradeBar('m', 'Matek')}${gradeBar('n', 'Helyesírás')}<div class="gchips" role="group" aria-label="Témák szerint"><span class="lab">Témák:</span>${SB_PRESETS.map((p, i) => `<button class="chip" data-act="sbpreset" data-i="${i}">${esc(p[0])}</button>`).join('')}</div></section>
+<section class="sbbox"><h2>1. Gyors indítás</h2><p>Egy kattintással összeállít egy vegyes lapot az évfolyamnak. Utána bármit átállíthatsz.</p>${gradeBar('m', 'Matek')}${gradeBar('n', 'Helyesírás')}${gradeBar('t', 'Környezet')}<div class="gchips" role="group" aria-label="Témák szerint"><span class="lab">Témák:</span>${SB_PRESETS.map((p, i) => `<button class="chip" data-act="sbpreset" data-i="${i}">${esc(p[0])}</button>`).join('')}</div></section>
 <section class="sbbox"><h2>2. Feladatok kiválasztása</h2>${gf}${rows}</section>
 <section class="sbbox"><h2>3. Beállítások</h2><div class="prow"><label for="sbt" class="lab">A munkalap címe (nem kötelező)</label><input id="sbt" class="tin" maxlength="60" data-sb="title" value="${esc(sb.title)}" placeholder="pl. Házi feladat, 3.a"></div><label class="chk"><input type="checkbox" data-sb="name"${sb.name ? ' checked' : ''}> Név és dátum sor</label><label class="chk"><input type="checkbox" data-sb="two"${sb.two ? ' checked' : ''}> Két oszlop</label><label class="chk"><input type="checkbox" data-sb="key"${sb.key ? ' checked' : ''}> Megoldókulcs nyomtatása külön oldalon</label></section>
 <div class="sbbar noprint"><div><span id="sbtot">Összesen: ${sbTotal()} feladat</span><small id="sbsum">${sbSummary()}</small></div><button class="btn sec sm" data-act="sbclear">Törlés</button><button class="btn" id="sbgen" data-act="sbgen"${sbTotal() ? '' : ' disabled'}>Munkalap készítése</button></div>${ws}</div>`;
