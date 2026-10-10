@@ -170,7 +170,7 @@ ORG = {"@type": "Organization", "name": "Koch Digital Studio", "url": "https://k
 def faq_ld(faq):
     return {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]}
 def faq_html(faq, title='Gyakran ismételt kérdések'):
-    return f'<section class="faq"><h2>{e(title)}</h2>' + ''.join(f'<h3>{e(q)}</h3><p>{e(a)}</p>' for q, a in faq) + '</section>'
+    return f'<section class="faq"><h2>{e(title)}</h2>' + ''.join(f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in faq) + '</section>'
 
 def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws=''):
     url = SITE + path
