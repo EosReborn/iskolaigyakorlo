@@ -636,3 +636,16 @@ sub, sup { font-size: .6em; line-height: 0; }
 .faq details[open] summary::after { transform: rotate(-135deg) translateY(-2px); }
 .faq summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 14px; }
 .faq details p { margin: 0; padding: 0 16px 14px; }
+
+/* Lenyíló tartalmi szakaszok a gyakorlóoldalakon */
+.fold { margin-top: 12px; }
+.fold details { background: var(--paper); border: 2px solid var(--line); border-radius: 16px; }
+.fold details[open] { border-color: var(--blue); }
+.fold summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; min-height: 48px; }
+.fold summary::-webkit-details-marker { display: none; }
+.fold summary h2 { margin: 0; font-size: 1.1rem; }
+.fold summary::after { content: ""; flex: none; width: 10px; height: 10px; border-right: 3px solid var(--muted); border-bottom: 3px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform .15s; }
+.fold details[open] summary::after { transform: rotate(-135deg) translateY(-2px); }
+.fold summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 14px; }
+.fold details > :not(summary) { margin-left: 16px; margin-right: 16px; }
+.fold details > :last-child { margin-bottom: 14px; }
