@@ -461,3 +461,5 @@ header.site nav a { white-space: nowrap; margin-left: 0; }
 .crumb { display: inline-flex; align-items: center; min-height: 44px; }
 header.site .brand { padding-block: 6px; }
 header.site nav { display: flex; gap: 16px; align-items: center; }
+
+.rnote { margin: 10px 0; padding: 10px 14px; background: var(--amber-soft); border: 2px solid var(--gold); border-radius: 12px; color: var(--ink); font-weight: 600; }

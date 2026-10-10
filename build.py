@@ -79,13 +79,15 @@ def logo_img(src): return f'<img src="{src}" alt="{NAME}" width="{LOGO_W}" heigh
 def credit(src):
     return f'<a class="kds" href="https://kochdigitalstudio.hu" target="_blank" rel="noopener"><img src="{src}" alt="" width="52" height="52"><span class="kt"><small>A weboldalt tervezte és fejlesztette</small><b>Koch Digital Studio</b><span>Prémium weboldalak, webalkalmazások és digitális megoldások cégeknek.</span></span><span class="kc">Ilyen weboldalt szeretne? →</span></a>'
 
+READ_NOTE = '<p class="rnote">Elsősöknek: ez a gyakorló olvasást igényel, ezért a szülő vagy egy idősebb testvér felolvashatja a kérdéseket.</p>'
+def read_note(m): return READ_NOTE if m['grades'][0] <= 1 and (m['group'] in ('nyelv', 'termeszet') or m['slug'] == 'szoveges-feladatok') else ''
 def prerender(m):
     if not m:
         gl = lambda k, rng: ''.join(f'<li><a href="{g_url(k, n)}">{g_name(k, n)}</a></li>' for n in rng)
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
         return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes matek és helyesírás gyakorló 1–8. osztályosoknak</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}{gl("t", range(1, 7))}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
-    return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p><ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section><section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{fb_html(m["title"])}</div>'
+    return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p>{read_note(m)}<ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section><section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{fb_html(m["title"])}</div>'
 
 TODAY = datetime.date.today().isoformat()
 MODBY = {x['slug']: x for x in mods}
@@ -211,6 +213,9 @@ def page(m):
     return shell(title, desc, path, prerender(m), lds, slug)
 
 # ---- Évfolyam-oldalak ----
+GRADE1_NOTE = {'m': '<p class="rnote">Elsősöknek: a számolós gyakorlók olvasás nélkül is mennek, a szöveges feladatokat a szülő vagy egy idősebb testvér felolvashatja.</p>',
+               'n': '<p class="rnote">Elsősöknek: az első osztályosok még tanulnak olvasni, ezért a szülő vagy egy idősebb testvér felolvashatja a feladatokat.</p>',
+               't': '<p class="rnote">Elsősöknek: az első osztályosok még tanulnak olvasni, ezért a szülő vagy egy idősebb testvér felolvashatja a kérdéseket.</p>'}
 def grade_page(kind, n):
     G = {'m': G_MATH, 'n': G_NYELV, 't': G_TERM}[kind][n]
     ms = g_mods(kind, n); name = g_name(kind, n)
@@ -232,6 +237,7 @@ def grade_page(kind, n):
     arth = ''
     trail = [("Kezdőlap", "/"), (name, path)]
     body = (f'<div class="setup gpage">{bc_html(trail)}<h1>{e(name)}</h1><p class="lead">{e(G["intro"])}</p>'
+            f'{GRADE1_NOTE.get(kind, "") if n == 1 else ""}'
             f'<p class="gstat"><b>{len(ms)}</b> gyakorló · <b>{nl}</b> szint · nyomtatható munkalapok · regisztráció nélkül</p>'
             f'<h2>Gyakorlók {n}. osztályosoknak</h2><div class="gcards">{cards}</div>'
             f'<section class="about"><h2>Mit tanul a gyerek {n}. osztályban { {"m": "matekból", "n": "helyesírásból és nyelvtanból", "t": SUBJ("t", n) + "ből"}[kind] }?</h2><ul class="xl">{learn}</ul>'
