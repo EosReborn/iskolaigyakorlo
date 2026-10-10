@@ -67,7 +67,7 @@ addLv('szoveges-feladatok',
   { name: 'Bolti kalandok', gen: () => { const it = pick(['füzet', 'ceruza', 'radír', 'matrica', 'lufi']), p = rnd(5, 30) * 10, n = rnd(2, 5), tot = p * n; let paid = Math.ceil(tot / 500) * 500; if (paid === tot) paid += 500;
     return NUM(Q(`Egy ${it} ${p} forintba kerül. Veszel belőle ${n} darabot, és ${paid} forintot adsz a pénztárosnak. Hány forint a visszajáró?`), paid - tot, { hint: `${n} × ${p} = ${tot}, és ${paid} − ${tot} = ${paid - tot}.` }); } },
   { name: 'Kirándulás és hétköznapok', gen: () => { const k = rnd(0, 3);
-    if (k === 0) { const a = rnd(3, 8), b = rnd(18, 30), c = rnd(2, 15); return NUM(Q(`Az iskola ${a} osztályába osztályonként ${b} gyerek jár. Közülük ${c} gyerek beteg. Hány gyerek van az iskolában?`), a * b - c, { hint: `${a} × ${b} − ${c} = ${a * b - c}` }); }
+    if (k === 0) { const a = rnd(3, 8), b = rnd(18, 30), c = rnd(2, 15); return NUM(Q(`Az iskola ${a} osztályába osztályonként ${b} gyerek jár. Közülük ${c} gyerek beteg. Hány gyerek jár az iskolába?`), a * b - c, { hint: `${a} × ${b} − ${c} = ${a * b - c}` }); }
     if (k === 1) { const b = rnd(20, 50), m = rnd(2, 8); return NUM(Q(`A kirándulásra ${b * m} gyerek megy. Egy buszon ${b} fő fér el. Hány busz kell, ha mindegyik megtelik?`), m, { hint: `${b * m} : ${b} = ${m}` }); }
     if (k === 2) { const b = rnd(10, 45); return NUM(Q(`Egy héten át minden nap ${b} percet gyakorolsz. Hány percet gyakoroltál összesen?`), 7 * b, { hint: `7 × ${b} = ${7 * b}` }); }
     const a = rnd(200, 400), b = rnd(40, 90), c = rnd(20, 60); return NUM(Q(`A boltban ${a} üveg üdítő volt. Reggel ${b} üveget, délután ${c} üveget adtak el. Hány üveg maradt?`), a - b - c, { hint: `${a} − ${b} − ${c} = ${a - b - c}` }); } });
@@ -115,13 +115,13 @@ addLv('tortek',
     return NUM(Q(t), left, { hint: `${tot} : ${d} = ${m}, ${k} × ${m} = ${k * m}, és ${tot} − ${k * m} = ${left}.` }); } },
   { name: 'Igaz vagy hamis törtek', gen: () => { let a, b, c, d; if (Math.random() < .5) { a = rnd(1, 3); c = a; b = rnd(a + 1, 9); do { d = rnd(a + 1, 9); } while (d === b); } else { b = rnd(4, 10); d = b; a = rnd(1, b - 1); do { c = rnd(1, b - 1); } while (c === a); }
     const lt = Math.random() < .5, truth = lt ? a / b < c / d : a / b > c / d;
-    return TF(`${fr(a, b)} ${lt ? '&lt;' : '&gt;'} ${fr(c, d)}`, truth, `Azonos számlálónál a kisebb nevezőjű tört nagyobb, azonos nevezőnél a nagyobb számlálójú.`); } });
+    return TF(`${fr(a, b)} ${lt ? '&lt;' : '&gt;'} ${fr(c, d)}`, truth, `Azonos számlálónál a kisebb nevezőjű tört nagyobb, azonos nevezőnél a nagyobb számlálójú tört nagyobb.`); } });
 
 /* ---------- Óra leolvasása ---------- */
 addLv('ora-leolvasas',
   { name: 'Mennyi idő telt el?', gen: () => { const h = rnd(1, 9), dur = rnd(1, 3), k = rnd(0, 2);
     if (k === 0) return NUM(Q(`Az óra ${h} órát mutat. Hány órát mutat ${dur} óra múlva?`), h + dur, { hint: `${h} + ${dur} = ${h + dur}` });
-    if (k === 1) return NUM(Q(`A film ${h} órakor kezdődik, és ${dur} óráig tart. Hány órakor ér véget?`), h + dur, { hint: `${h} + ${dur} = ${h + dur}` });
+    if (k === 1) return NUM(Q(`A film ${h} órakor kezdődik, és ${dur} órán át tart. Hány órakor ér véget?`), h + dur, { hint: `${h} + ${dur} = ${h + dur}` });
     return NUM(Q(`Az iskola ${h} órakor kezdődik, és ${h + dur} órakor ér véget. Hány órát tart?`), dur, { hint: `${h + dur} − ${h} = ${dur}` }); } },
   { name: 'Órák, percek, másodpercek', gen: () => { const n = rnd(2, 5), pool = [['Hány perc 1 óra?', 60], ['Hány perc fél óra?', 30], ['Hány perc negyed óra?', 15], ['Hány perc háromnegyed óra?', 45], ['Hány másodpercből áll egy perc?', 60], ['Hány órából áll egy nap?', 24], ['Hány napból áll egy hét?', 7],
       [`Hány perc ${n} óra?`, 60 * n], [`Hány óra ${60 * n} perc?`, n], ['Hány perc kétszer fél óra?', 60]], p = pick(pool);
@@ -180,7 +180,7 @@ addLv('dobokocka',
 /* ---------- Negatív számok ---------- */
 addLv('negativ-szamok',
   { name: 'Lift a pincébe', neg: true, gen: () => { let s, m, r; do { s = rnd(-3, 6); m = rnd(1, 6) * (Math.random() < .5 ? -1 : 1); r = s + m; } while (r < -4 || r > 10);
-    return NUM(Q(`A lift ${art(Math.abs(s))} ${numTxt(s)}. szinten áll (a pincében negatív szintek vannak). ${m > 0 ? `Felmegy ${m} emeletet.` : `Lemegy ${-m} emeletet.`} Hányadik szinten áll most?`), r, { hint: `${par(s)} ${m > 0 ? '+' : '−'} ${Math.abs(m)} = ${par(r)}` }); } },
+    return NUM(Q(`A lift ${s < 0 ? 'a' : art(s)} ${numTxt(s)}. szinten áll (a pincében negatív szintek vannak). ${m > 0 ? `Felmegy ${m} emeletet.` : `Lemegy ${-m} emeletet.`} Hányadik szinten áll most?`), r, { hint: `${par(s)} ${m > 0 ? '+' : '−'} ${Math.abs(m)} = ${par(r)}` }); } },
   { name: 'Számla egyenlege', neg: true, gen: () => { const x = rnd(-6, 6) * 100, y = rnd(1, 9) * 100, plus = Math.random() < .5, r = plus ? x + y : x - y;
     return NUM(Q(`Pisti számláján ${numTxt(x)} Ft van (a negatív szám tartozást jelent). ${plus ? `Befizet ${y} Ft-ot.` : `Kifizet ${y} Ft-ot.`} Mennyi lesz az egyenlege?`), r, { hint: `${par(x)} ${plus ? '+' : '−'} ${y} = ${par(r)}` }); } },
   { name: 'Igaz vagy hamis?', gen: () => { if (Math.random() < .5) { let a, b; do { a = rnd(-20, 20); b = rnd(-20, 20); } while (a === b); const lt = Math.random() < .5;
@@ -240,7 +240,7 @@ addLv('oszthatosag-primszamok',
         if ((m = txt.match(/^osztható (\d+)-/))) return v => v % +m[1] === 0; if ((m = txt.match(/összege (\d+)$/))) return v => Math.floor(v / 10) + v % 10 === +m[1]; if ((m = txt.match(/helyén (\d+) áll/))) return v => Math.floor(v / 10) === +m[1];
         if ((m = txt.match(/^kisebb, mint (\d+)/))) return v => v < +m[1]; if ((m = txt.match(/^nagyobb, mint (\d+)/))) return v => v > +m[1]; return () => true; };
       const chosen = [], order = shuffle(pool); for (const txt of order) { chosen.push(txt); if (test(chosen.map(mk)) === 1) break; if (chosen.length >= 4) break; }
-      if (test(chosen.map(mk)) === 1 && chosen.length >= 2) return NUM(Q(`Gondoltam egy kétjegyű számra.`, chosen.join('; ') + '. Melyik számra gondoltam?'), n, { hint: `A feltételeknek csak a ${n} felel meg.` }); }
+      if (test(chosen.map(mk)) === 1 && chosen.length >= 2) return NUM(Q(`Gondoltam egy kétjegyű számra.`, cap(chosen.join('; ')) + '. Melyik számra gondoltam?'), n, { hint: `A feltételeknek csak a ${n} felel meg.` }); }
     return NUM(Q('Mennyi 12 + 12?'), 24); } });
 
 /* ---------- Egyenletek ---------- */
@@ -258,8 +258,8 @@ addLv('szogek-haromszogek',
     if (half) { const diff = Math.abs(30 * h + 15 - 180); a = Math.min(diff, 360 - diff); } else a = Math.min(30 * h, 360 - 30 * h);
     return NUM(Q(`Hány fokos szöget zár be az óra két mutatója ${half ? `${h}:30-kor` : `${h} órakor`}?`, 'Az egész kör 360°, egy óra 30°.'), a, { hint: half ? `A kismutató ${30 * h + 15}°-nál, a nagymutató 180°-nál van.` : `${h} óránál ${30 * h}° vagy ${360 - 30 * h}°, a kisebbik szög: ${a}°.` }); } },
   { name: 'Fordulatok és felezés', gen: () => { const k = rnd(0, 2);
-    if (k === 0) { const n = rnd(1, 7); return NUM(Q(`Egy teljes fordulat 360°. Hány fokot fordulsz, ha ${n} negyed fordulatot fordulsz?`), 90 * n, { hint: `${n} × 90° = ${90 * n}°` }); }
-    if (k === 1) { const a = rnd(10, 85) * 2; return NUM(Q(`Egy ${a}°-os szöget kettéosztunk két egyenlő részre. Hány fokos lesz az egyik rész?`), a / 2, { hint: `${a} : 2 = ${a / 2}` }); }
+    if (k === 0) { const n = rnd(1, 7); return NUM(Q(`Egy teljes fordulat 360°. Hány fokot fordulsz, ha ${n} negyed fordulatot teszel meg?`), 90 * n, { hint: `${n} × 90° = ${90 * n}°` }); }
+    if (k === 1) { const a = rnd(10, 85) * 2; return NUM(Q(`Egy ${a}°-os szöget két egyenlő részre osztunk. Hány fokos lesz az egyik rész?`), a / 2, { hint: `${a} : 2 = ${a / 2}` }); }
     const a = rnd(2, 8) * 10; return NUM(Q(`Egy szög ${a}°-os. Hány fokos a pótszöge (derékszögre egészíti ki)?`), 90 - a, { hint: `90 − ${a} = ${90 - a}` }); } });
 
 /* ---------- Kör és testek ---------- */
@@ -304,12 +304,12 @@ const SZM = [['A piros labda gurul.', 'labda', 'piros', 'gurul'], ['A kis kutya 
 addLv('szofajok',
   { name: 'Keresd meg a mondatban!', gen: () => { const m = pick(SZM), c = rnd(1, 3), cat = ['', 'főnév', 'melléknév', 'ige'][c], art0 = m[0].split(' ')[0].toLowerCase();
     const ans = m[c], others = [1, 2, 3].filter(x => x !== c).map(x => m[x]).concat(art0);
-    return CH(Q(`<span class="wd">${esc(m[0])}</span>`, `Melyik szó ${cat} a mondatban?`), ans, others.slice(0, 3), { hint: `A(z) „${ans}" ${cat}.` }); } });
+    return CH(Q(`<span class="wd">${esc(m[0])}</span>`, `Melyik szó ${cat} a mondatban?`), ans, others.slice(0, 3), { hint: `„${ans}” ${cat}.` }); } });
 
 /* ---------- Mondatfajták ---------- */
 addLv('mondatfajtak',
   { name: 'Melyik mondat ilyen?', gen: () => { const all = ['kijelentő', 'kérdő', 'felkiáltó', 'felszólító', 'óhajtó'].filter(t => MONDAT[t] && MONDAT[t].length), t = pick(all), good = pick(MONDAT[t]), others = shuffle(all.filter(x => x !== t)).slice(0, 3).map(x => pick(MONDAT[x]));
-    return CH(Q(`Melyik ${t} mondat?`), good, others, { hint: `„${good}" ${t} mondat.` }); } });
+    return CH(Q(`Melyik ${t} mondat?`), good, others, { hint: `„${good}” ${t} mondat.` }); } });
 
 /* ---------- Toldalékok: -val/-vel ---------- */
 const TOLD = [['Anya ___ vágja a kenyeret.', 'késsel', ['késvel', 'késsal', 'késval']], ['A kisfiú ___ játszik.', 'labdával', ['labdaval', 'labdavel', 'labdával'.replace('á', 'a')]], ['Ceruza helyett ___ is írhatsz.', 'tollal', ['tolval', 'tollval', 'tolal']],

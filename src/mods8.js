@@ -12,8 +12,8 @@ const nearNums = (n, lo, hi) => { const s = new Set([n]); let k = 0; while (s.si
 const SUB = 'Számold meg, hány van!';
 
 const SHAPES = ['🔴', '🟦', '🔺', '⭐', '❤️', '🟩', '🟡', '🔷', '🔶', '🟣', '🟠', '🟤'];
-const PAIRS = [['🐶', '🦴'], ['🐝', '🍯'], ['🐱', '🥛'], ['🐒', '🍌'], ['🐰', '🥕'], ['🦷', '🪥'], ['🔑', '🚪'], ['🌧️', '☔'], ['⚽', '🥅'], ['🐮', '🥛'], ['🚗', '⛽'], ['🐔', '🥚']];
-const PAIRN = { '🦴': 'csont', '🍯': 'méz', '🥛': 'tej', '🍌': 'banán', '🥕': 'répa', '🪥': 'fogkefe', '🚪': 'ajtó', '☔': 'esernyő', '🥅': 'kapu', '⛽': 'benzinkút', '🥚': 'tojás' };
+const PAIRS = [['🐶', '🦴'], ['🐝', '🍯'], ['🐱', '🥛'], ['🐒', '🍌'], ['🐰', '🥕'], ['🦷', '🪥'], ['🔑', '🚪'], ['🌧️', '☔'], ['⚽', '🥅'], ['🐮', '🌿'], ['🚗', '⛽'], ['🐔', '🥚']];
+const PAIRN = { '🦴': 'csont', '🍯': 'méz', '🥛': 'tej', '🍌': 'banán', '🥕': 'répa', '🪥': 'fogkefe', '🚪': 'ajtó', '☔': 'esernyő', '🥅': 'kapu', '⛽': 'benzin', '🥚': 'tojás' };
 const CATS = [['gyümölcs', ['🍎', '🍌', '🍓', '🍇', '🍐', '🍊']], ['állat', ['🐶', '🐱', '🐰', '🐻', '🐸', '🐷']], ['jármű', ['🚗', '🚌', '🚲', '🚂', '✈️', '🚢']], ['étel', ['🍕', '🍔', '🍟', '🍪', '🍩', '🧀']], ['virág és fa', ['🌸', '🌻', '🌷', '🌳', '🌲', '🍀']]];
 const emo = (e, cls = '') => `<div class="big emo${cls}">${e}</div>`;
 
@@ -22,7 +22,7 @@ const countLv = (lo, hi) => () => { const e = pick(OBJ), n = rnd(lo, hi); return
 mod({
   slug: 'kepes-feladatok', title: 'Képes feladatok elsősöknek', short: 'Képes feladatok', group: 'kepes', glyph: '🍎🍎🍎', hue: 4, grades: [1, 2],
   desc: 'Olvasás nélkül is játszható feladatok: számlálás, szám és mennyiség, több és kevesebb, formák, minták, párosítás és kakukktojás képekkel.',
-  seo: 'A Képes feladatok olvasás nélkül is játszható gyakorló a legkisebbeknek: képek alapján kell megszámolni a tárgyakat, párosítani a számot a mennyiséggel, eldönteni, melyik a több, felismerni a formákat, folytatni a mintát, párba állítani a képeket és megtalálni a kakukktojást. Az elsősök a szülő segítsége nélkül is boldogulnak, mert a feladatok emodzsikkal és számokkal vannak megadva, a rövid szöveget pedig fel lehet olvasni. Ingyenes, hang nélküli, regisztráció nélkül használható.',
+  seo: 'A Képes feladatok olvasás nélkül is játszható gyakorló a legkisebbeknek: képek alapján kell megszámolni a tárgyakat, párosítani a számot a mennyiséggel, eldönteni, melyik a több, felismerni a formákat, folytatni a mintát, párba állítani a képeket és megtalálni a kakukktojást. A feladatok többsége olvasás nélkül is érthető, mert emodzsikkal és számokkal vannak megadva, a rövid utasítást pedig a szülő felolvashatja. Ingyenes, hang nélküli, regisztráció nélkül használható.',
   levels: [
     { name: 'Számolás 1–5 képekkel', gen: countLv(1, 5) },
     { name: 'Számolás 6–10 képekkel', gen: countLv(6, 10) },

@@ -19,8 +19,8 @@ const SEASON_OF = m => ['tél', 'tél', 'tavasz', 'tavasz', 'tavasz', 'nyár', '
 const SEASONS = ['tavasz', 'nyár', 'ősz', 'tél'];
 const SEASON_FACTS = {
   tavasz: ['kizöldülnek a fák', 'kinyílnak a tulipánok', 'hazatérnek a fecskék', 'virágzik a cseresznyefa', 'kibújik a hóvirág', 'megolvad a hó, és megindul az élet'],
-  nyár: ['nagyon meleg van', 'a gyerekeknek nyári szünetük van', 'a legrövidebbek az éjszakák', 'a gyerekek a strandon fürödnek', 'aratják a búzát', 'sokáig világos van este'],
-  ősz: ['hullanak a falevelek', 'szüretelik a szőlőt', 'a fecskék elköltöznek a meleg országokba', 'a diót és a gesztenyét szedik', 'kezdődik a tanév', 'megérnek a gesztenyék és a dió'],
+  nyár: ['nagyon meleg van', 'a gyerekeknek szünetük van', 'a legrövidebbek az éjszakák', 'a gyerekek a strandon fürödnek', 'aratják a búzát', 'sokáig világos van este'],
+  ősz: ['hullanak a falevelek', 'szüretelik a szőlőt', 'a fecskék elköltöznek a meleg országokba', 'kezdődik a tanév', 'megérnek a gesztenyék és a dió'],
   tél: ['havazik és fagy', 'befagynak a tavak', 'a barna medve téli álmot alszik', 'a legrövidebbek a nappalok', 'szánkózni és korcsolyázni lehet', 'a lombhullató fák csupaszok']
 };
 const HOLIDAYS = [['a Mikulás napja', 'december'], ['a karácsony', 'december'], ['az újév napja', 'január'], ['az 1848-as forradalom ünnepe', 'március'], ['az államalapítás ünnepe (Szent István napja)', 'augusztus'], ['az 1956-os forradalom ünnepe', 'október'], ['a Márton-nap', 'november'], ['a Mindenszentek ünnepe', 'november']];
@@ -41,7 +41,7 @@ mod({
       if (t === 3) return CLS(Q('Melyik az év első hónapja?'), 'január', MONTHS, 'Az év első hónapja a január.');
       return CLS(Q('Melyik az év utolsó hónapja?'), 'december', MONTHS, 'Az év utolsó hónapja a december.'); } },
     { name: 'Melyik évszak?', gen: () => { const i = rnd(0, 11), m = MONTHS[i], s = SEASON_OF(i);
-      return CLS(Q(`Melyik évszakban van ${az(m)} ${m}?`), s, SEASONS, `Tavasz: március, április, május. Nyár: június, július, augusztus. Ősz: szeptember, október, november. Tél: december, január, február. Tehát ${az(m)} ${m} ${s}.`); } },
+      return CLS(Q(`Melyik évszakban van ${az(m)} ${m}?`), s, SEASONS, `Tavasz: március, április, május. Nyár: június, július, augusztus. Ősz: szeptember, október, november. Tél: december, január, február. Tehát ${az(m)} ${m} ${az(s)} ${s} egyik hónapja.`); } },
     { name: 'Mi jellemző az évszakra?', gen: () => { const s = pick(SEASONS), f = pick(SEASON_FACTS[s]);
       return CLS(Q(`Melyik évszakban igaz, hogy ${f}?`), s, SEASONS, `Helyes válasz: ${s}. (${cap(f)}.)`); } },
     { name: 'Hány napos a hónap?', gen: () => { const i = rnd(0, 11), m = MONTHS[i];
@@ -57,7 +57,7 @@ const VAD = ['őz', 'szarvas', 'róka', 'farkas', 'barna medve', 'vaddisznó', '
 const YOUNG = [['tehén', 'borjú'], ['ló', 'csikó'], ['birka', 'bárány'], ['kecske', 'gida'], ['disznó', 'malac'], ['tyúk', 'csibe']];
 const SOUND = [['kutya', 'ugat'], ['macska', 'nyávog'], ['tehén', 'bőg'], ['ló', 'nyerít'], ['disznó', 'röfög'], ['tyúk', 'kotkodál'], ['kakas', 'kukorékol'], ['béka', 'brekeg'], ['méh', 'zümmög'], ['birka', 'béget'], ['kecske', 'mekeg'], ['kacsa', 'hápog'], ['liba', 'gágog'], ['varjú', 'károg'], ['egér', 'cincog'], ['oroszlán', 'ordít'], ['bagoly', 'huhog']];
 const HAB = { 'erdő': ['szarvas', 'őz', 'farkas', 'barna medve', 'vaddisznó', 'mókus', 'bagoly', 'hiúz'], 'tó vagy folyó': ['hód', 'vidra', 'csuka', 'ponty', 'hattyú'], 'tenger': ['delfin', 'bálna', 'cápa', 'rája', 'medúza', 'tengeri csillag'],
-  'sivatag': ['teve', 'skorpió', 'dromedár'], 'szavanna': ['oroszlán', 'zsiráf', 'elefánt', 'zebra', 'gepárd', 'strucc'], 'sarkvidék': ['jegesmedve', 'pingvin', 'fóka', 'rozmár', 'rénszarvas'],
+  'sivatag': ['teve', 'skorpió', 'kígyó'], 'szavanna': ['oroszlán', 'zsiráf', 'elefánt', 'zebra', 'gepárd', 'strucc'], 'sarkvidék': ['jegesmedve', 'sarki róka', 'fóka', 'rozmár', 'rénszarvas'],
   'rét': ['mezei nyúl', 'fürj', 'pacsirta', 'szöcske', 'mezei pocok'], 'esőerdő': ['majom', 'papagáj', 'tukán', 'orangután', 'anakonda'] };
 const DIET = { 'növényevő': ['tehén', 'ló', 'mezei nyúl', 'őz', 'szarvas', 'zsiráf', 'elefánt', 'birka', 'kecske', 'zebra'], 'húsevő (ragadozó)': ['oroszlán', 'farkas', 'cápa', 'sas', 'bagoly', 'hiúz', 'krokodil', 'kígyó', 'delfin', 'jegesmedve'], 'mindenevő': ['barna medve', 'disznó', 'vaddisznó', 'varjú'] };
 const LEGS = [['kutyának', 'kutya', 4], ['lónak', 'ló', 4], ['tehénnek', 'tehén', 4], ['madárnak', 'madár', 2], ['tyúknak', 'tyúk', 2], ['póknak', 'pók', 8], ['méhnek', 'méh', 6], ['hangyának', 'hangya', 6], ['légynek', 'légy', 6], ['katicabogárnak', 'katicabogár', 6], ['szöcskének', 'szöcske', 6], ['kígyónak', 'kígyó', 0], ['halnak', 'hal', 0], ['gilisztának', 'giliszta', 0]];
@@ -74,7 +74,7 @@ mod({
       return Math.random() < .5 ? CLS(Q(`Hogy hívják ${az(a)} ${a} kicsinyét?`), y, YOUNG.map(x => x[1]), `${A(a)} kicsinye: ${y}.`) : CLS(Q(`Melyik állat kicsinye ${az(y)} ${y}?`), a, YOUNG.map(x => x[0]), `${A(y)} a ${a} kicsinye.`); } },
     { name: 'Ki hogyan szól?', gen: () => { const [a, s] = pick(SOUND); return CLS(Q(`Hogyan szól ${az(a)} ${a}?`), s, SOUND.map(x => x[1]), `${A(a)} ${s}.`); } },
     { name: 'Hol él?', gen: () => { const [a, h] = pick(mapPairs(HAB)); return CLS(Q(`Hol él ${az(a)} ${a}?`), h, Object.keys(HAB), `${A(a)} élőhelye: ${h}.`); } },
-    { name: 'Mit eszik?', gen: () => { const [a, d] = pick(mapPairs(DIET)); return CLS(Q(`Mit eszik ${az(a)} ${a}?`), d, Object.keys(DIET), `${A(a)} ${d}.`); } },
+    { name: 'Mit eszik?', gen: () => { const [a, d] = pick(mapPairs(DIET)); return CLS(Q(`Milyen táplálkozású ${az(a)} ${a}?`), d, Object.keys(DIET), `${A(a)} ${d}.`); } },
     { name: 'Hány lába van?', gen: () => { const [dat, nom, n] = pick(LEGS); return NUM(Q(`Hány lába van ${az(dat)} ${dat}?`), n, { hint: n ? `${cap(nom)}: ${n} láb.` : `${cap(nom)}: nincs lába.` }); } },
     { name: 'Melyik állatcsoportba tartozik?', gen: () => { const [a, g] = pick(mapPairs(GRP)); return CLS(Q(`Melyik állatcsoportba tartozik ${az(a)} ${a}?`), g, Object.keys(GRP), GRP_NOTE[a] || `${A(a)} ${g}.`); } },
     { name: 'Melyik nem illik közé?', gen: () => { const t = rnd(0, 3);
@@ -95,7 +95,7 @@ const LOMB = ['tölgy', 'bükk', 'nyír', 'akác', 'juhar', 'hárs', 'fűz', 'pl
 const FRUIT = [['tölgy', 'makk'], ['bükk', 'bükkmakk'], ['fenyő', 'toboz'], ['mogyoróbokor', 'mogyoró'], ['cseresznyefa', 'cseresznye'], ['almafa', 'alma'], ['szilvafa', 'szilva'], ['diófa', 'dió']];
 const PLANT_TF = [['A növények a gyökerükkel szívják fel a vizet.', 1, 'A gyökér szívja fel a vizet és a tápanyagokat a talajból.'], ['A növények a leveleikkel veszik fel a talajból a vizet.', 0, 'A vizet a gyökér szívja fel, nem a levél.'],
   ['A fenyőfák tűlevelűek.', 1, 'A fenyőknek tűlevelük van.'], ['A tölgy termése a toboz.', 0, 'A tölgy termése a makk, a tobozt a fenyő hozza.'], ['A növények a napfény segítségével készítik a táplálékukat.', 1, 'A levélben, a napfény segítségével készül a növény tápláléka.'],
-  ['A gyökér a növény legmagasabb része.', 0, 'A gyökér általában a föld alatt van, a szár és a levelek vannak fent.'], ['Minden fa lombhullató.', 0, 'A fenyők örökzöldek, tűleveleiket nem hullatják le egyszerre.'], ['A burgonya a föld alatt fejlődik.', 1, 'A burgonya a földben, a föld alatt képződő gumó.'],
+  ['A gyökér a növény legmagasabb része.', 0, 'A gyökér általában a föld alatt van, a szár és a levelek vannak fent.'], ['Minden fa lombhullató.', 0, 'A fenyők örökzöldek, tűleveleiket nem hullatják le egyszerre.'], ['A burgonya a föld alatt fejlődik.', 1, 'A burgonya a föld alatt képződő gumó.'],
   ['A növényeknek nincs szükségük vízre.', 0, 'A növényeknek víz, fény, levegő és tápanyag kell a növekedéshez.'], ['A búza lágyszárú növény.', 1, 'A búza szára lágy, nem fásodik.'], ['A cseresznye zöldség.', 0, 'A cseresznye gyümölcs.'], ['A rózsa bokor.', 1, 'A rózsának több vékony fás szára van, bokor.'],
   ['A növények szén-dioxidot vesznek fel a levegőből.', 1, 'A levelek a levegő szén-dioxidját veszik fel, és oxigént adnak le.'], ['A virágból fejlődik ki a termés.', 1, 'A termés a virág megporzása után fejlődik ki.'], ['A fák levele mindig tűlevél.', 0, 'A lombos fák levele széles, csak a fenyőké tű alakú.']];
 mod({
@@ -117,8 +117,8 @@ mod({
 const SENSES = [['látunk', 'szem'], ['hallunk', 'fül'], ['szagolunk', 'orr'], ['ízlelünk', 'nyelv'], ['tapintunk', 'bőr']];
 const BODYNUM = [['Hány ujja van egy kezünknek?', 5, 'Egy kezünkön 5 ujjunk van.'], ['Hány ujjunk van összesen a két kezünkön?', 10, '2 × 5 = 10 ujj.'], ['Hány szemünk van?', 2, 'Két szemünk van.'], ['Hány fülünk van?', 2, 'Két fülünk van.'],
   ['Hány orrunk van?', 1, 'Egy orrunk van.'], ['Hány érzékszervünk van?', 5, 'Öt érzékszervünk van: szem, fül, orr, nyelv, bőr.'], ['Hány lábujja van összesen az embernek?', 10, 'Mindkét lábunkon 5-5 lábujj van, összesen 10.'],
-  ['Hány tejfoga van a gyereknek, ha mind kinőtt?', 20, 'A tejfogak száma 20.'], ['Hány foga van a felnőttnek, ha mind megvan?', 32, 'A felnőtt fogazat 32 fogból áll.'], ['Hány csontból áll a felnőtt ember csontváza?', 206, 'A felnőtt embernek kb. 206 csontja van.']];
-const ORGANS = { 'szív': 'pumpálja a vért a testünkben', 'tüdő': 'ezzel lélegzünk, oxigént veszünk fel', 'gyomor': 'itt kezdődik az étel emésztése', 'agy': 'irányítja a testünket, ezzel gondolkodunk', 'vese': 'kiszűri a vérből a felesleges anyagokat', 'csontváz': 'tartja és védi a testünket', 'izom': 'mozgatja a testrészeinket', 'bőr': 'védi a testünket és érzékel' };
+  ['Hány tejfoga van a gyereknek, ha mind kinőtt?', 20, 'A tejfogak száma 20.'], ['Hány foga van a felnőttnek, ha mind megvan?', 32, 'A felnőtt fogazat 32 fogból áll.'], ['Hány csontból áll a felnőtt ember csontváza?', 206, 'A felnőtt embernek 206 csontja van.']];
+const ORGANS = { 'szív': 'pumpálja a vért a testünkben', 'tüdő': 'ezzel lélegzünk, oxigént veszünk fel', 'gyomor': 'ide kerül a lenyelt étel, és itt emésztődik tovább', 'agy': 'irányítja a testünket, ezzel gondolkodunk', 'vese': 'kiszűri a vérből a felesleges anyagokat', 'csontváz': 'tartja és védi a testünket', 'izom': 'mozgatja a testrészeinket', 'bőr': 'védi a testünket és érzékel' };
 const HEALTHY = ['elegendő vizet iszol', 'sokat mozogsz a szabadban', 'zöldséget és gyümölcsöt eszel', 'naponta kétszer fogat mosol', 'eleget alszol', 'étkezés előtt kezet mosol', 'az időjárásnak megfelelően öltözöl'];
 const UNHEALTHY = ['minden nap sok cukros üdítőt iszol', 'késő estig számítógépezel, és keveset alszol', 'sosem mosol fogat', 'csak csipszet és édességet eszel', 'egész nap egy helyben ülsz', 'étkezés előtt nem mosol kezet'];
 const SYSTEMS = { 'légzőrendszer': ['tüdő', 'légcső', 'gége', 'orrüreg'], 'keringési rendszer': ['szív', 'vér', 'véredény'], 'emésztőrendszer': ['gyomor', 'nyelőcső', 'bélrendszer', 'máj'], 'mozgásrendszer': ['csont', 'izom', 'ízület'], 'idegrendszer': ['agy', 'gerincvelő', 'idegek'], 'kiválasztó rendszer': ['vese', 'húgyhólyag'] };
@@ -135,7 +135,7 @@ mod({
     { name: 'A szerveink feladata', gen: () => { const [o, s] = pick(Object.entries(ORGANS)); return CLS(Q(`„${cap(s)}.”`, 'Melyik szervünkről van szó?'), o, Object.keys(ORGANS), `${A(o)} feladata: ${s}.`); } },
     { name: 'Egészséges életmód', gen: () => { if (Math.random() < .5) { const h = pick(HEALTHY); return CH(Q('Melyik szokás egészséges?', 'Válaszd ki a jót!'), cap(h), shuffle(UNHEALTHY).slice(0, 3).map(cap), { hint: `Egészséges, ha ${h}.` }); }
       const u = pick(UNHEALTHY); return CH(Q('Melyik szokás NEM egészséges?'), cap(u), shuffle(HEALTHY).slice(0, 3).map(cap), { hint: `Nem egészséges, ha ${u}.` }); } },
-    { name: 'Szervrendszerek', gen: () => { const [o, s] = pick(mapPairs(SYSTEMS)); return CLS(Q(`Melyik szervrendszerhez tartozik ${az(o)} ${o}?`), s, Object.keys(SYSTEMS), `${A(o)} ${az(s)} ${s} része.`); } },
+    { name: 'Szervrendszerek', gen: () => { const [o, s] = pick(mapPairs(SYSTEMS)); return CLS(Q(`Melyik szervrendszerhez tartozik ${az(o)} ${o}?`), s, Object.keys(SYSTEMS), `${A(o)} ${az(s)} ${s} egyik szerve.`); } },
     { name: 'Igaz vagy hamis?', gen: TFS(BODY_TF) }
   ]
 });
@@ -195,7 +195,7 @@ const ROLE = { 'termelő': ['fű', 'tölgy', 'moszat', 'búza', 'kukorica'], 'fo
 mod({
   slug: 'elohelyek', title: 'Élőhelyek és táplálékláncok gyakorló', short: 'Élőhelyek, láncok', group: 'termeszet', glyph: 'erdő', hue: 3, grades: [4, 6],
   desc: 'Melyik élőlény hol él, mivel táplálkozik, táplálékláncok sorrendje, termelők, fogyasztók és lebontók.',
-  seo: 'Az élőhelyek és a táplálékláncok a felső tagozatos természetismeret központi témái. A gyakorló megkérdezi, melyik növény vagy állat melyik élőhelyen él, mivel táplálkozik, milyen a helyes táplálékláncsorrend, és hogy az élőlények termelők, fogyasztók vagy lebontók.',
+  seo: 'Az élőhelyek és a táplálékláncok a felső tagozatos természetismeret központi témái. A gyakorló megkérdezi, melyik növény vagy állat melyik élőhelyen él, mivel táplálkozik, milyen a tápláléklánc helyes sorrendje, és hogy az élőlények termelők, fogyasztók vagy lebontók.',
   levels: [
     { name: 'Hol él az élőlény?', gen: () => { const [x, h] = pick(mapPairs(LIVES)); return CLS(Q(`Melyik élőhelyen él ${az(x)} ${x}?`), h, Object.keys(LIVES), `${A(x)} élőhelye: ${h}.`); } },
     { name: 'Mivel táplálkozik?', gen: () => { const [c, f, w] = pick(FOOD); return CH(Q(`Mivel táplálkozik ${az(c)} ${c}?`), f, w, { hint: `${A(c)} táplálékai közé tartozik: ${f}.` }); } },

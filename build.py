@@ -140,7 +140,7 @@ def mod_links(x):
     return out
 XL = {'ms': MODSEO, 'mod': {x['slug']: mod_links(x) for x in mods},
       'g': {'m': [g_url('m', n) for n in range(1, 9)], 'n': [g_url('n', n) for n in range(1, 7)], 't': [g_url('t', n) for n in range(1, 9)]},
-      'ws': {'mods': [[w_url(x), f'{x["short"]} munkalap'] for x in mods], 'grades': [[wg_url(k, n), wg_name(k, n)] for k, n in GRADES], 'themes': [[th_url(t), f'{t["name"]} munkalap'] for t in THEMES]}}
+      'ws': {'mods': [[w_url(x), f'{x["short"]} munkalap'] for x in mods], 'grades': [[wg_url(k, n), wg_name(k, n)] for k, n in GRADES], 'themes': [[th_url(t), t['title']] for t in THEMES]}}
 js = js.replace('/*XL*/{}/*XL*/', json.dumps(XL, ensure_ascii=False))
 js = js.replace("/*SH*/'iskolaigyakorlo.hu'/*SH*/", json.dumps(SITE.split('://', 1)[-1]))
 ver = hashlib.md5((js + css).encode()).hexdigest()[:8]
@@ -371,7 +371,7 @@ def ws_grade_page(kind, n):
     other = [(wg_url(kind, k), wg_name(kind, k)) for k in (n - 1, n + 1) if 1 <= k <= TOP[kind]]
     trail = [("Kezdőlap", "/"), ("Tanároknak", "/tanaroknak/"), ("Munkalapok", "/munkalapok/"), (name, path)]
     body = (f'<div class="setup wspage"><div class="noprint">{bc_html(trail)}<h1>{e(name)}, nyomtatható feladatlap</h1>'
-            f'<p class="lead">Nyomtasd ki ingyen: {d["count"]} vegyes feladat az {n}. osztályos {subj} anyagából, megoldókulccsal. Minden kattintásra új feladatok készülnek.</p></div>'
+            f'<p class="lead">Nyomtasd ki ingyen: {d["count"]} vegyes feladat {az_ord(n)} {n}. osztályos {subj} anyagából, megoldókulccsal. Minden kattintásra új feladatok készülnek.</p></div>'
             f'{ws_tools()}{ws_sheet(d)}'
             f'<div class="noprint"><section class="about"><h2>Miből állnak össze a feladatok?</h2><p>A munkalap {az_ord(n)} {n}. osztályos anyaghoz illő szintekből válogat. Témánként külön is kérhetsz munkalapot:</p><ul class="xl">{top}</ul></section>'
             f'<section class="about"><h2>Saját, vegyes munkalap</h2><p>Ha te szeretnéd összeállítani, hogy miből hány feladat legyen, használd a <a href="/munkalapok/">munkalap-készítőt</a>.</p></section>'
@@ -394,7 +394,7 @@ def teacher_page():
            ("Honnan tudjam, melyik szint való az osztálynak?", "Az évfolyam-oldalak és a munkalap-készítő „az évfolyamnak megfelelő szintek” beállítása segít. A tanmenetet természetesen te ismered a legjobban, a szinteket szabadon átállíthatod.")]
     body = (f'<div class="setup gpage">{bc_html(trail)}<h1>Tanároknak: eszközök az órára</h1>'
             f'<p class="lead">Ingyenes, regisztráció nélküli eszközök tanítóknak és tanároknak: állítsd össze a saját munkalapodat, vagy nyomtass ki egy kész feladatlapot megoldókulccsal.</p>'
-            f'<div class="gcards"><a class="gcard" href="/munkalapok/unnepi/"><h3>Ünnepi munkalapok</h3><p>Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró: szöveges feladatok, titkosírás, szókereső, hiányzó betűk.</p><span>6 ünnep · 4 évfolyamszint</span></a><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>30 téma · legfeljebb 60 feladat</span></a></div>'
+            f'<div class="gcards"><a class="gcard" href="/munkalapok/unnepi/"><h3>Ünnepi munkalapok</h3><p>Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró: szöveges feladatok, titkosírás, szókereső, hiányzó betűk.</p><span>6 ünnep · 4 évfolyamszint</span></a><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>{len(mods)} téma · legfeljebb 60 feladat</span></a></div>'
             f'<section class="about"><h2>Kész matek munkalapok évfolyamonként</h2><ul class="xl">{gl("m", range(1, 9))}</ul>'
             f'<h2>Kész helyesírás munkalapok évfolyamonként</h2><ul class="xl">{gl("n", range(1, 7))}</ul>'
             f'<h2>Kész környezetismeret, természetismeret és kémia munkalapok évfolyamonként</h2><ul class="xl">{gl("t", range(1, 9))}</ul></section>'
@@ -438,7 +438,7 @@ def ws_theme_page(t):
     desc = f'Ingyenes, nyomtatható {inf["adj"]} munkalap 1–6. osztályosoknak: szöveges feladatok, titkosírás-rejtvény, szókereső és hiányzó betűk megoldókulccsal. Új lap egy kattintással.'
     trail = [("Kezdőlap", "/"), ("Tanároknak", "/tanaroknak/"), ("Ünnepi munkalapok", "/munkalapok/unnepi/"), (t['title'], path)]
     tt = ''.join(f'<li><b>{a}:</b> {e(b_)}.</li>' for a, b_ in TT_DESC)
-    others = [(th_url(x), f'{x["name"]} munkalap') for x in THEMES if x['id'] != t['id']]
+    others = [(th_url(x), x['title']) for x in THEMES if x['id'] != t['id']]
     body = (f'<div class="setup wspage"><div class="noprint">{bc_html(trail)}<h1>{e(t["title"])}, nyomtatható feladatlap</h1><p class="lead">{e(inf["intro"])}</p></div>'
             f'{ws_theme_tools()}<article class="sheet" id="wssheet">{d["sheet"]}</article><section class="skey noprint" id="wskey">{d["key"]}</section>'
             f'<div class="noprint"><section class="about"><h2>Négyféle lap, évfolyam szerint</h2><ul class="xl">{tt}</ul><p>Az évfolyamot és a lap típusát a gombok fölött választhatod ki, az „Új lap” gomb pedig minden alkalommal újat készít.</p></section>'
@@ -535,7 +535,7 @@ PRIV_HTML = """<div class="setup legal"><a class="crumb" href="/">← Minden gya
 <section class="about"><h2>Gyerekek</h2>
 <p>Az oldal gyerekeknek készült, ezért szándékosan nem kér és nem gyűjt személyes adatot. A szülők és tanárok biztonságosan használhatják a gyerekekkel együtt.</p></section>
 <section class="about"><h2>Jogaid</h2>
-<p>A GDPR alapján kérheted a rólad kezelt adatok megismerését, törlését vagy korlátozását, és tiltakozhatsz a kezelésük ellen. Ha úgy érzed, hogy adataidat nem megfelelően kezelik, panaszt tehetsz a Nemzeti Adatvédelmi és Információszabadság Hatóságnál (NAIH, 1055 Budapest, Falk Miksa utca 9-11., <a href="https://naih.hu" rel="noopener">naih.hu</a>).</p></section>
+<p>A GDPR alapján kérheted a rólad kezelt adatok megismerését, törlését vagy korlátozását, és tiltakozhatsz a kezelésük ellen. Ha úgy érzed, hogy adataidat nem megfelelően kezelik, panaszt tehetsz a Nemzeti Adatvédelmi és Információszabadság Hatóságnál (NAIH, 1055 Budapest, Falk Miksa utca 9–11., <a href="https://naih.hu" rel="noopener">naih.hu</a>).</p></section>
 <p class="muted">Utolsó frissítés: 2026. október 4.</p></div>"""
 os.makedirs(os.path.join(DIST, 'adatvedelem'))
 ap = page(None).replace('data-route=""', 'data-route="adatvedelem"')
