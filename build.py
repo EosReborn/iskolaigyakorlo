@@ -6,6 +6,7 @@ from urllib.parse import quote
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'content'))
 from grades import MATH as G_MATH, NYELV as G_NYELV, TERM as G_TERM
+from modseo import MODSEO
 from articles import ARTICLES
 from extra import EXTRA
 from changelog import CHANGES
@@ -81,13 +82,33 @@ def credit(src):
 
 READ_NOTE = '<p class="rnote">Elsősöknek: ez a gyakorló olvasást igényel, ezért a szülő vagy egy idősebb testvér felolvashatja a kérdéseket.</p>'
 def read_note(m): return READ_NOTE if m['grades'][0] <= 1 and (m['group'] in ('nyelv', 'termeszet') or m['slug'] == 'szoveges-feladatok') else ''
+def grade_lv(m, g):
+    a, z = m['grades']; nl = len(m['levels']); span = z - a + 1
+    lo = (g - a) * nl // span; hi = max(lo, -(-(g - a + 1) * nl // span) - 1)
+    return lo, min(nl - 1, hi)
+def grade_levels_html(m):
+    a, z = m['grades']
+    if a == z or len(m['levels']) < 2: return ''
+    rows = ''
+    for g in range(a, z + 1):
+        lo, hi = grade_lv(m, g)
+        names = ', '.join(e(m['levels'][i]) for i in range(lo, hi + 1))
+        rows += f'<li><b>{g}. osztály:</b> {lo + 1}–{hi + 1}. szint ({names})</li>' if hi > lo else f'<li><b>{g}. osztály:</b> {lo + 1}. szint ({names})</li>'
+    return f'<section class="about"><h2>Melyik szint melyik évfolyamnak való?</h2><p>A gyakorló szintjei az évfolyamokon belül nehezednek. Ha a kezdőlapon kiválasztod az évfolyamot, csak az adott osztály szintjeit látod.</p><ul class="xl">{rows}</ul></section>'
+def mod_faq(m):
+    gr = f'{m["grades"][0]}–{m["grades"][1]}. osztály' if m['grades'][0] != m['grades'][1] else f'{m["grades"][0]}. osztály'
+    base = [(f'Melyik évfolyamnak ajánlott: {m["title"]}?', f'Ajánlott évfolyam: {gr}. A szintek az évfolyamokon belül nehezednek, így a gyerek a saját szintjén kezdhet, és fokozatosan haladhat tovább.'),
+            ('Van hozzá nyomtatható munkalap?', f'Igen, a munkalap-készítőben a(z) {m["short"]} témából is készíthető nyomtatható feladatlap megoldókulccsal.'.replace('a(z) ', '')),
+            ('Ingyenes, és kell hozzá regisztráció?', 'Az oldal teljesen ingyenes, regisztráció és bejelentkezés nélkül használható. A haladást csak a gyerek böngészője őrzi, nem kerül szerverre.')]
+    return MODSEO.get(m['slug'], {}).get('faq', []) + base
 def prerender(m):
     if not m:
         gl = lambda k, rng: ''.join(f'<li><a href="{g_url(k, n)}">{g_name(k, n)}</a></li>' for n in rng)
         links = ''.join(f'<li><a href="/{x["slug"]}/">{e(x["title"])}</a>: {e(x["desc"])}</li>' for x in mods)
         return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes gyakorló általános iskolásoknak: matek, helyesírás, környezetismeret és kémia 1–8. osztályig</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Gyerekeknek, szülőknek és tanároknak, regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}{gl("t", range(1, 7))}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
-    return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p>{read_note(m)}<ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p></section><section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{fb_html(m["title"])}</div>'
+    extra = ''.join(f'<p>{e(t)}</p>' for t in MODSEO.get(m['slug'], {}).get('text', []))
+    return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p>{read_note(m)}<ul>{lv}</ul><section class="about"><h2>Mire jó ez a gyakorló?</h2><p>{e(m["seo"])}</p>{extra}</section>{grade_levels_html(m)}<section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{faq_html(mod_faq(m), "Gyakran ismételt kérdések")}{fb_html(m["title"])}</div>'
 
 TODAY = datetime.date.today().isoformat()
 MODBY = {x['slug']: x for x in mods}
@@ -115,7 +136,7 @@ def mod_links(x):
     if len(gs) > 4: gs = [gs[0], gs[len(gs)//3], gs[2*len(gs)//3], gs[-1]]
     out = [[w_url(x), f'{x["short"]} munkalap nyomtatható']] + [[g_url(kind, n), g_name(kind, n)] for n in gs]
     return out
-XL = {'mod': {x['slug']: mod_links(x) for x in mods},
+XL = {'ms': MODSEO, 'mod': {x['slug']: mod_links(x) for x in mods},
       'g': {'m': [g_url('m', n) for n in range(1, 9)], 'n': [g_url('n', n) for n in range(1, 7)], 't': [g_url('t', n) for n in range(1, 9)]},
       'ws': {'mods': [[w_url(x), f'{x["short"]} munkalap'] for x in mods], 'grades': [[wg_url(k, n), wg_name(k, n)] for k, n in GRADES], 'themes': [[th_url(t), f'{t["name"]} munkalap'] for t in THEMES]}}
 js = js.replace('/*XL*/{}/*XL*/', json.dumps(XL, ensure_ascii=False))
@@ -208,10 +229,11 @@ def page(m):
           "publisher": ORG}
     lds = [ld]
     if not m:
-        lds += [{"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "url": SITE + "/", "inLanguage": "hu"},
+        lds += [{"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "alternateName": ["Általános iskolai gyakorló", "iskolaigyakorlo.hu"], "url": SITE + "/", "inLanguage": "hu", "publisher": {"@type": "Organization", "name": NAME, "url": SITE + "/"}},
                 {"@context": "https://schema.org", "@type": "Organization", "name": NAME, "url": SITE + "/", "logo": SITE + "/assets/icon-512.png", "sameAs": [FB_URL], "parentOrganization": ORG}]
     else:
         lds.append(bc_ld([("Kezdőlap", "/"), (m['title'], path)]))
+        lds.append(faq_ld(mod_faq(m)))
     return shell(title, desc, path, prerender(m), lds, slug)
 
 # ---- Évfolyam-oldalak ----
