@@ -1,5 +1,5 @@
 const fs=require('fs');
-const src=['core','mods1','mods2','mods3','mods4','mods5','mods6','mods7','sheet','themes'].map(f=>fs.readFileSync(`src/${f}.js`,'utf8')).join('\n');
+const src=['core','mods1','mods2','mods3','mods4','mods5','mods6','mods7','mods8','sheet','themes'].map(f=>fs.readFileSync(`src/${f}.js`,'utf8')).join('\n');
 const {MODS,GROUPS,wsBuild,THEMES,THEME_ORDER,themeBuild}=new Function(src+'\nreturn {MODS,GROUPS,wsBuild,THEMES,THEME_ORDER,themeBuild};')();
 const ws={};
 for(const m of MODS) ws['mod:'+m.slug]=wsBuild('mod',m.slug,'mix',20);
