@@ -108,7 +108,7 @@ def prerender(m):
         return f'<div class="hero"><h1>Gyakorolj játékosan! <span class="h1sub">Ingyenes gyakorló általános iskolásoknak: matek, helyesírás, környezetismeret és kémia 1–8. osztályig</span></h1><p>Szorzótábla, törtek, százalék, egyenletek, helyesírás, óra, pénz, geometria, állatok, növények és még sok más. Gyerekeknek, szülőknek és tanároknak, regisztráció nélkül, telefonon, tableten és számítógépen is.</p></div><ul>{links}</ul><h2>Gyakorlók évfolyamonként</h2><ul>{gl("m", range(1, 9))}{gl("n", range(1, 7))}{gl("t", range(1, 7))}</ul>'
     lv = ''.join(f'<li>{i+1}. {e(n)}</li>' for i, n in enumerate(m['levels']))
     extra = ''.join(f'<p>{e(t)}</p>' for t in MODSEO.get(m['slug'], {}).get('text', []))
-    return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p>{read_note(m)}<ul>{lv}</ul><section class="about fold"><details><summary><h2>Mire jó ez a gyakorló?</h2></summary>{extra or f'<p>{e(m["seo"])}</p>'}</details></section>{grade_levels_html(m)}<section class="about"><h2>Kapcsolódó oldalak</h2>{links_html(XL["mod"][m["slug"]])}</section>{faq_html(mod_faq(m), "Gyakran ismételt kérdések")}{fb_html(m["title"])}</div>'
+    return f'<div class="setup"><a class="crumb" href="/">← Minden gyakorló</a><h1>{e(m["title"])}</h1><p class="lead">{e(m["desc"])}</p>{read_note(m)}<ul>{lv}</ul><section class="about fold"><details><summary><h2>Mire jó ez a gyakorló?</h2></summary>{extra or f'<p>{e(m["seo"])}</p>'}</details></section>{grade_levels_html(m)}<section class="about fold"><details><summary><h2>Kapcsolódó oldalak</h2></summary>{links_html(XL["mod"][m["slug"]])}</details></section>{faq_html(mod_faq(m), "Gyakran ismételt kérdések")}{fb_html(m["title"])}</div>'
 
 TODAY = datetime.date.today().isoformat()
 MODBY = {x['slug']: x for x in mods}
@@ -268,7 +268,7 @@ def grade_page(kind, n):
             f'<p class="note">Az elvárások iskolánként és tankönyvenként eltérhetnek, mindig a tanító útmutatása az irányadó.</p></section>'
             f'<section class="about"><h2>Tippek a gyakorláshoz</h2><p>{e(G["tips"])}</p></section>'
             f'{faq_html(G["faq"])}{arth}'
-            f'<section class="about"><h2>További évfolyamok</h2>{links_html(other)}</section>{fb_html(name)}</div>')
+            f'<section class="about fold"><details><summary><h2>További évfolyamok</h2></summary>{links_html(other)}</details></section>{fb_html(name)}</div>')
     lds = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": name, "url": SITE + path, "description": desc, "inLanguage": "hu", "isPartOf": {"@type": "WebSite", "name": NAME, "url": SITE + "/"},
             "audience": {"@type": "EducationalAudience", "educationalRole": "student"}, "educationalLevel": f"{n}. osztály",
             "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": x['title'], "url": f'{SITE}/{x["slug"]}/'} for i, x in enumerate(ms)]}},
@@ -355,7 +355,7 @@ def ws_mod_page(m):
             f'<section class="about"><h2>Hogyan használd?</h2><ol><li>Válaszd ki a szintet és a feladatok számát (10, 20 vagy 30).</li><li>Nyomtasd ki a lapot a „Nyomtatás” gombbal.</li><li>Ha szeretnéd, kapcsold be a megoldókulcs nyomtatását, ez külön oldalra kerül.</li><li>Új feladatokért kattints az „Új feladatok” gombra.</li></ol></section>'
             f'<section class="about"><h2>Szintek a munkalapon</h2><ul class="xl">{lv}</ul><p>A „Vegyes” beállítás a könnyebb szintektől a nehezebbek felé halad.</p></section>'
             f'<section class="about"><h2>Saját, vegyes munkalap</h2><p>Ha egy lapra többféle feladatot szeretnél, használd a <a href="/munkalapok/">munkalap-készítőt</a>: kiválaszthatod, melyik témából hány feladat legyen.</p></section>'
-            f'<section class="about"><h2>Kapcsolódó oldalak</h2>{links_html([('/' + m['slug'] + '/', m['short'] + ' gyakorló (online)')] + gl)}</section>'
+            f'<section class="about fold"><details><summary><h2>Kapcsolódó oldalak</h2></summary>{links_html([('/' + m['slug'] + '/', m['short'] + ' gyakorló (online)')] + gl)}</details></section>'
             f'{faq_html(WS_FAQ)}{fb_html(m["short"] + " munkalap")}</div></div>')
     lds = [{"@context": "https://schema.org", "@type": "LearningResource", "name": f'{m["short"]} munkalap', "description": desc, "url": SITE + path, "inLanguage": "hu", "isAccessibleForFree": True,
             "learningResourceType": "Worksheet", "educationalLevel": gr, "audience": {"@type": "EducationalAudience", "educationalRole": "student"}, "publisher": {"@type": "Organization", "name": NAME, "url": SITE + "/"}},
@@ -373,7 +373,7 @@ def ws_grade_page(kind, n):
             f'{ws_tools()}{ws_sheet(d)}'
             f'<div class="noprint"><section class="about"><h2>Miből állnak össze a feladatok?</h2><p>A munkalap a(z) {n}. osztályos anyaghoz illő szintekből válogat. Témánként külön is kérhetsz munkalapot:</p><ul class="xl">{top}</ul></section>'
             f'<section class="about"><h2>Saját, vegyes munkalap</h2><p>Ha te szeretnéd összeállítani, hogy miből hány feladat legyen, használd a <a href="/munkalapok/">munkalap-készítőt</a>.</p></section>'
-            f'<section class="about"><h2>Kapcsolódó oldalak</h2>{links_html([(g_url(kind, n), g_name(kind, n) + " (online)")] + other)}</section>'
+            f'<section class="about fold"><details><summary><h2>Kapcsolódó oldalak</h2></summary>{links_html([(g_url(kind, n), g_name(kind, n) + " (online)")] + other)}</details></section>'
             f'{faq_html(WS_FAQ)}{fb_html(name)}</div></div>')
     lds = [{"@context": "https://schema.org", "@type": "LearningResource", "name": name, "description": desc, "url": SITE + path, "inLanguage": "hu", "isAccessibleForFree": True,
             "learningResourceType": "Worksheet", "educationalLevel": f"{n}. osztály", "audience": {"@type": "EducationalAudience", "educationalRole": "student"}, "publisher": {"@type": "Organization", "name": NAME, "url": SITE + "/"}},
