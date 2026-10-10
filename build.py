@@ -186,7 +186,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws
 </html>
 """
 
-HOME_TITLE = f'{NAME} – ingyenes matek és helyesírás gyakorló'
+HOME_TITLE = f'Általános iskolai gyakorló, 1–8. osztály – {NAME}'
 def mod_title(m):
     a, z = m['grades']; t = f'{m["title"]} {a}–{z}. osztály – {NAME}' if a != z else f'{m["title"]} {a}. osztály – {NAME}'
     return t if len(t) <= 62 else f'{m["title"]} – {NAME}'

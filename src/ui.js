@@ -236,7 +236,7 @@ function render() {
   app.innerHTML = S.view === 'home' ? homeView() : S.view === 'setup' ? setupView() : S.view === 'quiz' ? quizView() : S.view === 'result' ? resultView() : S.view === 'profile' ? profileView() : S.view === 'sheets' ? builderView() : S.view === 'sheetx' ? sheetxView() : sheetView();
   if (S.addP && S.view === 'home') { const n = $('#newp'); if (n) n.focus({ preventScroll: true }); }
   if (S.view === 'quiz' && S.done && !S.ok) { const b = $('#nextbtn'); if (b) b.focus({ preventScroll: true }); }
-  document.title = S.view === 'sheets' || S.view === 'sheetx' ? `Nyomtatható munkalap-készítő – ${SITE_NAME}` : S.view === 'profile' ? `Haladásom és jelvények – ${SITE_NAME}` : S.mod && S.view !== 'home' ? modTitle(S.mod) : `${SITE_NAME} – ingyenes matek és helyesírás gyakorló`;
+  document.title = S.view === 'sheets' || S.view === 'sheetx' ? `Nyomtatható munkalap-készítő – ${SITE_NAME}` : S.view === 'profile' ? `Haladásom és jelvények – ${SITE_NAME}` : S.mod && S.view !== 'home' ? modTitle(S.mod) : `Általános iskolai gyakorló, 1–8. osztály – ${SITE_NAME}`;
 }
 
 /* ---------- Működés ---------- */
