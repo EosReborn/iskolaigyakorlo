@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Újdonságok: (dátum, [(címke, szöveg), ...]) – legújabb felül. Címke: Új / Javítva."""
 CHANGES = [
+("2026-10-10", [
+ ("Új", "Környezetismeret és természetismeret 1–6. osztályosoknak: 7 új gyakorló 42 szinttel (évszakok, hónapok és napok, állatok, növények, az emberi test, anyagok és halmazállapotok, időjárás és a víz körforgása, élőhelyek és táplálékláncok). Hozzájuk évfolyam-oldalak és nyomtatható munkalapok is készültek."),
+]),
 ("2026-10-09", [
  ("Új", "Tanároknak menü: a munkalap-készítő és a kész munkalapok külön, a tanároknak szóló oldalon érhetők el, így a gyerekek kezdőlapja egyszerű marad."),
  ("Új", "Nyomtatható munkalap-készítő: kiválaszthatod, melyik témából hány feladat legyen a lapon, kérhetsz megoldókulcsot, és kinyomtathatod. Minden témához és évfolyamhoz készült külön, azonnal nyomtatható munkalap-oldal is."),

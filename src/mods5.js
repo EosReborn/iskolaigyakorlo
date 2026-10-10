@@ -70,7 +70,7 @@ addLv('szoveges-feladatok',
     if (k === 0) { const a = rnd(3, 8), b = rnd(18, 30), c = rnd(2, 15); return NUM(Q(`Az iskola ${a} osztályába osztályonként ${b} gyerek jár. Közülük ${c} gyerek beteg. Hány gyerek van az iskolában?`), a * b - c, { hint: `${a} × ${b} − ${c} = ${a * b - c}` }); }
     if (k === 1) { const b = rnd(20, 50), m = rnd(2, 8); return NUM(Q(`A kirándulásra ${b * m} gyerek megy. Egy buszon ${b} fő fér el. Hány busz kell, ha mindegyik megtelik?`), m, { hint: `${b * m} : ${b} = ${m}` }); }
     if (k === 2) { const b = rnd(10, 45); return NUM(Q(`Egy héten át minden nap ${b} percet gyakorolsz. Hány percet gyakoroltál összesen?`), 7 * b, { hint: `7 × ${b} = ${7 * b}` }); }
-    const a = rnd(120, 400), b = rnd(40, 90), c = rnd(20, 60); return NUM(Q(`A boltban ${a} üveg üdítő volt. Reggel ${b} üveget, délután ${c} üveget adtak el. Hány üveg maradt?`), a - b - c, { hint: `${a} − ${b} − ${c} = ${a - b - c}` }); } });
+    const a = rnd(200, 400), b = rnd(40, 90), c = rnd(20, 60); return NUM(Q(`A boltban ${a} üveg üdítő volt. Reggel ${b} üveget, délután ${c} üveget adtak el. Hány üveg maradt?`), a - b - c, { hint: `${a} − ${b} − ${c} = ${a - b - c}` }); } });
 
 /* ---------- Számok összehasonlítása ---------- */
 addLv('szamok-osszehasonlitasa',

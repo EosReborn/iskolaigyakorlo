@@ -44,9 +44,11 @@ const sheetParts = (o, items) => {
 /* Előre megépített munkalap-oldalak: cím, alcím és feladatsorok modulonként ('mod') vagy évfolyamonként ('grade', pl. m3 = 3. osztályos matek). */
 const wsTitle = (type, key, sel) => {
   if (type === 'mod') { const m = MODS.find(x => x.slug === key); return { title: `${m.short} munkalap`, sub: sel === 'mix' ? 'Vegyes szintek: könnyebbtől a nehezebbig' : `${+sel + 1}. szint: ${m.levels[+sel].name}` }; }
-  const g = +key.slice(1); return { title: `${g}. osztályos ${key[0] === 'm' ? 'matek' : 'helyesírás'} munkalap`, sub: 'Vegyes feladatok az évfolyam anyagából' };
+  const g = +key.slice(1); return { title: `${g}. osztályos ${subjOf(key[0], g)} munkalap`, sub: 'Vegyes feladatok az évfolyam anyagából' };
 };
-const gradeMods = (kind, g) => MODS.filter(m => (m.group === 'nyelv') === (kind === 'n') && m.grades[0] <= g && g <= m.grades[1]);
+const kindOf = m => (m.group === 'nyelv' ? 'n' : m.group === 'termeszet' ? 't' : 'm');
+const subjOf = (kind, g) => (kind === 'm' ? 'matek' : kind === 'n' ? 'helyesírás' : g <= 4 ? 'környezetismeret' : 'természetismeret');
+const gradeMods = (kind, g) => MODS.filter(m => kindOf(m) === kind && m.grades[0] <= g && g <= m.grades[1]);
 const wsRows = (type, key, sel, n) => {
   if (type === 'mod') return [{ slug: key, sel, n }];
   const ms = gradeMods(key[0], +key.slice(1)), base = Math.floor(n / ms.length), extra = n % ms.length;
