@@ -4,7 +4,7 @@ const wq = (word, sub) => Q(`<span class="wd">${word}</span>`, sub);
 const hole = (word, part) => { const i = word.indexOf(part); return esc(word.slice(0, i)) + `<span class="slot">?</span>` + esc(word.slice(i + part.length)); };
 
 /* ---- j vagy ly ---- */
-const LY = ['hely', 'lyuk', 'folyó', 'golyó', 'király', 'bagoly', 'pehely', 'kehely', 'ölyv', 'gödölye', 'fogoly', 'tengely', 'hólyag', 'selyem', 'mályva', 'gally', 'gólya', 'olyan', 'milyen', 'ilyen', 'mely', 'folyik', 'hüvelyk', 'mérgely'].filter(w => w !== 'mérgely');
+const LY = ['lyuk', 'folyó', 'golyó', 'király', 'bagoly', 'pehely', 'kehely', 'ölyv', 'gödölye', 'fogoly', 'tengely', 'hólyag', 'selyem', 'mályva', 'gally', 'gólya', 'olyan', 'milyen', 'ilyen', 'mely', 'folyik', 'hüvelyk', 'mérgely'].filter(w => w !== 'mérgely');
 const JJ = ['játék', 'jég', 'jó', 'ajtó', 'majom', 'bajusz', 'ajándék', 'fej', 'sajt', 'hajó', 'rajz', 'tojás', 'fájdalom', 'hajnal', 'béka'.replace('béka', 'baj'), 'nyájas', 'tej', 'kéz'.replace('kéz', 'ejt'), 'rejt', 'fejlődik', 'lajhár', 'fájl', 'sujtás'].filter(w => w !== 'sujtás' && w !== 'fájl');
 const lyWord = () => pick([...LY, ...JJ]);
 const lyAns = w => (LY.includes(w) ? 'ly' : 'j');
@@ -37,7 +37,7 @@ mod({
     { name: 'Négy írásmód közül', gen: () => { const p = pick(LONGV); return CH(Q('Melyik szó van helyesen leírva?'), p[0], longBad(p).slice(0, 3), { hint: `A helyes írásmód: ${p[0]}.` }); } },
     { name: 'Hiányzó ékezet pótlása', gen: () => { const p = pick(LONGV); const c = p[0]; const idx = [...c].findIndex((ch, i) => 'íúűőéóá'.includes(ch) && ch !== p[1][i]); const i = idx < 0 ? [...c].findIndex(ch => 'íúűőéóá'.includes(ch)) : idx;
       const shown = esc(c.slice(0, i)) + '<span class="slot">?</span>' + esc(c.slice(i + 1)); const right = c[i], short = p[1][i] || c[i];
-      return CH(Q(`<span class="wd">${shown}</span>`, 'Melyik betű kerül a helyére?'), right, [short, 'ö', 'u', 'i', 'o', 'ü', 'e'].filter(x => x !== right).slice(0, 3), { hint: `A szó helyesen: ${c}.` }); } }
+      return CH(Q(`<span class="wd">${shown}</span>`, 'Melyik betű kerül a helyére?'), right, [short, 'ö', 'u', 'i', 'o', 'ü', 'e'].filter(x => x !== right && !(x === 'ö' && ['út', 'kéz', 'kút'].includes(c))).slice(0, 3), { hint: `A szó helyesen: ${c}.` }); } }
   ]
 });
 
@@ -68,7 +68,7 @@ mod({
 const FONEV = ['asztal', 'kutya', 'iskola', 'kenyér', 'tó', 'ember', 'ház', 'könyv', 'alma', 'madár', 'füzet', 'autó', 'kert', 'tanár'];
 const MELLEK = ['nagy', 'piros', 'gyors', 'kedves', 'magas', 'hideg', 'kerek', 'okos', 'édes', 'kicsi', 'szép', 'zöld', 'vidám'];
 const IGE = ['fut', 'tanít', 'olvas', 'alszik', 'kacag', 'főz', 'rajzol', 'ugrik', 'énekel', 'játszik', 'tanul', 'számol', 'mosdik', 'eszik'];
-const SZAMNEV = ['három', 'hét', 'tíz', 'húsz', 'száz', 'ötödik', 'kettő', 'kilenc'];
+const SZAMNEV = ['három', 'négy', 'tíz', 'húsz', 'száz', 'ötödik', 'kettő', 'kilenc'];
 const AZ = w => /^[aáeéiíoóöőuúüű]/i.test(w) ? 'Az' : 'A';
 const POS = { főnév: FONEV, melléknév: MELLEK, ige: IGE, számnév: SZAMNEV };
 mod({
@@ -96,7 +96,7 @@ const MT = ['kijelentő', 'kérdő', 'felkiáltó', 'felszólító'];
 mod({
   slug: 'mondatfajtak', title: 'Mondatfajták gyakorló', short: 'Mondatfajták', group: 'nyelv', glyph: '?!', hue: 2, grades: [2, 5],
   desc: 'Kijelentő, kérdő, felkiáltó, felszólító és óhajtó mondat felismerése.',
-  seo: 'A mondatok célja szerint kijelentő, kérdő, felkiáltó, felszólító és óhajtó mondatokat különböztetünk meg. A gyakorló rövid mondatokat mutat, és azt kéri, hogy válaszd ki a mondat fajtáját, vagy a mondat végére a megfelelő írásjelet.',
+  seo: 'A mondatok célja szerint kijelentő, kérdő, felkiáltó, felszólító és óhajtó mondatokat különböztetünk meg. A gyakorló rövid mondatokat mutat, és azt kéri, hogy válaszd ki a mondat fajtáját, illetve a mondat végére illő írásjelet.',
   levels: [
     { name: 'Kijelentő vagy kérdő?', gen: () => { const t = pick(['kijelentő', 'kérdő']); const s = pick(MONDAT[t]); return CH(Q(`<span class="wd">${esc(s)}</span>`, 'Milyen mondat ez?'), t, [t === 'kijelentő' ? 'kérdő' : 'kijelentő'], { hint: `Ez ${t} mondat.` }); } },
     { name: 'Négy mondatfajta', gen: () => { const t = pick(MT); const s = pick(MONDAT[t]); return CH(Q(`<span class="wd">${esc(s)}</span>`, 'Milyen mondat ez?'), t, MT.filter(x => x !== t), { hint: `Ez ${t} mondat.` }); } },
@@ -116,6 +116,6 @@ mod({
   seo: 'A -val és a -vel rag első hangja hasonul a szó végéhez (kéz + vel = kézzel), magánhangzóra végződő szavaknál pedig a v megmarad (tű + vel = tűvel). A gyakorló szavakat ad, és a helyes alakot kell kiválasztanod.',
   levels: [
     { name: 'Melyik alak a helyes?', gen: () => { const r = pick(VAL); const wr = shuffle(r.slice(2).filter(x => x !== r[1])).slice(0, 3); return CH(Q(`<span class="wd">${esc(r[0])} + -val / -vel</span>`, 'Melyik alak helyes?'), r[1], wr, { hint: `A helyes alak: ${r[1]}.` }); } },
-    { name: 'Egy lépésben: melyik szó helyes?', gen: () => { const r = pick(VAL); return CH(Q(`Melyik szó van helyesen leírva?`), r[1], shuffle(r.slice(2).filter(x => x !== r[1])).slice(0, 1), { hint: `A helyes alak: ${r[1]}.` }); } }
+    { name: 'Két alak közül: melyik szó helyes?', gen: () => { const r = pick(VAL); return CH(Q(`Melyik szó van helyesen leírva?`), r[1], shuffle(r.slice(2).filter(x => x !== r[1])).slice(0, 1), { hint: `A helyes alak: ${r[1]}.` }); } }
   ]
 });

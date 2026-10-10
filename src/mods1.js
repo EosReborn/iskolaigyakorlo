@@ -6,8 +6,8 @@ const addsub = f => () => (Math.random() < .5 ? f.add() : f.sub());
 const noCross = (a, b) => (a % 10) + (b % 10) < 10;
 mod({
   slug: 'osszeadas-kivonas', title: 'Összeadás és kivonás gyakorló', short: 'Összeadás, kivonás', group: 'szamolas', glyph: '3 + 4', hue: 1,
-  desc: 'Összeadás és kivonás 10-es, 20-as, 100-as és 1000-es számkörben. Tízesátlépéssel és hiányzó számos feladatokkal.',
-  seo: 'Az összeadás és kivonás gyakorlása 1–3. osztályban a 10-es számkörtől az 1000-es számkörig. A feladatok fokozatosan nehezednek: először tízesátlépés nélkül, majd tízesátlépéssel számolhatsz, a hiányzó számos feladatok pedig a fejszámolást és az ellenőrzést is gyakoroltatják.',
+  desc: 'Összeadás és kivonás 10-es, 20-as, 100-as és 1000-es számkörben. Tízesátlépéssel és hiányzó számot kereső feladatokkal.',
+  seo: 'Az összeadás és kivonás gyakorlása 1–3. osztályban a 10-es számkörtől az 1000-es számkörig. A feladatok fokozatosan nehezednek: először tízesátlépés nélkül, majd tízesátlépéssel számolhatsz, a hiányzó számot kereső feladatok pedig a fejszámolást és az ellenőrzést is gyakoroltatják.',
   levels: [
     { name: '10-es számkör', gen: addsub({
       add: () => { const a = rnd(0, 10), b = rnd(0, 10 - a); return AS(a, '+', b, a + b); },
@@ -118,15 +118,15 @@ const wpf = {
   less: mx => { const [, acc] = pick(ITEMS), [n1, n2] = shuffle(NAMES), a = rnd(6, mx), b = rnd(2, a - 2);
     return WP(`${n1} ${a} ${acc} gyűjtött. ${n2} ${b} darabbal kevesebbet gyűjtött. Hány darabot gyűjtött ${n2}?`, a - b, `${a} − ${b} = ${a - b}`); },
   mul: () => { const [nom] = pick(ITEMS), a = rnd(2, 9), b = rnd(2, 10);
-    return WP(`Egy dobozban ${b} ${nom} van. ${a} dobozban hány darab van összesen?`, a * b, `${a} × ${b} = ${a * b}`); },
+    return WP(`Egy dobozban ${b} ${nom} van. Hány darab van összesen ${a} dobozban?`, a * b, `${a} × ${b} = ${a * b}`); },
   div: () => { const [, acc] = pick(ITEMS), n = pick(NAMES), k = rnd(2, 9), q = rnd(2, 9);
-    return WP(`${n} ${k * q} ${acc} szétosztott ${k} gyerek között egyenlően. Hány darabot kapott egy gyerek?`, q, `${k * q} : ${k} = ${q}`); },
+    return WP(`${n} szétosztott ${k * q} ${acc} ${k} gyerek között egyenlően. Hány darabot kapott egy gyerek?`, q, `${k * q} : ${k} = ${q}`); },
   price: () => { const [nom] = pick(ITEMS), p = rnd(2, 20) * 10, a = rnd(2, 9);
     return WP(`Egy ${nom} ${p} Ft-ba kerül. Hány forintba kerül ${a} darab?`, p * a, `${a} × ${p} = ${p * a}`); },
   two1: () => { const [nom] = pick(ITEMS), n = pick(NAMES), a = rnd(2, 6), b = rnd(3, 9), c = rnd(1, a * b - 1);
     return WP(`Egy dobozban ${b} ${nom} van. ${n} ${a} dobozt vett, és ${c} darabot elajándékozott. Hány darab maradt neki?`, a * b - c, `${a} × ${b} − ${c} = ${a * b - c}`); },
   two2: () => { const [nom] = pick(ITEMS), b = rnd(5, 20), c = rnd(5, 20), a = rnd(b + c + 5, 90);
-    return WP(`A boltban ${a} ${nom} volt. Reggel ${b} darabot eladtak, délután még ${c} darabot. Hány darab maradt?`, a - b - c, `${a} − ${b} − ${c} = ${a - b - c}`); },
+    return WP(`A boltban ${a} ${nom} volt. Reggel eladtak ${b} darabot, délután még ${c} darabot. Hány darab maradt?`, a - b - c, `${a} − ${b} − ${c} = ${a - b - c}`); },
   two3: () => { const [, acc] = pick(ITEMS), [n1, n2] = shuffle(NAMES), a = rnd(5, 30), b = rnd(2, 15);
     return WP(`${n1} ${a} ${acc} gyűjtött, ${n2} pedig ${b} darabbal többet. Hány darabot gyűjtöttek együtt?`, a + a + b, `${a} + (${a} + ${b}) = ${a + a + b}`); }
 };
@@ -180,13 +180,13 @@ const mkSeq = (steps, desc) => () => {
 mod({
   slug: 'szomszedok-sorozatok', title: 'Számszomszédok és számsorozatok gyakorló', short: 'Szomszédok, sorozatok', group: 'szamok', glyph: '4 5 6', hue: 1,
   desc: 'Melyik szám jön előtte, utána, melyik van két szám között? Számsorozatok folytatása és hiányzó számok keresése.',
-  seo: 'A szomszédos számok, a tízes szomszédok és a számsorozatok a számfogalom alapjai. A gyakorló előre és hátra is számoltat, különböző lépésközökkel, és a sorozat szabályát is megkerested.',
+  seo: 'A szomszédos számok, a tízes szomszédok és a számsorozatok a számfogalom alapjai. A gyakorló előre és hátra is számoltat, különböző lépésközökkel, és a sorozat szabályát is meg kell keresned.',
   levels: [
     { name: 'Előző és következő szám', gen: () => { const n = rnd(1, 99), nx = Math.random() < .5;
       return NUM(Q(nx ? `Melyik szám következik ${fmt(n)} után?` : `Melyik szám van ${fmt(n)} előtt?`), nx ? n + 1 : n - 1, { hint: `${nx ? 'Egyet hozzáadunk' : 'Egyet elveszünk'}: ${nx ? n + 1 : n - 1}.` }); } },
     { name: 'Két szám között', gen: () => { const n = rnd(2, 998); return NUM(Q(`Melyik szám van ${fmt(n - 1)} és ${fmt(n + 1)} között?`), n, { hint: `${n - 1}, ${n}, ${n + 1}: a középső szám ${n}.` }); } },
     { name: 'Tízes szomszédok', gen: () => { let k; do { k = rnd(11, 99); } while (k % 10 === 0); const lo = Math.random() < .5; const base = k - (k % 10);
-      return NUM(Q(`${lo ? 'Alsó' : 'Felső'} tízes szomszédja: ${fmt(k)}`, 'Melyik kerek tízes ez?'), lo ? base : base + 10, { hint: `${k} ${base} és ${base + 10} között van.` }); } },
+      return NUM(Q(`${cap(art(k))} ${fmt(k)} ${lo ? 'alsó' : 'felső'} tízes szomszédja:`, 'Melyik kerek tízes ez?'), lo ? base : base + 10, { hint: `${cap(art(k))} ${k} ${art(base)} ${base} és ${art(base + 10)} ${base + 10} között van.` }); } },
     { name: 'Sorozatok: növekvő', gen: mkSeq([1, 2, 3, 5, 10], false) },
     { name: 'Sorozatok: nagyobb lépés, csökkenő is', gen: mkSeq([4, 6, 7, 8, 9, 20, 25, 50, 100], true) },
     { name: 'Mennyi a lépésköz?', gen: () => { const st = pick([2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 25, 50, 100]); const sign = Math.random() < .3 ? -1 : 1; const start = sign > 0 ? rnd(0, 20) : st * 6 + rnd(0, 20);
@@ -222,7 +222,7 @@ const toRoman = n => { const t = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'C
 const romHint = 'I = 1, V = 5, X = 10, L = 50, C = 100, D = 500, M = 1000. Ha kisebb áll a nagyobb előtt, kivonjuk (IV = 4).';
 const toRomQ = mx => () => { const n = rnd(1, mx); const w = [n - 1, n + 1, n + 5, n - 5, n + 10, n - 10, n + 2, n - 2, n + 4].filter(x => x > 0 && x <= 3999).map(toRoman);
   return CH(Q(fmt(n), 'Melyik a római szám?'), toRoman(n), shuffle(w), { hint: `${n} = ${toRoman(n)}. ` + romHint }); };
-const fromRomQ = mx => () => { const n = rnd(1, mx); return NUM(Q(toRoman(n), 'Hány ez arab számmal?'), n, { hint: `${toRoman(n)} = ${n}. ` + romHint }); };
+const fromRomQ = mx => () => { const n = rnd(1, mx); return NUM(Q(toRoman(n), 'Melyik arab szám ez?'), n, { hint: `${toRoman(n)} = ${n}. ` + romHint }); };
 mod({
   slug: 'romai-szamok', title: 'Római számok gyakorló', short: 'Római számok', group: 'szamok', glyph: 'XIV', hue: 2,
   desc: 'Római számok olvasása és írása 20-ig, 100-ig és 1000 fölött is.',

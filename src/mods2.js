@@ -30,7 +30,7 @@ mod({
     { name: 'Egész órák', gen: clockQ(1) },
     { name: 'Egész és fél órák', gen: clockQ(2) },
     { name: 'Negyed, fél, háromnegyed', gen: clockQ(3) },
-    { name: 'Öt perces pontossággal', gen: clockQ(4) },
+    { name: 'Ötperces pontossággal', gen: clockQ(4) },
     { name: 'Percre pontosan', gen: clockQ(5) },
     { name: 'Melyik óra mutatja? (idő → óra)', gen: () => { const [h, m] = randTime(4); const ws = shuffle(timeWrongs(h, m)).slice(0, 3);
       const ch = x => ({ v: hm(x[0], x[1]), h: clockSVG(x[0], x[1], 120) });
@@ -45,7 +45,7 @@ const noteSVG = v => `<svg class="mny note n${NOTES.indexOf(v) % 6}" width="104"
 const tray = items => `<div class="tray">${items.map(v => (v < 500 ? coinSVG(v) : noteSVG(v))).join('')}</div>`;
 const sumQ = pool => () => { const n = rnd(2, 5); const items = Array.from({ length: n }, () => pick(pool)).sort((a, b) => b - a); const s = items.reduce((x, y) => x + y, 0);
   return NUM(Q(tray(items), 'Mennyi pénz van összesen?'), s, { unit: 'Ft', hint: `${items.map(fmt).join(' + ')} = ${fmt(s)} Ft.` }); };
-const SHOP = [['füzet', 120], ['toll', 90], ['radír', 60], ['ceruza', 80], ['matrica', 50], ['tábla csoki', 350], ['szendvics', 450], ['alma', 70], ['limonádé', 300], ['jégkrém', 400], ['kifli', 60]];
+const SHOP = [['füzet', 120], ['toll', 90], ['radír', 60], ['ceruza', 80], ['matrica', 50], ['tábla csokoládé', 350], ['szendvics', 450], ['alma', 70], ['limonádé', 300], ['jégkrém', 400], ['kifli', 60]];
 mod({
   slug: 'penz-szamolas', title: 'Pénzszámolás gyakorló', short: 'Pénzszámolás', group: 'meres', glyph: '', hue: 4, icon: 'coin',
   desc: 'Forintérmék és bankjegyek összeadása, vásárlás és visszajáró számolása.',
@@ -55,7 +55,7 @@ mod({
     { name: 'Bankjegyek (500–5000 Ft)', gen: sumQ(NOTES.slice(0, 4)) },
     { name: 'Érmék és bankjegyek vegyesen', gen: sumQ([...COINS, 500, 1000, 2000, 5000]) },
     { name: 'Visszajáró', gen: () => { const pay = pick([200, 500, 1000, 2000, 5000]); const cost = rnd(1, pay / 10 - 1) * 10;
-      return NUM(Q(`Fizetsz ${fmt(pay)} Ft-tal. A vásárlás ${fmt(cost)} Ft. Mennyi a visszajáró?`), pay - cost, { unit: 'Ft', hint: `${fmt(pay)} − ${fmt(cost)} = ${fmt(pay - cost)} Ft.` }); } },
+      return NUM(Q(`Fizetsz ${fmt(pay)} Ft-tal. A vásárlás ára ${fmt(cost)} Ft. Mennyi a visszajáró?`), pay - cost, { unit: 'Ft', hint: `${fmt(pay)} − ${fmt(cost)} = ${fmt(pay - cost)} Ft.` }); } },
     { name: 'Mennyibe kerül összesen?', gen: () => { const [a, pa] = pick(SHOP), [b, pb] = pick(SHOP.filter(x => x[0] !== a)); const k = rnd(2, 4);
       return Math.random() < .5
         ? NUM(Q(`Egy ${a} ${fmt(pa)} Ft, egy ${b} ${fmt(pb)} Ft. Mennyibe kerül a kettő együtt?`), pa + pb, { unit: 'Ft', hint: `${fmt(pa)} + ${fmt(pb)} = ${fmt(pa + pb)} Ft.` })
@@ -108,7 +108,7 @@ const SHAPES = {
   'paralelogramma': { sides: 4, svg: '<polygon points="36,30 112,30 84,90 8,90"/>' }
 };
 const shapeSVG = n => `<svg class="shape" viewBox="0 0 120 120" role="img" aria-label="Síkidom">${SHAPES[n].svg}</svg>`;
-const SHAPE_HINT = { 'négyzet': 'A négyzetnek 4 egyenlő oldala és 4 derékszöge van.', 'téglalap': 'A téglalapnak 4 derékszöge van, a szemközti oldalai egyenlők.', 'háromszög': 'A háromszögnek 3 oldala és 3 csúcsa van.', 'kör': 'A kör kerek, nincs oldala és csúcsa.', 'ötszög': 'Az ötszögnek 5 oldala van.', 'hatszög': 'A hatszögnek 6 oldala van.', 'rombusz': 'A rombusz mind a 4 oldala egyenlő, de a szögei nem derékszögek.', 'trapéz': 'A trapéznek két párhuzamos oldala van.', 'paralelogramma': 'A paralelogramma szemközti oldalai párhuzamosak.' };
+const SHAPE_HINT = { 'négyzet': 'A négyzetnek 4 egyenlő oldala és 4 derékszöge van.', 'téglalap': 'A téglalapnak 4 derékszöge van, a szemközti oldalai egyenlők.', 'háromszög': 'A háromszögnek 3 oldala és 3 csúcsa van.', 'kör': 'A kör kerek, nincs oldala és csúcsa.', 'ötszög': 'Az ötszögnek 5 oldala van.', 'hatszög': 'A hatszögnek 6 oldala van.', 'rombusz': 'A rombusznak mind a 4 oldala egyenlő, a szögei nem feltétlenül derékszögek.', 'trapéz': 'A trapéznek két párhuzamos oldala van.', 'paralelogramma': 'A paralelogramma szemközti oldalai párhuzamosak.' };
 const shapeQ = names => () => { const n = pick(names); return CH(Q(shapeSVG(n), 'Mi a neve ennek a síkidomnak?'), n, shuffle(names.filter(x => x !== n)), { hint: SHAPE_HINT[n] }); };
 const rectSVG = (a, b, la, lb, extra = '') => { const k = Math.min(180 / a, 100 / b), w = a * k, h = b * k, x = (240 - w) / 2, y = (140 - h) / 2;
   return `<svg class="shape wide" viewBox="0 0 240 140" role="img" aria-label="Téglalap ${a} cm és ${b} cm oldalakkal"><rect x="${x}" y="${y}" width="${w}" height="${h}"/>${extra}<text x="120" y="${y - 6}" text-anchor="middle" class="dim">${la}</text><text x="${x - 8}" y="70" text-anchor="end" class="dim">${lb}</text></svg>`; };
@@ -135,13 +135,13 @@ mod({
       const cells = Array.from({ length: rows }, () => Array(cols).fill(true));
       if (L) { const cw = rnd(1, cols - 2), ch = rnd(1, rows - 1); for (let y = 0; y < ch; y++) for (let x = cols - cw; x < cols; x++) cells[y][x] = false; }
       const n = cells.flat().filter(Boolean).length;
-      return NUM(Q(gridSVG(cells), 'Egy négyzet 1 cm². Mennyi az alakzat területe?'), n, { unit: 'cm²', hint: `Számold meg a színes négyzeteket: ${n} darab, így a terület ${n} cm².` }); } },
+      return NUM(Q(gridSVG(cells), 'Egy kis négyzet területe 1 cm². Mennyi az alakzat területe?'), n, { unit: 'cm²', hint: `Számold meg a színes négyzeteket: ${n} darab, így a terület ${n} cm².` }); } },
     { name: 'Terület számolása képlettel', gen: () => { const a = rnd(2, 12), b = rnd(2, 12); const sq = Math.random() < .3; const B = sq ? a : b;
       return NUM(Q(sq ? `Egy négyzet oldala ${a} cm.` : `Egy téglalap oldalai ${a} cm és ${b} cm.`, 'Mennyi a területe?'), a * B, { unit: 'cm²', hint: `Terület = hosszúság × szélesség = ${a} × ${B} = ${a * B} cm².` }); } },
     { name: 'Hiányzó oldal kiszámítása', gen: () => { const a = rnd(3, 12), b = rnd(2, 10);
       return Math.random() < .5
         ? NUM(Q(`Egy téglalap területe ${a * b} cm², az egyik oldala ${a} cm.`, 'Mekkora a másik oldala?'), b, { unit: 'cm', hint: `${a * b} : ${a} = ${b} cm.` })
-        : NUM(Q(`Egy téglalap kerülete ${2 * (a + b)} cm, az egyik oldala ${a} cm.`, 'Mekkora a másik oldala?'), b, { unit: 'cm', hint: `A két oldal összege ${2 * (a + b)} : 2 = ${a + b} cm, ebből ${a + b} − ${a} = ${b} cm.` }); } }
+        : NUM(Q(`Egy téglalap kerülete ${2 * (a + b)} cm, az egyik oldala ${a} cm.`, 'Mekkora a másik oldala?'), b, { unit: 'cm', hint: `A kerület fele a két oldal összege: ${2 * (a + b)} : 2 = ${a + b} cm, ebből ${a + b} − ${a} = ${b} cm.` }); } }
   ]
 });
 

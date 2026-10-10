@@ -24,6 +24,12 @@ const harm = n => { const w = numLast(n); if (w === 'harminc') return 'b';
   const v = w.replace(/[^aáeéiíoóöőuúüű]/g, '').slice(-1); return 'aáoóuú'.includes(v) ? 'b' : 'öőüű'.includes(v) ? 'r' : 'f'; };
 const sfxNak = n => harm(n) === 'b' ? 'nak' : 'nek';
 const sfxHoz = n => ({ b: 'hoz', f: 'hez', r: 'höz' })[harm(n)];
+/* számnév + -val/-vel (sfxVal) és tárgyrag -t/-et/-at/-ot/-öt (sfxAcc) a kimondott szám utolsó szava szerint */
+const VALM = { egy: 'gyel', kettő: 'vel', három: 'mal', négy: 'gyel', öt: 'tel', hat: 'tal', hét: 'tel', nyolc: 'cal', kilenc: 'cel', tíz: 'zel', húsz: 'szal', harminc: 'cal', negyven: 'nel', ötven: 'nel', hatvan: 'nal', hetven: 'nel', nyolcvan: 'nal', kilencven: 'nel', száz: 'zal', ezer: 'rel' };
+const ACCM = { egy: 'et', kettő: 't', három: 'at', négy: 'et', öt: 'öt', hat: 'ot', hét: 'et', nyolc: 'at', kilenc: 'et', tíz: 'et', húsz: 'at', harminc: 'at', negyven: 'et', ötven: 'et', hatvan: 'at', hetven: 'et', nyolcvan: 'at', kilencven: 'et', száz: 'at', ezer: 'et' };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const sfxVal = n => VALM[numLast(n)] || 'val';
+const sfxAcc = n => ACCM[numLast(n)] || 'et';
 const fr = (n, d) => `<span class="fr"><span>${n}</span><span>${d}</span></span>`;
 const Q = (main, sub) => `<div class="big${main.replace(/<[^>]*>/g, '').length > 46 ? ' txt' : ''}">${main}</div>${sub ? `<div class="sub">${sub}</div>` : ''}`;
 const slot = t => `<span class="slot">${t === undefined ? '?' : t}</span>`;
