@@ -2,6 +2,8 @@
 """Újdonságok: (dátum, [(címke, szöveg), ...]) – legújabb felül. Címke: Új / Javítva."""
 CHANGES = [
 ("2026-10-10", [
+ ("Új", "A Betűrakóban több mint 300 különböző szó és 11 szint van: új állatos, ételes és tárgyas szintek, az egész szó kirakása és mondatkiegészítés."),
+ ("Javítva", "Néhány szöveg és névelő javítása (például: Pénzszámolás), és a kezdőlapi haladás-csempék is jól jelennek meg hosszabb címeknél."),
  ("Javítva", "Ha kiválasztod az évfolyamot, a gyakorlók szintlistájában is csak az adott osztály tananyagához tartozó szinteket látod. Az összeset egy gombbal megnézheted."),
  ("Új", "Kémia 7–8. osztályosoknak: Elemek és vegyjelek, Az atom felépítése, Képletek és egyenletek. Vegyjelek, rendszám és tömegszám, ionok, vegyületek képlete és reakcióegyenletek rendezése, nyomtatható munkalappal."),
  ("Új", "Képes feladatok elsősöknek: olvasás nélkül is játszható gyakorló képekkel és emojikkal. Számlálás, szám és mennyiség, több és kevesebb, formák, minták, párosítás és kakukktojás, hang nélkül."),
