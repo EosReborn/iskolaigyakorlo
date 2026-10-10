@@ -599,3 +599,11 @@ header.site nav { display: flex; gap: 16px; align-items: center; }
 .opt .shp { font-size: 2.6rem; line-height: 1.2; }
 .opts.pics .opt:has(.shp) { min-height: 96px; }
 .slist .big.num { font-size: 2rem; } .slist .cnts { font-size: 1.6rem; justify-items: start; }
+
+/* Kémia: vegyjelek, képletek, indexek */
+.vj, .el, .fm { font-family: var(--f-display); }
+.vj { font-size: 1.15em; }
+.big .vj { font-size: 1.15em; }
+.big .fm { font-size: 1.3em; }
+sub, sup { font-size: .6em; line-height: 0; }
+.opt sub, .opt sup, .big sub, .big sup { font-size: .6em; }
