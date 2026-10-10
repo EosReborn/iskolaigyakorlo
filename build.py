@@ -174,7 +174,7 @@ def shell(title, desc, path, body, lds, route='', ogtype='website', app=True, ws
 <script>try{{var p=JSON.parse(localStorage.getItem("iskolai-gyakorlo-players")),c=p.list.filter(function(x){{return x.id===p.cur}})[0];if(c&&c.skin&&c.skin!=="fuzet")document.documentElement.setAttribute("data-skin",c.skin)}}catch(e){{}}</script>
 {ldh}</head>
 <body>
-<header class="site"><div class="wrap"><a class="brand" href="/">{logo_img("/assets/logo.webp")}</a><nav><a href="/tanaroknak/">Tanároknak</a><a href="/">Minden gyakorló</a></nav></div></header>
+<header class="site"><div class="wrap"><a class="brand" href="/">{logo_img("/assets/logo.webp")}</a><nav><a href="/tanaroknak/">Tanároknak</a></nav></div></header>
 <main class="wrap"><div id="app">{body}</div></main>
 <footer class="site"><div class="wrap">{fnav()}<p>{NAME}: ingyenes gyakorlók 1–8. osztályosoknak. Nincs regisztráció, a pontjaidat és jelvényeidet csak a saját böngésződ tárolja.</p><p>A nyomtatható munkalap a gyakorló oldalán a „Munkalap” gombbal készíthető.</p><p><a href="/ujdonsagok/">Újdonságok</a> · <a href="{FB_URL}" target="_blank" rel="noopener">Facebook</a> · <a href="mailto:info@kochdigitalstudio.hu?subject=Iskolai%20Gyakorl%C3%B3%20visszajelz%C3%A9s">Visszajelzés küldése</a> · <a href="/adatvedelem/">Adatvédelmi tájékoztató</a></p>{credit("/assets/kds.png")}</div></footer>
 {'<script src="/assets/app.js?v=' + ver + '" defer></script>' if app else ''}
