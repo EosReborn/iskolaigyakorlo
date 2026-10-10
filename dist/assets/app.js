@@ -1993,7 +1993,7 @@ function homeLinks() {
 const readNote = m => (m.grades[0] <= 1 && (m.group === 'nyelv' || m.group === 'termeszet' || m.slug === 'szoveges-feladatok') ? '<p class="rnote">Elsősöknek: ez a gyakorló olvasást igényel, ezért a szülő vagy egy idősebb testvér felolvashatja a kérdéseket.</p>' : '');
 const gradeLvBox = m => {
   const [a, z] = m.grades; if (a === z || m.levels.length < 2) return '';
-  const rows = Array.from({ length: z - a + 1 }, (_, k) => { const g = a + k, [lo, hi] = gradeLv(m, g), names = m.levels.slice(lo, hi + 1).map(n => esc(n)).join(', ');
+  const rows = Array.from({ length: z - a + 1 }, (_, k) => { const g = a + k, [lo, hi] = gradeLv(m, g), names = m.levels.slice(lo, hi + 1).map(L => esc(L.name)).join(', ');
     return `<li><b>${g}. osztály:</b> ${hi > lo ? `${lo + 1}–${hi + 1}. szint` : `${lo + 1}. szint`} (${names})</li>`; }).join('');
   return `<section class="about"><h2>Melyik szint melyik évfolyamnak való?</h2><p>A gyakorló szintjei az évfolyamokon belül nehezednek. Ha a kezdőlapon kiválasztod az évfolyamot, csak az adott osztály szintjeit látod.</p><ul class="xl">${rows}</ul></section>`;
 };
