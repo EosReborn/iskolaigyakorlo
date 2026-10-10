@@ -13,7 +13,7 @@ MODSEO = {
           "Megtanulhatod, hogyan lehet kiszámolni egy atom protonjainak, elektronjainak és neutronjainak számát, és hogyan változik az elektronszám az ionokban."],
  "faq": [("Hogyan számoljuk ki a neutronok számát?", "A neutronok száma a tömegszám és a rendszám különbsége. Például a szén tömegszáma 12, rendszáma 6, ezért 12 − 6 = 6 neutronja van."),
          ("Mit mutat meg a rendszám?", "A rendszám a protonok száma az atommagban. A semleges atomban ugyanennyi az elektron is."),
-         ("Hány elektronja van egy ionnak?", "Pozitív iónál az atom elektronokat adott le, ezért a rendszámnál kevesebb az elektron (Na⁺: 11 − 1 = 10). Negatív iónál elektronokat vett fel, ezért több (Cl⁻: 17 + 1 = 18).")]},
+         ("Hány elektronja van egy ionnak?", "Pozitív ionnál az atom elektronokat adott le, ezért a rendszámnál kevesebb az elektron (Na⁺: 11 − 1 = 10). Negatív ionnál elektronokat vett fel, ezért több (Cl⁻: 17 + 1 = 18).")]},
 "kepletek-egyenletek": {
  "text": ["A kémiai képlet megmutatja, mely elemek hány atomja alkot egy molekulát: a H₂O két hidrogén- és egy oxigénatomot jelent. A gyakorló a képletek olvasásával kezdődik, majd a leggyakoribb vegyületek nevét és képletét, az elemek és vegyületek megkülönböztetését gyakoroltatja.",
           "A későbbi szinteken a reakcióegyenletek rendezése következik: a cél, hogy a nyíl mindkét oldalán ugyanannyi atom legyen minden elemből."],

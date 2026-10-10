@@ -3,10 +3,10 @@
 CHANGES = [
 ("2026-10-10", [
  ("Új", "A Betűrakóban több mint 300 különböző szó és 11 szint van: új állatos, ételes és tárgyas szintek, az egész szó kirakása és mondatkiegészítés."),
- ("Javítva", "Néhány szöveg és névelő javítása (például: Pénzszámolás), és a kezdőlapi haladás-csempék is jól jelennek meg hosszabb címeknél."),
+ ("Javítva", "Szöveg- és helyesírási javítások, jobban olvasható haladás-csempék és évfolyamgombok, nagyobb kapcsoló és jelölőnégyzet telefonon."),
  ("Javítva", "Ha kiválasztod az évfolyamot, a gyakorlók szintlistájában is csak az adott osztály tananyagához tartozó szinteket látod. Az összeset egy gombbal megnézheted."),
  ("Új", "Kémia 7–8. osztályosoknak: Elemek és vegyjelek, Az atom felépítése, Képletek és egyenletek. Vegyjelek, rendszám és tömegszám, ionok, vegyületek képlete és reakcióegyenletek rendezése, nyomtatható munkalappal."),
- ("Új", "Képes feladatok elsősöknek: olvasás nélkül is játszható gyakorló képekkel és emojikkal. Számlálás, szám és mennyiség, több és kevesebb, formák, minták, párosítás és kakukktojás, hang nélkül."),
+ ("Új", "Képes feladatok elsősöknek: olvasás nélkül is játszható gyakorló képekkel és emodzsikkal. Számlálás, szám és mennyiség, több és kevesebb, formák, minták, párosítás és kakukktojás, hang nélkül."),
  ("Új", "Megújult kinézet: színes kezdőlap, színes haladás-csempék és évfolyamgombok, összecsukható beállítások, számozott és színes szintlista, látványosabb gyakorlás hang nélküli jutalom-animációval."),
  ("Új", "Betűrakó szójáték: képről vagy rövid magyarázatból kell kitalálni a szót, és a hiányzó betűkockákat a helyükre rakni. Hat szint a képes szavaktól a nehéz betűkig (j, ly, ékezetek) és az ünnepi szavakig, hang nélkül, büntetés nélkül."),
  ("Új", "Ünnepi munkalapok a tanároknak: Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró. Mindegyikből négyféle lap készíthető évfolyam szerint (szöveges feladatok, titkosírás-rejtvény, szókereső, hiányzó betűk), megoldókulccsal."),
