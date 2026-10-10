@@ -21,7 +21,7 @@ rd = lambda p: open(os.path.join(SRC, p), encoding='utf-8').read()
 meta = json.loads(subprocess.check_output(['node', os.path.join(ROOT, 'meta.js')], cwd=ROOT))
 mods, groups = meta['mods'], meta['groups']
 
-js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'mods3.js', 'mods4.js', 'mods5.js', 'mods6.js', 'sheet.js', 'ui.js']) + '\n})();\n'
+js = '(()=>{\n' + '\n'.join(rd(f) for f in ['core.js', 'mods1.js', 'mods2.js', 'mods3.js', 'mods4.js', 'mods5.js', 'mods6.js', 'sheet.js', 'themes.js', 'ui.js']) + '\n})();\n'
 css = rd('style.css')
 FONT_FILES = sorted(f for f in os.listdir(os.path.join(SRC, 'fonts')) if f.endswith('.woff2'))
 UR = {'latin': 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD',
@@ -99,6 +99,8 @@ def g_url(kind, n): return f'/{n}-osztalyos-{SUBJ_SLUG(kind, n)}-gyakorlo/'
 def g_name(kind, n): return f'{n}. osztályos {SUBJ(kind, n)} gyakorló'
 def g_mods(kind, n): return [x for x in mods if kind_of(x) == kind and x['grades'][0] <= n <= x['grades'][1]]
 GRADES = [('m', n) for n in range(1, 9)] + [('n', n) for n in range(1, 7)] + [('t', n) for n in range(1, 7)]
+THEMES = meta['themes']
+def th_url(t): return f'/munkalapok/{t["id"]}/'
 def w_url(x): return f'/munkalapok/{x["slug"]}/'
 def wg_url(kind, n): return f'/munkalapok/{n}-osztalyos-{SUBJ_SLUG(kind, n)}/'
 def wg_name(kind, n): return f'{n}. osztályos {SUBJ(kind, n)} munkalap'
@@ -115,7 +117,7 @@ def mod_links(x):
     return out
 XL = {'mod': {x['slug']: mod_links(x) for x in mods},
       'g': {'m': [g_url('m', n) for n in range(1, 9)], 'n': [g_url('n', n) for n in range(1, 7)], 't': [g_url('t', n) for n in range(1, 7)]},
-      'ws': {'mods': [[w_url(x), f'{x["short"]} munkalap'] for x in mods], 'grades': [[wg_url(k, n), wg_name(k, n)] for k, n in GRADES]}}
+      'ws': {'mods': [[w_url(x), f'{x["short"]} munkalap'] for x in mods], 'grades': [[wg_url(k, n), wg_name(k, n)] for k, n in GRADES], 'themes': [[th_url(t), f'{t["name"]} munkalap'] for t in THEMES]}}
 js = js.replace('/*XL*/{}/*XL*/', json.dumps(XL, ensure_ascii=False))
 js = js.replace("/*SH*/'iskolaigyakorlo.hu'/*SH*/", json.dumps(SITE.split('://', 1)[-1]))
 ver = hashlib.md5((js + css).encode()).hexdigest()[:8]
@@ -134,7 +136,7 @@ def links_html(items, cls='xl'):
 def fnav():
     ch = lambda kind, rng: ''.join(f'<a href="{g_url(kind, n)}">{n}. osztályos {SUBJ(kind, n)}</a>' for n in rng)
     grp = lambda title, links: f'<details><summary>{title}</summary><div class="fl">{links}</div></details>'
-    teach = ('<a href="/tanaroknak/">Tanároknak: eszközök az órára</a><a href="/munkalapok/">Munkalap-készítő</a><a href="/munkalapok/szorzotabla/">Szorzótábla munkalap</a><a href="/munkalapok/3-osztalyos-matek/">3. osztályos matek munkalap</a>')
+    teach = ('<a href="/tanaroknak/">Tanároknak: eszközök az órára</a><a href="/munkalapok/">Munkalap-készítő</a><a href="/munkalapok/unnepi/">Ünnepi munkalapok</a><a href="/munkalapok/szorzotabla/">Szorzótábla munkalap</a><a href="/munkalapok/3-osztalyos-matek/">3. osztályos matek munkalap</a>')
     # A linkek a HTML-ben vannak (a keresők látják), a lenyíló csak a megjelenítést rendezi.
     return (f'<nav class="fnav" aria-label="Évfolyamok és munkalapok">{grp("Matek gyakorlók", ch("m", range(1, 9)))}{grp("Helyesírás gyakorlók", ch("n", range(1, 7)))}{grp("Környezet- és természetismeret", ch("t", range(1, 7)))}{grp("Tanároknak", teach)}</nav>')
 
@@ -368,7 +370,7 @@ def teacher_page():
            ("Honnan tudjam, melyik szint való az osztálynak?", "Az évfolyam-oldalak és a munkalap-készítő „az évfolyamnak megfelelő szintek” beállítása segít. A tanmenetet természetesen te ismered a legjobban, a szinteket szabadon átállíthatod.")]
     body = (f'<div class="setup gpage">{bc_html(trail)}<h1>Tanároknak: eszközök az órára</h1>'
             f'<p class="lead">Ingyenes, regisztráció nélküli eszközök tanítóknak és tanároknak: állítsd össze a saját munkalapodat, vagy nyomtass ki egy kész feladatlapot megoldókulccsal.</p>'
-            f'<div class="gcards"><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>30 téma · max. 60 feladat</span></a></div>'
+            f'<div class="gcards"><a class="gcard" href="/munkalapok/unnepi/"><h3>Ünnepi munkalapok</h3><p>Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró: szöveges feladatok, titkosírás, szókereső, hiányzó betűk.</p><span>6 ünnep · 4 évfolyamszint</span></a><a class="gcard" href="/munkalapok/"><h3>Munkalap-készítő</h3><p>Válaszd ki, miből hány feladat legyen a lapon, add meg a címet, és kérj megoldókulcsot. Új lap egy kattintásra.</p><span>30 téma · max. 60 feladat</span></a></div>'
             f'<section class="about"><h2>Kész matek munkalapok évfolyamonként</h2><ul class="xl">{gl("m", range(1, 9))}</ul>'
             f'<h2>Kész helyesírás munkalapok évfolyamonként</h2><ul class="xl">{gl("n", range(1, 7))}</ul>'
             f'<h2>Kész környezetismeret és természetismeret munkalapok évfolyamonként</h2><ul class="xl">{gl("t", range(1, 7))}</ul></section>'
@@ -377,6 +379,63 @@ def teacher_page():
             f'{faq_html(faq)}{fb_html("Tanároknak")}</div>')
     lds = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Tanároknak: eszközök az órára", "url": SITE + path, "description": desc, "inLanguage": "hu", "audience": {"@type": "EducationalAudience", "educationalRole": "teacher"},
             "isPartOf": {"@type": "WebSite", "name": NAME, "url": SITE + "/"}}, bc_ld(trail), faq_ld(faq)]
+    return path, shell(title, desc, path, body, lds, '', app=False)
+
+
+# ---- Ünnepi munkalapok ----
+TH_INFO = {
+ 'mikulas': {'kw': 'Mikulás munkalap nyomtatható – matek és rejtvény', 'when': 'november vége – december 6.', 'adj': 'Mikulás',
+   'intro': 'A Mikulás napja (december 6.) a gyerekek egyik kedvenc ünnepe. Ezekkel a nyomtatható Mikulás-munkalapokkal játékosan lehet számolni, helyesírni és szavakat keresni a Mikulás-várás hetében.'},
+ 'karacsony': {'kw': 'Karácsonyi munkalap nyomtatható – matek és rejtvény', 'when': 'advent – december 24.', 'adj': 'karácsonyi',
+   'intro': 'Az adventi időszakban jól jön egy-egy játékos lap a tanórára vagy otthonra. A karácsonyi munkalapokon díszgömbök, szaloncukrok és mézeskalácsok szerepelnek a feladatokban, a rejtvényekből pedig ünnepi üzenet olvasható ki.'},
+ 'farsang': {'kw': 'Farsangi munkalap nyomtatható – matek és rejtvény', 'when': 'január vége – február', 'adj': 'farsangi',
+   'intro': 'A farsangi időszakban a gyerekek jelmezekkel, fánkkal és szerpentinnel foglalkoznak, a munkalapokban pedig ugyanezek a témák jelennek meg számolási, helyesírási és rejtvényfeladatként.'},
+ 'husvet': {'kw': 'Húsvéti munkalap nyomtatható – matek és rejtvény', 'when': 'március – április', 'adj': 'húsvéti',
+   'intro': 'A húsvéti munkalapok a tavaszi ünnep hangulatát hozzák az órára: tojásokkal, nyuszikkal és tulipánokkal számolnak, szavakat keresnek, és húsvéti üzenetet fejtenek meg.'},
+ 'tanevkezdo': {'kw': 'Tanévkezdő munkalap nyomtatható – matek és rejtvény', 'when': 'augusztus vége – szeptember', 'adj': 'tanévkezdő',
+   'intro': 'A tanév elején érdemes lazán, játékosan felfrissíteni a tudást. A tanévkezdő munkalapok füzetekkel, ceruzákkal és tankönyvekkel dolgoznak, és könnyű bemelegítő feladatokat adnak.'},
+ 'evzaro': {'kw': 'Évzáró munkalap nyomtatható – matek és rejtvény', 'when': 'június', 'adj': 'évzáró',
+   'intro': 'A tanév végén a gyerekek már a nyárra gondolnak. Az évzáró munkalapok játékos lezárásként szolgálnak: fagylaltos, strandos, nyaralós feladatokat és rejtvényeket tartalmaznak.'}
+}
+TT_DESC = [('Szöveges feladatok', 'ünnepi történetekbe csomagolt összeadás, kivonás, szorzás, osztás, törtek és százalék, évfolyam szerint'), ('Titkosírás-rejtvény', 'a feladatok eredményeiből ünnepi üzenet olvasható ki, minden eredményhez egy betű tartozik'),
+           ('Szókereső', 'ünnepi szavak a betűrácsban, a magasabb évfolyamokon átlósan és visszafelé is'), ('Hiányzó betűk', 'ünnepi szavak helyesírása hiányzó betűkkel')]
+TH_FAQ = [("Milyen évfolyamnak készültek a lapok?", "Négy nehézségi szint közül választhatsz: 1. osztály, 2. osztály, 3–4. osztály és 5–6. osztály. A szöveges feladatok és a titkosírás számai is ehhez igazodnak."),
+          ("Van megoldókulcs?", "Igen, minden laphoz jár megoldókulcs. A „Megoldókulcs nyomtatása” jelölőnégyzettel külön oldalra is kinyomtathatod."),
+          ("Minden kattintásra új lap készül?", "Igen, az „Új lap” gomb véletlenszerűen új feladatokat, szavakat és rácsot készít, így mindig friss lapot nyomtathatsz."),
+          ("Szabadon kinyomtathatom az osztálynak?", "Igen, a lapok ingyenesek, regisztráció nélkül használhatók, otthoni és osztálytermi használatra is.")]
+def ws_theme_tools():
+    band = '<label class="chk sel"><span>Évfolyam:</span><select class="tin" data-ws="band" aria-label="Évfolyam">' + ''.join(f'<option value="{k}"{" selected" if k == "2" else ""}>{v}</option>' for k, v in [('1', '1. osztály'), ('2', '2. osztály'), ('3', '3–4. osztály'), ('5', '5–6. osztály')]) + '</select></label>'
+    typ = '<label class="chk sel"><span>Lap:</span><select class="tin" data-ws="ttype" aria-label="A lap típusa">' + ''.join(f'<option value="{k}">{v}</option>' for k, v in [('feladat', 'Szöveges feladatok'), ('titkos', 'Titkosírás-rejtvény'), ('szokereso', 'Szókereső'), ('betu', 'Hiányzó betűk')]) + '</select></label>'
+    return (f'<div class="stool noprint"><button class="btn sm" data-act="wsprint">Nyomtatás</button><button class="btn sec sm" data-act="wsnew">Új lap</button>{band}{typ}'
+            f'<label class="chk"><input type="checkbox" data-ws="key"> Megoldókulcs nyomtatása</label></div>')
+def ws_theme_page(t):
+    d = WS['theme:' + t['id']]; inf = TH_INFO[t['id']]; path = th_url(t)
+    title = f'{inf["kw"]} | {NAME}'
+    desc = f'Ingyenes, nyomtatható {inf["adj"]} munkalap 1–6. osztályosoknak: szöveges feladatok, titkosírás-rejtvény, szókereső és hiányzó betűk megoldókulccsal. Új lap egy kattintással.'
+    trail = [("Kezdőlap", "/"), ("Tanároknak", "/tanaroknak/"), ("Ünnepi munkalapok", "/munkalapok/unnepi/"), (t['title'], path)]
+    tt = ''.join(f'<li><b>{a}:</b> {e(b_)}.</li>' for a, b_ in TT_DESC)
+    others = [(th_url(x), f'{x["name"]} munkalap') for x in THEMES if x['id'] != t['id']]
+    body = (f'<div class="setup wspage"><div class="noprint">{bc_html(trail)}<h1>{e(t["title"])}, nyomtatható feladatlap</h1><p class="lead">{e(inf["intro"])}</p></div>'
+            f'{ws_theme_tools()}<article class="sheet" id="wssheet">{d["sheet"]}</article><section class="skey noprint" id="wskey">{d["key"]}</section>'
+            f'<div class="noprint"><section class="about"><h2>Négyféle lap, évfolyam szerint</h2><ul class="xl">{tt}</ul><p>Az évfolyamot és a lap típusát a gombok fölött választhatod ki, az „Új lap” gomb pedig minden alkalommal újat készít.</p></section>'
+            f'<section class="about"><h2>Mikor használd?</h2><p>A(z) {e(inf["adj"])} munkalapok legjobban a(z) <b>{e(inf["when"])}</b> időszakban jönnek jól, de bármikor használhatók, ha egy játékos, ünnepi hangulatú lapra van szükség.</p></section>'
+            f'<section class="about"><h2>Saját munkalap</h2><p>Ha egyszerre többféle témából szeretnél feladatokat, használd a <a href="/munkalapok/">munkalap-készítőt</a>.</p></section>'
+            f'<section class="about"><h2>További ünnepi munkalapok</h2>{links_html(others + [("/munkalapok/unnepi/", "Minden ünnepi munkalap")])}</section>'
+            f'{faq_html(TH_FAQ)}{fb_html(t["title"])}</div></div>')
+    lds = [{"@context": "https://schema.org", "@type": "LearningResource", "name": t['title'], "description": desc, "url": SITE + path, "inLanguage": "hu", "isAccessibleForFree": True, "learningResourceType": "Worksheet",
+            "educationalLevel": "1–6. osztály", "audience": {"@type": "EducationalAudience", "educationalRole": "student"}, "publisher": {"@type": "Organization", "name": NAME, "url": SITE + "/"}}, bc_ld(trail), faq_ld(TH_FAQ)]
+    return path, shell(title, desc, path, body, lds, '', ws='theme:' + t['id'])
+def ws_unnepi_page():
+    path = '/munkalapok/unnepi/'; trail = [("Kezdőlap", "/"), ("Tanároknak", "/tanaroknak/"), ("Ünnepi munkalapok", path)]
+    title = f'Ünnepi munkalapok: Mikulás, karácsony, farsang, húsvét | {NAME}'
+    desc = 'Ingyenes, nyomtatható ünnepi munkalapok 1–6. osztályosoknak: Mikulás, karácsony, farsang, húsvét, tanévkezdő és évzáró. Szöveges feladatok, titkosírás, szókereső, hiányzó betűk.'
+    cards = ''.join(f'<a class="gcard" href="{th_url(t)}"><h3>{e(t["title"])}</h3><p>{e(TH_INFO[t["id"]]["intro"])}</p><span>Aktuális: {e(TH_INFO[t["id"]]["when"])}</span></a>' for t in THEMES)
+    body = (f'<div class="setup gpage">{bc_html(trail)}<h1>Ünnepi munkalapok</h1><p class="lead">Ingyenes, nyomtatható lapok a Mikulás, a karácsony, a farsang, a húsvét, a tanév eleje és a tanév vége időszakára. Mindegyikből négyféle lap készíthető évfolyam szerint, megoldókulccsal.</p>'
+            f'<div class="gcards">{cards}</div>'
+            f'<section class="about"><h2>Négyféle lap minden ünnephez</h2><ul class="xl">{"".join(f"<li><b>{a}:</b> {e(b_)}.</li>" for a, b_ in TT_DESC)}</ul></section>'
+            f'<section class="about"><h2>Saját munkalap</h2><p>Ha egyszerre többféle témából szeretnél feladatokat, használd a <a href="/munkalapok/">munkalap-készítőt</a>.</p></section>{faq_html(TH_FAQ)}{fb_html("Ünnepi munkalapok")}</div>')
+    lds = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Ünnepi munkalapok", "url": SITE + path, "description": desc, "inLanguage": "hu", "isPartOf": {"@type": "WebSite", "name": NAME, "url": SITE + "/"},
+            "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": t['title'], "url": SITE + th_url(t)} for i, t in enumerate(THEMES)]}}, bc_ld(trail), faq_ld(TH_FAQ)]
     return path, shell(title, desc, path, body, lds, '', app=False)
 
 def ws_hub_page():
@@ -416,7 +475,7 @@ for m in mods:
     os.makedirs(os.path.join(DIST, m['slug']))
     open(os.path.join(DIST, m['slug'], 'index.html'), 'w', encoding='utf-8').write(page(m))
 
-SEO_PAGES = [grade_page(k, n) for k, n in GRADES] + [tudastar_page(), ujdonsagok_page()] + [article_page(a) for a in ARTICLES] + [teacher_page(), ws_hub_page()] + [ws_mod_page(x) for x in mods] + [ws_grade_page(k, n) for k, n in GRADES]
+SEO_PAGES = [grade_page(k, n) for k, n in GRADES] + [tudastar_page(), ujdonsagok_page()] + [article_page(a) for a in ARTICLES] + [teacher_page(), ws_hub_page(), ws_unnepi_page()] + [ws_theme_page(t) for t in THEMES] + [ws_mod_page(x) for x in mods] + [ws_grade_page(k, n) for k, n in GRADES]
 for pth, htm in SEO_PAGES:
     d = os.path.join(DIST, pth.strip('/')); os.makedirs(d, exist_ok=True)
     open(os.path.join(d, 'index.html'), 'w', encoding='utf-8').write(htm)

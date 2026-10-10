@@ -84,15 +84,20 @@ const WSL = 'AÁBCDEÉFGHIÍJKLMNOÓÖŐPRSTUÚÜŰVZ';
 const wsDirs = { '1': [[0, 1], [1, 0]], '2': [[0, 1], [1, 0]], '3': [[0, 1], [1, 0], [1, 1]], '5': [[0, 1], [1, 0], [1, 1], [0, -1], [-1, 0]] };
 const wsSize = { '1': [8, 6], '2': [10, 8], '3': [12, 10], '5': [14, 12] };
 const themeSearch = (th, band) => {
-  const T = THEMES[th], [size, cnt] = wsSize[band], dirs = wsDirs[band], g = Array.from({ length: size }, () => Array(size).fill('')), hit = Array.from({ length: size }, () => Array(size).fill(false)), placed = [];
-  const words = shuffle(T.words.map(w => w.replace(/[\s-]/g, '').toUpperCase()).filter(w => w.length <= size)).slice(0, cnt).sort((a, b) => b.length - a.length);
-  for (const w of words) { for (let t = 0; t < 300; t++) { const [dr, dc] = pick(dirs), L = w.length, r0 = dr === 1 ? rnd(0, size - L) : dr === -1 ? rnd(L - 1, size - 1) : rnd(0, size - 1), c0 = dc === 1 ? rnd(0, size - L) : dc === -1 ? rnd(L - 1, size - 1) : rnd(0, size - 1);
-      let ok = true; for (let i = 0; i < L; i++) { const c = g[r0 + dr * i][c0 + dc * i]; if (c && c !== w[i]) { ok = false; break; } }
-      if (ok) { for (let i = 0; i < L; i++) { g[r0 + dr * i][c0 + dc * i] = w[i]; hit[r0 + dr * i][c0 + dc * i] = true; } placed.push(w); break; } } }
+  const T = THEMES[th], [size, cnt] = wsSize[band], dirs = wsDirs[band], maxLen = band === '1' ? 7 : size;
+  const words = shuffle(T.words.map(w => w.replace(/[\s-]/g, '').toUpperCase()).filter(w => w.length <= maxLen)).slice(0, cnt).sort((a, b) => b.length - a.length);
+  let g, hit, placed;
+  for (let attempt = 0; attempt < 60; attempt++) {
+    g = Array.from({ length: size }, () => Array(size).fill('')); hit = Array.from({ length: size }, () => Array(size).fill(false)); placed = [];
+    for (const w of words) { for (let t = 0; t < 300; t++) { const [dr, dc] = pick(dirs), L = w.length, r0 = dr === 1 ? rnd(0, size - L) : dr === -1 ? rnd(L - 1, size - 1) : rnd(0, size - 1), c0 = dc === 1 ? rnd(0, size - L) : dc === -1 ? rnd(L - 1, size - 1) : rnd(0, size - 1);
+        let ok = true; for (let i = 0; i < L; i++) { const c = g[r0 + dr * i][c0 + dc * i]; if (c && c !== w[i]) { ok = false; break; } }
+        if (ok) { for (let i = 0; i < L; i++) { g[r0 + dr * i][c0 + dc * i] = w[i]; hit[r0 + dr * i][c0 + dc * i] = true; } placed.push(w); break; } } }
+    if (placed.length === words.length) break;
+  }
   const fill = [...new Set(placed.join(''))].join('') + WSL; for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) if (!g[r][c]) g[r][c] = fill[rnd(0, fill.length - 1)];
   const grid = (mark) => `<table class="wsg"><tbody>${g.map((row, r) => `<tr>${row.map((c, k) => `<td${mark && hit[r][k] ? ' class="hit"' : ''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
   const list = [...placed].sort((a, b) => a.localeCompare(b, 'hu'));
-  const sheet = `${thHead(`${T.title}: szókereső`, bandName(band), 'Keresd meg a szavakat a rácsban! A szavak vízszintesen és függőlegesen' + (band === '1' || band === '2' ? '' : ' (és átlósan') + (band === '5' ? ', akár visszafelé is) ' : band === '3' ? ') ' : ' ') + 'bújnak el. Húzd át őket!')}${grid(false)}<div class="wlist"><b>Keresendő szavak:</b> ${list.map(esc).join(' · ')}</div>${thFoot()}`;
+  const sheet = `${thHead(`${T.title}: szókereső`, bandName(band), `Keresd meg a szavakat a rácsban! A szavak ${band === '1' || band === '2' ? 'vízszintesen és függőlegesen' : band === '3' ? 'vízszintesen, függőlegesen és átlósan' : 'vízszintesen, függőlegesen és átlósan, akár visszafelé is'} bújnak el. Húzd át őket!`)}${grid(false)}<div class="wlist"><b>Keresendő szavak:</b> ${list.map(esc).join(' · ')}</div>${thFoot()}`;
   return { sheet, key: `<h2>Megoldókulcs</h2>${grid(true)}`, count: list.length };
 };
 
