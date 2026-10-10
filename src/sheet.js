@@ -2,7 +2,7 @@
    Ezeket a böngésző és a build is használja (a build ebből készíti az oldalakon látható mintamunkalapokat). */
 const SITE_HOST = /*SH*/'iskolaigyakorlo.hu'/*SH*/;
 const ansText = q => (q.kind === 'num' ? `${numTxt(q.ans)}${q.unit ? (q.unit === '°' || q.unit === '%' ? '' : ' ') + q.unit : ''}` : q.ansLabel);
-const keyText = q => { if (q.kind === 'num') return ansText(q); const i = q.choices.findIndex(c => c.v === q.ans); return `${'ABCD'[i]}) ${q.ansLabel}`; };
+const keyText = q => { if (q.kind === 'num') return ansText(q); if (q.kind === 'word') return esc(q.word); const i = q.choices.findIndex(c => c.v === q.ans); return `${'ABCD'[i]}) ${q.ansLabel}`; };
 
 /* Egy modul szintjei közül az adott évfolyamnak megfelelő sáv (a modul évfolyam-tartományát arányosan osztjuk szét a szintek között). */
 const gradeLv = (m, g) => {
@@ -28,7 +28,7 @@ const genRows = (rows, grade) => {
   }
   return out;
 };
-const sItem = q => `<li><div class="sq">${q.q}</div>${q.kind === 'num' ? `<div class="sline">Válasz: <span class="blank"></span> ${q.unit || ''}</div>` : `<div class="sopts">${q.choices.map((c, i) => `<span>${'ABCD'[i]}) ${c.h}</span>`).join('')}</div>`}</li>`;
+const sItem = q => `<li><div class="sq">${q.q}</div>${q.kind === 'word' ? `<div class="sline wmask"><b>${esc(q.mask)}</b> <span class="blank long"></span></div>` : q.kind === 'num' ? `<div class="sline">Válasz: <span class="blank"></span> ${q.unit || ''}</div>` : `<div class="sopts">${q.choices.map((c, i) => `<span>${'ABCD'[i]}) ${c.h}</span>`).join('')}</div>`}</li>`;
 /* Egymás utáni, azonos témájú feladatok csoportja (több téma esetén címsorral). */
 const groupItems = items => { const gs = []; items.forEach((it, i) => { const g = gs[gs.length - 1]; if (g && g.slug === it.slug) g.items.push(it); else gs.push({ slug: it.slug, title: it.title, start: i + 1, items: [it] }); }); return gs; };
 /* o: { title, sub, nameLine, cols } */
