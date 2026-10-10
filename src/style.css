@@ -453,3 +453,29 @@ header.site .brand { padding-block: 6px; }
 header.site nav { display: flex; gap: 16px; align-items: center; }
 
 .rnote { margin: 10px 0; padding: 10px 14px; background: var(--amber-soft); border: 2px solid var(--gold); border-radius: 12px; color: var(--ink); font-weight: 600; }
+
+/* ---------- Ünnepi munkalapok: titkosírás, szókereső, hiányzó betűk ---------- */
+.sintro { margin: 0 0 12px; color: #333; font-size: .95rem; }
+.clist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 28px; }
+.clist li { display: flex; align-items: baseline; gap: 10px; break-inside: avoid; border-bottom: 1px dotted #999; padding-bottom: 6px; }
+.cl { display: inline-flex; align-items: center; justify-content: center; min-width: 1.8em; height: 1.8em; border: 2px solid #111; border-radius: 6px; font: 700 1.1rem var(--f-display); }
+.ct { font: 600 1.2rem var(--f-display); letter-spacing: .02em; white-space: nowrap; }
+.blank.short { width: 3.2em; } .blank.long { width: 12em; flex: 1; }
+.cmsg { display: flex; flex-wrap: wrap; gap: 14px 26px; margin: 22px 0 8px; padding-top: 14px; border-top: 2px dashed #888; }
+.cw { display: inline-flex; gap: 6px; } .cc { display: inline-flex; flex-direction: column; align-items: center; min-width: 2.2em; }
+.cc b { font: 700 1rem var(--f-display); } .cc i { display: block; width: 2em; height: 1.5em; border-bottom: 2px solid #111; }
+.wsg { border-collapse: collapse; margin: 6px auto 14px; }
+.wsg td { width: 2.1em; height: 2.1em; text-align: center; border: 1px solid #aaa; font: 700 1.05rem var(--f-display); color: #111; }
+.wsg td.hit { background: #ffe08a; }
+.wlist { margin: 6px 0; line-height: 1.9; }
+.blist { list-style: decimal; margin: 0; padding-left: 2em; display: grid; gap: 14px; }
+.blist li { display: flex; align-items: baseline; gap: 18px; padding-bottom: 4px; }
+.bw { font: 700 1.5rem var(--f-display); letter-spacing: .1em; min-width: 8em; }
+.th-szokereso .wsg td { font-size: 1.1rem; }
+@media (max-width: 640px) { .clist { grid-template-columns: 1fr; } .wsg td { width: 1.7em; height: 1.7em; font-size: .85rem; } .blist li { flex-wrap: wrap; } .blank.long { min-width: 8em; } }
+@media print { .wsg td { width: 2.3em; height: 2.3em; } .clist li, .blist li { break-inside: avoid; } }
+
+.clist { gap: 16px 30px; } .clist li { padding-bottom: 10px; } .cl { min-width: 2em; height: 2em; } .ct { font-size: 1.35rem; }
+.cc b { font-size: 1.15rem; } .cc i { width: 2.4em; height: 1.9em; } .cmsg { gap: 18px 30px; margin-top: 28px; }
+.blist { gap: 20px; } .blist li { display: grid; grid-template-columns: 17em 1fr; align-items: end; gap: 12px; } .bw { min-width: 0; letter-spacing: .06em; } .blank.long { width: 100%; }
+@media (max-width: 640px) { .blist li { grid-template-columns: 1fr; gap: 2px; } }

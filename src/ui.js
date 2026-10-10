@@ -378,7 +378,8 @@ document.addEventListener('change', e => {
     else if (k === 'title') { S.sb.title = t.value; saveSB(); }
     else if (k === 'keyp') { S.sb.key = t.checked; saveSB(); const el = $('#sbkey'); if (el) el.classList.toggle('noprint', !t.checked); }
     else { S.sb[k] = t.checked; saveSB(); }
-  } else if (t.dataset.ws === 'sel') { S.ws.sel = t.value === 'mix' ? 'mix' : +t.value; wsRegen(); }
+  } else if (t.dataset.ws === 'band' || t.dataset.ws === 'ttype') { S.ws[t.dataset.ws] = t.value; wsRegen(); }
+  else if (t.dataset.ws === 'sel') { S.ws.sel = t.value === 'mix' ? 'mix' : +t.value; wsRegen(); }
   else if (t.dataset.ws === 'key') { const el = $('#wskey'); if (el) el.classList.toggle('noprint', !t.checked); }
 });
 document.addEventListener('input', e => { const t = e.target; if (t.dataset.sb === 'n') { const v = Math.max(0, Math.min(SB_ROW_MAX, +t.value || 0)); const r = S.sb.rows[t.dataset.slug] = Object.assign({ sel: 'mix', n: 0 }, S.sb.rows[t.dataset.slug]); const room = SB_MAX - (sbTotal() - (r.n || 0)); r.n = Math.min(v, room); saveSB(); sbSync(); } });
@@ -446,7 +447,7 @@ function builderView() {
       const opts = [['mix', 'Vegyes (könnyebbtől a nehezebbig)'], ...(g && m.grades[0] <= g && g <= m.grades[1] ? [['g', `${g}. osztálynak megfelelő szintek`]] : []), ...m.levels.map((l, i) => [String(i), `${i + 1}. ${l.name}`])];
       return `<div class="sbr${n ? ' on' : ''}" data-slug="${m.slug}"><div class="sbn"><b>${esc(m.short)}</b><small>${gradeTxt(m)}</small></div><select class="tin" data-sb="sel" data-slug="${m.slug}" aria-label="Szint: ${esc(m.short)}">${opts.map(([v, t]) => `<option value="${v}"${v === sel ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select><div class="step"><button class="btn sm sec" data-act="sbd" data-slug="${m.slug}" data-d="-1" aria-label="Kevesebb feladat: ${esc(m.short)}">−</button><input class="tin num" type="number" min="0" max="${SB_ROW_MAX}" inputmode="numeric" data-sb="n" data-slug="${m.slug}" value="${n}" aria-label="Feladatok száma: ${esc(m.short)}"><button class="btn sm sec" data-act="sbd" data-slug="${m.slug}" data-d="1" aria-label="Több feladat: ${esc(m.short)}">+</button></div></div>`; }).join('')}`; }).join('');
   const gf = `<div class="gchips" role="group" aria-label="Szűrés évfolyamra"><span class="lab">Csak ezt mutasd:</span><button class="chip${g ? '' : ' on'}" data-act="sbgrade" data-g="0">Minden évfolyam</button>${[1, 2, 3, 4, 5, 6, 7, 8].map(n => `<button class="chip${g === n ? ' on' : ''}" data-act="sbgrade" data-g="${n}">${n}.</button>`).join('')}</div>`;
-  const ws = XL.ws ? `<section class="about noprint"><h2>Kész munkalapok témák szerint</h2>${XL.ws.mods.length ? `<ul class="xl">${XL.ws.mods.map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul>` : ''}<h2>Kész munkalapok évfolyamonként</h2><ul class="xl">${XL.ws.grades.map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul></section>` : '';
+  const ws = XL.ws ? `<section class="about noprint"><h2>Kész munkalapok témák szerint</h2>${XL.ws.mods.length ? `<ul class="xl">${XL.ws.mods.map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul>` : ''}<h2>Kész munkalapok évfolyamonként</h2><ul class="xl">${XL.ws.grades.map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul>${XL.ws.themes ? `<h2>Ünnepi munkalapok</h2><ul class="xl">${XL.ws.themes.map(x => `<li><a href="${x[0]}">${x[1]}</a></li>`).join('')}</ul>` : ''}</section>` : '';
   return `<div class="setup sbp"><a class="crumb" href="${PATHMODE ? '/tanaroknak/' : href('')}">← Tanároknak</a><h1>Nyomtatható munkalap-készítő</h1><p class="lead">Válaszd ki, miből hány feladat legyen a lapon, és nyomtasd ki. Minden lapon új, véletlenszerű feladatok vannak, és kérhetsz hozzá megoldókulcsot is. Ingyenes, regisztráció nélkül.</p>
 <section class="sbbox"><h2>1. Gyors indítás</h2><p>Egy kattintással összeállít egy vegyes lapot az évfolyamnak. Utána bármit átállíthatsz.</p>${gradeBar('m', 'Matek')}${gradeBar('n', 'Helyesírás')}${gradeBar('t', 'Környezet')}<div class="gchips" role="group" aria-label="Témák szerint"><span class="lab">Témák:</span>${SB_PRESETS.map((p, i) => `<button class="chip" data-act="sbpreset" data-i="${i}">${esc(p[0])}</button>`).join('')}</div></section>
 <section class="sbbox"><h2>2. Feladatok kiválasztása</h2>${gf}${rows}</section>
@@ -460,8 +461,8 @@ function sheetxView() {
 }
 const sbGenerate = () => { S.sbItems = genRows(sbRows(), S.sb.grade); S.view = 'sheetx'; render(); window.scrollTo(0, 0); };
 function wsRegen() {
-  const w = S.ws, b = wsBuild(w.type, w.key, w.sel, w.n), sh = $('#wssheet'), k = $('#wskey'); if (!sh || !k) return;
-  sh.className = 'sheet'; sh.innerHTML = b.sheet; k.innerHTML = b.key;
+  const w = S.ws, b = w.type === 'theme' ? themeBuild(w.key, w.band, w.ttype) : wsBuild(w.type, w.key, w.sel, w.n), sh = $('#wssheet'), k = $('#wskey'); if (!sh || !k) return;
+  sh.className = 'sheet' + (w.type === 'theme' ? ' th-' + w.ttype : ''); sh.innerHTML = b.sheet; k.innerHTML = b.key;
 }
 
 function route() {
@@ -471,7 +472,7 @@ function route() {
   const m = modBySlug(slug);
   S.mod = m || null; S.askReset = false; S.askDel = false; S.addP = false; S.hiba = false;
   const ws = PATHMODE && document.documentElement.dataset.ws;
-  if (ws) { const [t, k] = ws.split(':'); S.ws = { type: t, key: k, sel: 'mix', n: 20 }; S.view = 'wspage'; render(); return; }
+  if (ws) { const [t, k] = ws.split(':'); S.ws = { type: t, key: k, sel: 'mix', n: 20, band: '2', ttype: 'feladat' }; S.view = 'wspage'; render(); return; }
   S.sb = loadSB();
   S.view = slug === 'profil' ? 'profile' : slug === 'munkalapok' ? 'sheets' : m ? 'setup' : 'home'; render();
   if (!PATHMODE) window.scrollTo(0, 0);
